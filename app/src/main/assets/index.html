@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+    <title>WebView Example</title>
+</head>
+<body>
+<h1>Hello from HTML!</h1>
+<div id="myElement">Original Text</div>
+<script>
+    console.log("Page loaded!");
+    console.warn("This is a warning");
+    console.error("This is an error");
+    function myFunction(a, b) {
+        return a + b;
+    }
+    function changeText(newText){
+      document.getElementById('myElement').textContent = newText;
+    }
+</script>
+</body>
+</html>

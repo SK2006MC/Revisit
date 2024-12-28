@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_web"
+        android:title="@string/webpages" />
+    <item
+        android:id="@+id/nav_ud"
+        android:title="@string/updateurls" />
+    <item
+        android:id="@+id/nav_dn"
+        android:title="@string/downloadurls" />
+    <item
+        android:id="@+id/nav_settings"
+        android:title="@string/settings" />
+    <item
+        android:id="@+id/nav_about"
+        android:title="@string/about" />
+
+</menu>

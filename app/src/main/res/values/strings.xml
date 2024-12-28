@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Revisit</string>
+    <string name="enter_javascript_code">Enter JavaScript code</string>
+    <string name="execute_the_jscode">execute the jscode</string>
+    <string name="title_log">log</string>
+    <string name="about">About</string>
+    <string name="settings">Settings</string>
+    <string name="check_for_updates">Check for Updates</string>
+    <string name="refresh">Refresh</string>
+    <string name="calculate_size">Calculate size</string>
+    <string name="download">Download</string>
+    <string name="welcom_to_offline_browser">Welcom to Offline Browser</string>
+    <string name="choose_the_location_to_save_the_web">Choose the location to save the web:</string>
+    <string name="pick">Pick</string>
+    <string name="the_selected_location_is">The selected location is:</string>
+    <string name="start">Start</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="revisit">Revisit</string>
+    <string name="enter_a_url">Enter a URL</string>
+    <string name="webpages">WebPages</string>
+    <string name="updateurls">UpdateUrls</string>
+    <string name="downloadurls">DownloadUrls</string>
+</resources>
