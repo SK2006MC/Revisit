@@ -3,11 +3,13 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="3dp"
-        android:text="@string/about"
-        android:textSize="30sp" />
+	<TextView
+		style="@style/AppTheme"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:padding="3dp"
+		android:text="@string/about"
+		android:textSize="30sp" />
+
 </LinearLayout>

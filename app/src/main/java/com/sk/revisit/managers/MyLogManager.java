@@ -1,39 +1,57 @@
 package com.sk.revisit.managers;
 
 import android.content.Context;
-import android.widget.Toast;
 
+import com.sk.revisit.log.Log;
+
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 
 public class MyLogManager {
+	private static final String TAG = "MyLogManager";
+	public Context context;
+	private BufferedWriter writer;
 
-    File file;
-    String filePath;
-    FileWriter fw;
-    Context c;
+	public MyLogManager(Context context, String filePath) {
+		this.context = context;
+		File file = new File(filePath);
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			this.writer = new BufferedWriter(new FileWriter(file, true));
+		} catch (Exception e) {
+			Log.e(TAG, "Error initializing MyLogManager: " + e.getMessage());
+		}
+	}
 
-    MyLogManager(Context c, String filePath) {
-        this.filePath = filePath;
-        this.c = c;
-        this.file = new File(this.filePath);
-        try {
-            this.fw = new FileWriter(this.file);
-        } catch (Exception e) {
-            alert(e.toString());
-        }
-    }
+	public synchronized void log(String msg) {
+		try {
+			writer.write(msg);
+			writer.newLine();
+			writer.flush();
+		} catch (Exception e) {
+			Log.d(TAG, "Error writing log: " + e.getMessage());
+		}
+	}
 
-    public void log(String msg) {
-        try {
-            fw.write(msg + '\n');
-        } catch (IOException e) {
-            alert(e.toString());
-        }
-    }
+	public synchronized void log(byte[] b) {
+		try {
+			writer.write(new String(b));
+			writer.newLine();
+			writer.flush();
+		} catch (Exception e) {
+			Log.e(TAG, "Error writing log bytes: " + e.getMessage());
+		}
+	}
 
-    void alert(String msg) {
-        Toast.makeText(c, msg, Toast.LENGTH_LONG).show();
-    }
+	// Call this when shutting down the application
+	public synchronized void close() {
+		try {
+			writer.close();
+		} catch (Exception e) {
+			Log.e(TAG, "Error closing log writer: " + e.getMessage());
+		}
+	}
 }

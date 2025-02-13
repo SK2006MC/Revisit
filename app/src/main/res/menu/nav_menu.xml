@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item
+		android:id="@+id/refresh"
+		android:title="Refresh" />
+	<item
+		android:id="@+id/nav_web"
+		android:title="@string/webpages" />
+	<item
+		android:id="@+id/nav_ud"
+		android:title="@string/updateurls" />
+	<item
+		android:id="@+id/nav_dn"
+		android:title="@string/downloadurls" />
+	<item
+		android:id="@+id/nav_settings"
+		android:title="@string/settings" />
+	<item
+		android:id="@+id/nav_logs"
+		android:title="@string/title_log" />
+	<item
+		android:id="@+id/nav_utils"
+		android:title="@string/utils" />
+	<item
+		android:id="@+id/nav_about"
+		android:title="@string/about" />
+
+</menu>

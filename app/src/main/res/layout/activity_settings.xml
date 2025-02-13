@@ -1,14 +1,75 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="10dp">
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:padding="10dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical|center|center_horizontal"
-        android:text="@string/settings"
-        android:textSize="30sp" />
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:text="@string/settings"
+		android:textColor="@color/black"
+		android:textSize="30sp" />
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/title_rootpath"
+		android:textColor="@color/black"
+		android:textSize="25sp" />
+
+	<TextView
+		android:id="@+id/rootPathTextView"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content" />
+
+	<Button
+		android:id="@+id/pickPath"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/pick" />
+
+	<TextView
+		style="@style/AppTheme"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Url Requests filename:"
+		android:textSize="25sp" />
+
+	<EditText
+		android:id="@+id/reqFileName"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Log filename:" />
+
+	<EditText
+		android:id="@+id/logFileName"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Database filename:" />
+
+	<EditText
+		android:id="@+id/dbFileName"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="User Agent String:" />
+
+	<EditText
+		android:id="@+id/userAgentString"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
 
 </LinearLayout>

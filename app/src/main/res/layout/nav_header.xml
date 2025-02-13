@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:padding="4dp">
+
+	<LinearLayout
+		android:id="@+id/bg"
+		android:layout_width="match_parent"
+		android:layout_height="160dp"
+		android:background="@color/black"
+		android:gravity="center"
+		android:orientation="vertical">
+
+		<ImageView
+			android:layout_width="80dp"
+			android:layout_height="80dp"
+			android:contentDescription="@string/profile_picture"
+			android:src="@drawable/me" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:singleLine="true"
+			android:text="@string/revisit"
+			android:textColor="@android:color/white"
+			android:textSize="18sp" />
+
+		<TextView
+			android:id="@+id/inf"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/revisit"
+			android:textColor="@android:color/white"
+			android:textSize="16sp" />
+
+
+	</LinearLayout>
+
+	<EditText
+		android:id="@+id/urlEditText"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:autofillHints="google.com"
+		android:hint="@string/enter_a_url"
+		android:imeOptions="actionDone"
+		android:inputType="textUri" />
+
+	<androidx.appcompat.widget.SwitchCompat
+		android:id="@+id/su"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/keep_uptodate" />
+
+</LinearLayout>

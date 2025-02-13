@@ -1,27 +1,51 @@
 package com.sk.revisit.activities;
 
 import android.os.Bundle;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.sk.revisit.log.Log;
 import com.sk.revisit.R;
+import com.sk.revisit.adapter.LogRecyclerAdapter;
+import com.sk.revisit.databinding.ActivityLogBinding;
 
-class LogActivity extends AppCompatActivity {
+import java.util.List;
 
-    @Override
-    protected void onCreate(Bundle arg0) {
-        super.onCreate(arg0);
+public class LogActivity extends AppCompatActivity {
 
-        LinearLayout linearLayout1 = new LinearLayout(this);
-        linearLayout1.setOrientation(LinearLayout.VERTICAL);
+	private ActivityLogBinding binding;
+	private LogRecyclerAdapter adapter;
 
-        setContentView(linearLayout1);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		binding = ActivityLogBinding.inflate(getLayoutInflater());
+		setContentView(binding.getRoot());
 
-        TextView textView1 = new TextView(this);
-        textView1.setText(R.string.title_log);
+		setupRecyclerView();
+		binding.refreshButton.setOnClickListener(v -> refreshLogs());
+	}
 
-        linearLayout1.addView(textView1);
-    }
+	private void setupRecyclerView() {
+		RecyclerView recyclerView = binding.logsRecyclerView;
+		recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, LinearLayoutManager.VERTICAL);
+		dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.divider));
+		recyclerView.addItemDecoration(dividerItemDecoration);
+
+		List<String[]> logs = Log.getLogs();
+		adapter = new LogRecyclerAdapter(logs);
+		recyclerView.setAdapter(adapter);
+	}
+
+	private void refreshLogs() {
+		List<String[]> newLogs = Log.getLogs();
+		adapter.setLogs(newLogs);
+		adapter.notifyDataSetChanged();
+	}
 }

@@ -1,8 +1,8 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="@android:style/Theme.Holo">
+	<!-- Base application theme. -->
+	<style name="AppTheme" parent="@android:style/Theme.Holo">
 
-    </style>
+	</style>
 
 </resources>

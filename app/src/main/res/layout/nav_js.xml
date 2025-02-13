@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_gravity="end"
+	android:background="#FFFFFF"
+	android:orientation="vertical">
+
+	<ScrollView
+		android:id="@+id/console_scroll_view"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:contentDescription="@string/app_name"
+		android:fillViewport="true">
+
+		<LinearLayout
+			android:id="@+id/console_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:padding="8dp" />
+	</ScrollView>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<com.sk.revisit.jsconsole.JSAutoCompleteTextView
+			android:id="@+id/js_input"
+			style="@style/TextAppearance.AppCompat"
+			android:layout_width="0dp"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+			android:completionThreshold="1"
+			android:hint="@string/enter_javascript_code"
+			android:imeOptions="actionDone" />
+
+		<ImageButton
+			android:id="@+id/execute_js_btn"
+			android:layout_width="wrap_content"
+			android:layout_height="40dp"
+			android:contentDescription="@string/execute_the_jscode"
+			android:src="@drawable/baseline_play_arrow_24" />
+	</LinearLayout>
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/urls_log_layout"
+		android:layout_width="match_parent"
+		android:layout_height="200dp"
+		android:orientation="vertical"
+		android:padding="8dp" />
+
+</LinearLayout>
