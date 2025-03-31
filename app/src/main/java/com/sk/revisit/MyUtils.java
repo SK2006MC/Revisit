@@ -38,252 +38,246 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class MyUtils {
-	private static final String TAG = "MyUtils";
-	private static final int MAX_THREADS = 8;
-	private static final String INDEX_HTML = "index.html";
-	public static AtomicLong requests = new AtomicLong(0);
-	public static AtomicLong resolved = new AtomicLong(0);
-	public static AtomicLong failed = new AtomicLong(0);
-	public static boolean isNetworkAvailable = false, shouldUpdate = false;
-	public final SQLiteDBM dbm;
-	public final String rootPath;
-	public final Context context;
-	public final OkHttpClient client;
-	public final ExecutorService executorService;
-	private final LoggerHelper logger;
-	public MimeTypeHelper mimeTypeHelper;
-	OnCreateLogListener onCreateLogListener;
-	private final int BUFF_SIZE = 1024 * 8;
-	NetHelper netHelper;
+    private static final String TAG = "MyUtils";
+    private static final int MAX_THREADS = 8;
+    private static final String INDEX_HTML = "index.html";
+    private static final int BUFF_SIZE = 1024 * 8;
+    
+    public static AtomicLong requests = new AtomicLong(0);
+    public static AtomicLong resolved = new AtomicLong(0);
+    public static AtomicLong failed = new AtomicLong(0);
+    public static boolean isNetworkAvailable = false;
+    public static boolean shouldUpdate = false;
 
-	public MyUtils(Context context, String rootPath) {
-		this.rootPath = rootPath;
-		this.context = context;
-		this.executorService = Executors.newFixedThreadPool(MAX_THREADS, new CustomThreadFactory());
-		this.client = new OkHttpClient.Builder()
-				.connectTimeout(10, TimeUnit.SECONDS)
-				.readTimeout(30, TimeUnit.SECONDS)
-				.build();
-		this.dbm = new SQLiteDBM(context, rootPath + "/revisit.db");
-		this.logger = new LoggerHelper(context, rootPath);
-		this.mimeTypeHelper = new MimeTypeHelper(this);
-		this.netHelper = new NetHelper(this.client);
-	}
+    private final SQLiteDBM dbm;
+    private final String rootPath;
+    private final Context context;
+    private final OkHttpClient client;
+    private final ExecutorService executorService;
+    private final LoggerHelper logger;
+    private final MimeTypeHelper mimeTypeHelper;
+    private final NetHelper netHelper;
+    private OnCreateLogListener onCreateLogListener;
 
-	public Response head(String url) {
-		return this.netHelper.head(url);
-	}
+    public MyUtils(Context context, String rootPath) {
+        this.rootPath = rootPath;
+        this.context = context;
+        this.executorService = Executors.newFixedThreadPool(MAX_THREADS, new CustomThreadFactory());
+        this.client = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+        this.dbm = new SQLiteDBM(context, rootPath + "/revisit.db");
+        this.logger = new LoggerHelper(context, rootPath);
+        this.mimeTypeHelper = new MimeTypeHelper(this);
+        this.netHelper = new NetHelper(this.client);
+    }
 
-	public void log(String tag, String msg, Exception e) {
-		logger.log(tag + "\t" + msg + "\t" + e.toString());
-	}
+    public Response head(String url) {
+        return this.netHelper.head(url);
+    }
 
-	public void log(String tag, String msg) {
-		logger.log(tag + "\t" + msg);
-	}
+    public void log(String tag, String msg, Exception e) {
+        logger.log(tag + "\t" + msg + "\t" + e.toString());
+    }
 
-	public void saveReq(String m) {
-		logger.saveReq(m);
-	}
+    public void log(String tag, String msg) {
+        logger.log(tag + "\t" + msg);
+    }
 
-	public void saveUrl(String uriStr) {
-		logger.saveUrl(uriStr);
-	}
+    public void saveReq(String m) {
+        logger.saveReq(m);
+    }
 
-	public void saveResp(String m) {
-		logger.saveResp(m);
-	}
+    public void saveUrl(String uriStr) {
+        logger.saveUrl(uriStr);
+    }
 
-	public interface OnCreateLogListener {
-		void onCreate(UrlLog urlLog);
-	}
+    public void saveResp(String m) {
+        logger.saveResp(m);
+    }
 
-	public void createUrlLog(UrlLog urlLog) {
-		if (onCreateLogListener == null) return;
-		onCreateLogListener.onCreate(urlLog);
-	}
+    public interface OnCreateLogListener {
+        void onCreate(UrlLog urlLog);
+    }
 
-	public void setOnCreateLogListener(@NonNull OnCreateLogListener onCreateLogListener) {
-		this.onCreateLogListener = onCreateLogListener;
-	}
+    public void createUrlLog(UrlLog urlLog) {
+        if (onCreateLogListener == null) return;
+        onCreateLogListener.onCreate(urlLog);
+    }
 
-	/**
-	 * Builds a local file path based on the given URI.
-	 */
-	public String buildLocalPath(@NonNull Uri uri) {
-		String lastPathSegment = uri.getLastPathSegment();
-		String host = uri.getAuthority();
-		String path = uri.getPath();
-		String query = uri.getQuery();
+    public void setOnCreateLogListener(@NonNull OnCreateLogListener onCreateLogListener) {
+        this.onCreateLogListener = onCreateLogListener;
+    }
 
-		if (query != null) {
-			query = Base64.encodeToString(query.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
-		}
+    /**
+     * Builds a local file path based on the given URI.
+     */
+    public String buildLocalPath(@NonNull Uri uri) {
+        String lastPathSegment = uri.getLastPathSegment();
+        String host = uri.getAuthority();
+        String path = uri.getPath();
+        String query = uri.getQuery();
 
-		if (TextUtils.isEmpty(host) || TextUtils.isEmpty(path)) {
-			log(TAG, "Invalid URI: Host or path is empty.");
-			return null;
-		}
+        if (query != null) {
+            query = Base64.encodeToString(query.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
+        }
 
-		String localPath = rootPath + File.separator + host + path;
+        if (TextUtils.isEmpty(host) || TextUtils.isEmpty(path)) {
+            log(TAG, "Invalid URI: Host or path is empty.");
+            return null;
+        }
 
-		if (lastPathSegment == null || !lastPathSegment.contains(".")) {
-			return localPath.endsWith("/") ? localPath + INDEX_HTML : localPath + File.separator + INDEX_HTML;
-		}
+        String localPath = rootPath + File.separator + host + path;
 
-//		log(uri.toString(), localPath + ",query=" + query);
-		if (query != null) {
-			localPath = localPath + ':' + query;
-		}
-//		log(TAG+" the uri="+uri, " localpath="+localPath);
+        if (lastPathSegment == null || !lastPathSegment.contains(".")) {
+            return localPath.endsWith("/") ? localPath + INDEX_HTML : localPath + File.separator + INDEX_HTML;
+        }
 
-		return localPath;
-	}
+        if (query != null) {
+            localPath = localPath + ':' + query;
+        }
 
-	@NonNull
-	public String getMimeType(String filename) {
-		String extension = MimeTypeMap.getFileExtensionFromUrl(filename);
-		return extension != null ? Objects.requireNonNull(MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)) : "application/octet-stream";
-	}
+        return localPath;
+    }
 
-	public void createMimeTypeMeta(Uri uri) {
-		executorService.execute(() -> mimeTypeHelper.createMimeTypeMeta(uri));
-	}
+    @NonNull
+    public String getMimeType(String filename) {
+        String extension = MimeTypeMap.getFileExtensionFromUrl(filename);
+        return extension != null ? Objects.requireNonNull(MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)) : "application/octet-stream";
+    }
 
-	public String getMimeTypeFromMeta(String filepath) {
-		return mimeTypeHelper.getMimeTypeFromMeta(filepath);
-	}
+    public void createMimeTypeMeta(Uri uri) {
+        executorService.execute(() -> mimeTypeHelper.createMimeTypeMeta(uri));
+    }
 
-	public void createMimeTypeMetaFile(String filepath, String type) {
-		executorService.execute(() -> mimeTypeHelper.createMimeTypeMetaFile(filepath, type));
-	}
+    public String getMimeTypeFromMeta(String filepath) {
+        return mimeTypeHelper.getMimeTypeFromMeta(filepath);
+    }
 
-	/**
-	 * Downloads a resource from a URI to a local file using buffered streams.
-	 */
-	public void download(@NonNull final Uri uri, @NonNull final DownloadListener listener) {
-		executorService.execute(() -> {
-			String localFilePath = buildLocalPath(uri);
+    public void createMimeTypeMetaFile(String filepath, String type) {
+        executorService.execute(() -> mimeTypeHelper.createMimeTypeMetaFile(filepath, type));
+    }
 
-			if (localFilePath == null) {
-				listener.onFailure(new IOException("Failed to build local path for URI: " + uri));
-				return;
-			}
+    /**
+     * Downloads a resource from a URI to a local file using buffered streams.
+     */
+    public void download(@NonNull final Uri uri, @NonNull final DownloadListener listener) {
+        executorService.execute(() -> {
+            String localFilePath = buildLocalPath(uri);
 
-			File localFile = new File(localFilePath);
+            if (localFilePath == null) {
+                listener.onFailure(new IOException("Failed to build local path for URI: " + uri));
+                return;
+            }
 
-			if (localFile.exists() && !MyUtils.shouldUpdate) {
-				listener.onEnd(localFile);
-				return;
-			}
+            File localFile = new File(localFilePath);
 
-			Request request = new Request.Builder().url(uri.toString()).build();
+            if (localFile.exists() && !MyUtils.shouldUpdate) {
+                listener.onEnd(localFile);
+                return;
+            }
 
-			client.newCall(request).enqueue(new Callback() {
-				@Override
-				public void onFailure(@NonNull Call call, @NonNull IOException e) {
-//					log(TAG, "Download failed for URI: " + uri, e);
-					listener.onFailure(e);
-				}
+            Request request = new Request.Builder().url(uri.toString()).build();
 
-				@Override
-				public void onResponse(@NonNull Call call, @NonNull Response response) {
-					if (!response.isSuccessful() || response.body() == null) {
-						//log(TAG, "Download failed. Response code: " + response.code() + " for URI: " + uri);
-						listener.onFailure(new IOException("Download failed. Response code: " + response.code()));
-						return;
-					}
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    listener.onFailure(e);
+                }
 
-					File outfile = prepareFile(localFilePath);
-					long contentLength = response.body().contentLength();
-					if (contentLength == 0) {
-						contentLength = 1;
-					}
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) {
+                    if (!response.isSuccessful() || response.body() == null) {
+                        listener.onFailure(new IOException("Download failed. Response code: " + response.code()));
+                        return;
+                    }
 
-					listener.onStart(uri, contentLength);
+                    File outfile = prepareFile(localFilePath);
+                    long contentLength = response.body().contentLength();
+                    if (contentLength == 0) {
+                        contentLength = 1;
+                    }
 
-					try (InputStream in = new BufferedInputStream(response.body().byteStream());
-						 BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(outfile))) {
-						byte[] buffer = new byte[BUFF_SIZE];
-						long bytesRead;
-						while ((bytesRead = in.read(buffer)) != -1) {
-							out.write(buffer, 0, (int) bytesRead);
-							listener.onProgress((double) bytesRead / contentLength);
-						}
-						out.flush();
+                    listener.onStart(uri, contentLength);
 
-						//log(TAG, "Downloaded: " + uri + " to " + localFilePath);
-						listener.onSuccess(outfile, response.headers());
+                    try (InputStream in = new BufferedInputStream(response.body().byteStream());
+                         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(outfile))) {
+                        byte[] buffer = new byte[BUFF_SIZE];
+                        long bytesRead;
+                        while ((bytesRead = in.read(buffer)) != -1) {
+                            out.write(buffer, 0, (int) bytesRead);
+                            listener.onProgress((double) bytesRead / contentLength);
+                        }
+                        out.flush();
 
-						// Store metadata asynchronously
-						executorService.execute(() -> {
-							MediaType mediaType = response.body().contentType();
-							String contentType = "application/octet-stream";
-							if(mediaType != null){
-								contentType = mediaType.toString();
-							}
-							createMimeTypeMetaFile(localFilePath, Objects.requireNonNull(contentType));
-							dbm.insertIntoUrlsIfNotExists(uri, localFilePath, new File(localFilePath).length(), response.headers());
-						});
+                        listener.onSuccess(outfile, response.headers());
 
-					} catch (Exception e) {
-						//log(TAG, "Error writing to file: " + localFilePath, e);
-						if(outfile!=null) if (outfile.exists()) outfile.delete();
-						listener.onFailure(e);
-					}
+                        // Store metadata asynchronously
+                        executorService.execute(() -> {
+                            MediaType mediaType = response.body().contentType();
+                            String contentType = mediaType != null ? mediaType.toString() : "application/octet-stream";
+                            createMimeTypeMetaFile(localFilePath, Objects.requireNonNull(contentType));
+                            dbm.insertIntoUrlsIfNotExists(uri, localFilePath, new File(localFilePath).length(), response.headers());
+                        });
 
-					listener.onEnd(outfile);
-				}
-			});
-		});
-	}
+                    } catch (Exception e) {
+                        if (outfile.exists()) outfile.delete();
+                        listener.onFailure(e);
+                    }
 
-	public File prepareFile(String filepath) {
-		try {
-			File file = new File(filepath);
-			File parentDir = file.getParentFile();
-			if (parentDir != null && !parentDir.exists()) {
-				parentDir.mkdirs();
-			}
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			return file;
-		} catch (Exception e) {
-			Log.e(TAG, e.toString());
-			return null;
-		}
-	}
+                    listener.onEnd(outfile);
+                }
+            });
+        });
+    }
 
-	/**
-	 * Shuts down the executors.
-	 */
-	public void shutdown() {
-		executorService.shutdown();
-		logger.shutdown();
-	}
+    public File prepareFile(String filepath) {
+        try {
+            File file = new File(filepath);
+            File parentDir = file.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs();
+            }
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            return file;
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+            return null;
+        }
+    }
 
-	/**
-	 * Listener interface for download events.
-	 */
-	public interface DownloadListener {
-		void onStart(Uri uri, long contentLength);
+    /**
+     * Shuts down the executors.
+     */
+    public void shutdown() {
+        executorService.shutdown();
+        logger.shutdown();
+    }
 
-		void onSuccess(File file, Headers headers);
+    /**
+     * Listener interface for download events.
+     */
+    public interface DownloadListener {
+        void onStart(Uri uri, long contentLength);
 
-		void onProgress(double p);
+        void onSuccess(File file, Headers headers);
 
-		void onFailure(Exception e);
+        void onProgress(double p);
 
-		void onEnd(File file);
-	}
+        void onFailure(Exception e);
 
-	private static class CustomThreadFactory implements ThreadFactory {
-		private int count = 0;
+        void onEnd(File file);
+    }
 
-		@Override
-		public Thread newThread(Runnable r) {
-			return new Thread(r, "MyUtils-Thread-" + count++);
-		}
-	}
+    private static class CustomThreadFactory implements ThreadFactory {
+        private int count = 0;
+
+        @Override
+        public Thread newThread(Runnable r) {
+            return new Thread(r, "MyUtils-Thread-" + count++);
+        }
+    }
 }
