@@ -1,10 +1,10 @@
-# OfflineBrowser
+# Revisit
 
 A browser that stores everything locally.
 
 ## Description
 
-OfflineBrowser is a unique browser designed to store all web content locally. This allows users to access and browse their favorite websites without needing an internet connection. This project is primarily for offline use and should not be used for sensitive information like passwords, email, OTP, etc.
+Revisit is a unique browser designed to store all web content locally. This allows users to access and browse their favorite websites without needing an internet connection. This project is primarily for offline use and should not be used for sensitive information like passwords, email, OTP, etc.
 
 ## Features
 
@@ -17,19 +17,19 @@ OfflineBrowser is a unique browser designed to store all web content locally. Th
 
 ## Installation
 
-To install and run OfflineBrowser, follow these steps:
+To install and run Revisit, follow these steps:
 
 ### Method 1
-Click [here](https://github.com/SK2006MC/OfflineBrowser/releases) to download the APK and then install it. Now it's ready to use.
+Click [here](https://github.com/SK2006MC/Revisit/releases) to download the APK and then install it. Now it's ready to use.
 
 ### Method 2
 1. Clone the repository:
    ```sh
-   git clone https://github.com/SK2006MC/OfflineBrowser.git
+   git clone https://github.com/SK2006MC/Revisit.git
    ```
 2. Navigate to the project directory:
    ```sh
-   cd OfflineBrowser
+   cd Revisit
    ```
 3. Build the APK:
    ```sh
