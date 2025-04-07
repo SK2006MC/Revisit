@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.sk.revisit.R;
 import com.sk.revisit.databinding.ActivityFirstBinding;
 import com.sk.revisit.managers.MySettingsManager;
 
@@ -32,16 +31,12 @@ public class FirstActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		binding = ActivityFirstBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
-
 		settingsManager = new MySettingsManager(this);
-
 		binding.pickPath.setOnClickListener((view) -> openDirectoryChooser());
-
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
 				ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_STORAGE);
 		}
-
 		binding.start.setOnClickListener((view) -> {
 			settingsManager.setIsFirst(false);
 			startActivity(new Intent(this, MainActivity.class));
@@ -67,6 +62,7 @@ public class FirstActivity extends AppCompatActivity {
 		startActivityForResult(intent, REQUEST_CODE_PICK_FOLDER);
 	}
 
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -74,15 +70,11 @@ public class FirstActivity extends AppCompatActivity {
 			if (data != null && data.getData() != null) {
 				Uri uri = data.getData();
 				String path = uri.getPath();
+				assert path != null;
 				String root = path.split(":")[1];
 				String folderPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + root;
-				if (folderPath != null) {
-					settingsManager.setRootStoragePath(folderPath);
-					binding.rootPathTextView.setText(settingsManager.getRootStoragePath());
-				} else {
-					Toast.makeText(this, "Cannot choose this directory", Toast.LENGTH_LONG).show();
-					binding.rootPathTextView.setText(R.string.none);
-				}
+				settingsManager.setRootStoragePath(folderPath);
+				binding.rootPathTextView.setText(settingsManager.getRootStoragePath());
 			}
 		}
 	}

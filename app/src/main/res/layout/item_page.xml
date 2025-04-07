@@ -14,17 +14,21 @@
 		android:padding="8dp">
 
 		<TextView
+			android:id="@+id/host"
+			android:layout_width="70dp"
+			android:layout_height="wrap_content"
+			android:text="@string/host" />
+
+		<TextView
 			android:id="@+id/nametext"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:clickable="true"
 			android:focusable="true"
-			android:foreground="?android:attr/selectableItemBackground"
 			android:onClick="loadPage"
 			android:padding="8dp"
-			android:text="host"
-			android:textColor="@android:color/black"
+			android:text="@string/url"
 			android:textSize="16sp" />
 
 		<TextView
@@ -32,9 +36,8 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:padding="8dp"
-			android:text="size"
-			android:textSize="14sp"
-			android:visibility="gone" />
+			android:text="@string/size"
+			android:textSize="14sp" />
 
 	</LinearLayout>
 

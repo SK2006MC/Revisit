@@ -12,12 +12,6 @@
 		android:gravity="center"
 		android:orientation="vertical">
 
-		<ImageView
-			android:layout_width="80dp"
-			android:layout_height="80dp"
-			android:contentDescription="@string/profile_picture"
-			android:src="@drawable/me" />
-
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -45,6 +39,12 @@
 		android:hint="@string/enter_a_url"
 		android:imeOptions="actionDone"
 		android:inputType="textUri" />
+
+	<androidx.appcompat.widget.SwitchCompat
+		android:id="@+id/useInternet"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:text="@string/use_internet" />
 
 	<androidx.appcompat.widget.SwitchCompat
 		android:id="@+id/su"

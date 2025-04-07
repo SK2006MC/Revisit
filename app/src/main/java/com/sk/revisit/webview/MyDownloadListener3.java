@@ -107,12 +107,10 @@ public class MyDownloadListener3 implements DownloadListener {
 		});
 	}
 
-	// --- Helper Classes ---
-
 	public void handleDirectorySelection(Uri uri) {
 		if (uri != null) {
 			File directory = new File(Objects.requireNonNull(uri.getPath()));
-			settingsManager.setDownloadStoragePath(directory.getAbsolutePath());
+			settingsManager.setRootStoragePath(directory.getAbsolutePath());
 			uiHandler.showToast("Download location set successfully.");
 		} else {
 			uiHandler.showToast("Directory selection cancelled.");

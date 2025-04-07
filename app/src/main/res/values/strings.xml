@@ -68,4 +68,26 @@
 	<string name="utils">Utils</string>
 	<string name="total">total</string>
 	<string name="keep_uptodate">keep uptodate?</string>
+	<string name="use_internet">Use Internet?</string>
+	<string name="search">Search</string>
+	<string name="enter_keywords_here">Enter keywords here</string>
+	<string name="host">Host</string>
+	<string name="url">Url</string>
+	<string name="size">Size</string>
+	<string name="TAG">TAG</string>
+	<string name="errors">errors</string>
+	<!-- Preference Titles -->
+	<string name="messages_header">Messages</string>
+	<string name="sync_header">Sync</string>
+
+	<!-- Messages Preferences -->
+	<string name="signature_title">Your signature</string>
+	<string name="reply_title">Default reply action</string>
+
+	<!-- Sync Preferences -->
+	<string name="sync_title">Sync email periodically</string>
+	<string name="attachment_title">Download incoming attachments</string>
+	<string name="attachment_summary_on">Automatically download attachments for incoming emails
+	</string>
+	<string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>
