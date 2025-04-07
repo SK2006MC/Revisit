@@ -75,6 +75,7 @@
 
 </LinearLayout>
 ```
+
 ```xml res/layout/item_url.xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -107,6 +108,7 @@
 
 </LinearLayout>
 ```
+
 ```java java/com/sk/revisit/activities/DownloadActivity.java
 package com.sk.revisit.activities;
 
@@ -226,6 +228,7 @@ public class DownloadActivity extends AppCompatActivity {
 }
 
 ```
+
 ```java java/com/sk/revisit/adapter/WebpageItemAdapter.java
 package com.sk.revisit.adapter;
 
@@ -288,6 +291,7 @@ public class WebpageItemAdapter extends RecyclerView.Adapter<WebpageItemAdapter.
 	}
 }
 ```
+
 ```java java/com/sk/revisit/data/Url.java
 package com.sk.revisit.data;
 

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class WebpagesActivity extends AppCompatActivity  {
+public class WebpagesActivity extends AppCompatActivity {
 
 	private static final String TAG = "WebpagesActivity";
 	private static final String HTML_EXTENSION = ".html";
@@ -119,11 +119,11 @@ public class WebpagesActivity extends AppCompatActivity  {
 		intent.putExtra("loadUrl", true);
 		intent.putExtra("url", filename);
 		startActivity(intent);
-		alert("loading...."+filename);
+		alert("loading...." + filename);
 //		finish();
 	}
 
 	private void alert(String msg) {
-		Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 	}
 }

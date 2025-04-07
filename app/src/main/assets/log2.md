@@ -1,6 +1,7 @@
 ```xml
 res/layout/activity_log.xml
 ```
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -41,9 +42,11 @@ res/layout/activity_log.xml
         android:layout_weight="1" />
 </LinearLayout>
 ```
+
 ```xml
 res/layout/item_log.xml
 ```
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -86,9 +89,11 @@ res/layout/item_log.xml
 
 </LinearLayout>
 ```
+
 ```java
 java/com/sk/revisit/activities/LogActivity.java
 ```
+
 ```java
 package com.sk.revisit.activities;
 
@@ -142,9 +147,11 @@ public class LogActivity extends AppCompatActivity {
     }
 }
 ```
+
 ```java
 java/com/sk/revisit/adapter/LogRecyclerAdapter.java
 ```
+
 ```java
 package com.sk.revisit.adapter;
 

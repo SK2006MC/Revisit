@@ -18,23 +18,23 @@ public class Url {
 		this.isUpdateAvailable = false;
 	}
 
-	public void setProgress(double p){
+	public void setProgress(double p) {
 		this.progress = p;
-		if(listener!=null){
+		if (listener != null) {
 			listener.onChange(p);
 		}
 	}
 
 	public void setOnProgressChangeListener(OnProgressChangeListener listener) {
-		if(listener==null){
+		if (listener == null) {
 			return;
 		}
-		if(this.listener==null){
+		if (this.listener == null) {
 			this.listener = listener;
 		}
 	}
 
-	public interface OnProgressChangeListener{
+	public interface OnProgressChangeListener {
 		void onChange(double p);
 	}
 }

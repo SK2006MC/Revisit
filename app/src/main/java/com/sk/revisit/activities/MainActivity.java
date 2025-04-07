@@ -22,11 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
-import com.sk.revisit.adapter.UrlsLogAdapter;
-import com.sk.revisit.data.UrlLog;
 import com.sk.revisit.jsconsole.JSAutoCompleteTextView;
 import com.sk.revisit.jsconsole.JSConsoleLogger;
 import com.sk.revisit.jsconsole.JSWebViewManager;
@@ -45,7 +42,6 @@ import com.sk.revisit.webview.MyWebViewClient;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -113,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
-	@Override 
+	@Override
 	protected void onResume() {
 		super.onResume();
 		if (getIntent().getBooleanExtra("loadUrl", false)) {
@@ -139,17 +135,17 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
-	void saveLog(List<String[]> logs){
-		try{
-			File logFile = new File(settingsManager.getRootStoragePath()+"/log2.txt");
+	void saveLog(List<String[]> logs) {
+		try {
+			File logFile = new File(settingsManager.getRootStoragePath() + "/log2.txt");
 			BufferedWriter writer = new BufferedWriter(new FileWriter(logFile));
-			for(String[] log:logs){
+			for (String[] log : logs) {
 				writer.write(Arrays.toString(log));
 				writer.newLine();
 				writer.flush();
 			}
 			writer.close();
-		}catch (Exception e){
+		} catch (Exception e) {
 			showAlert(e.toString());
 		}
 	}
@@ -160,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 		su = navHeaderBinding.su;
 		bg = navHeaderBinding.bg;
 		inf = navHeaderBinding.inf;
-		inf.setOnClickListener((v) -> inf.setText(String.format(Locale.ENGLISH,fm, MyUtils.requests.get(), MyUtils.resolved.get(), MyUtils.failed.get())));
+		inf.setOnClickListener((v) -> inf.setText(String.format(Locale.ENGLISH, fm, MyUtils.requests.get(), MyUtils.resolved.get(), MyUtils.failed.get())));
 
 		mainWebView = binding.myWebView;
 

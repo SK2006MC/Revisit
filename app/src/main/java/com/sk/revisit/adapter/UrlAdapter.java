@@ -27,7 +27,7 @@ public class UrlAdapter extends RecyclerView.Adapter<UrlAdapter.UrlViewHolder> {
 	@NonNull
 	@Override
 	public UrlViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		ItemUrlBinding urlBinding = ItemUrlBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false);
+		ItemUrlBinding urlBinding = ItemUrlBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
 		return new UrlViewHolder(urlBinding);
 	}
 
@@ -41,7 +41,7 @@ public class UrlAdapter extends RecyclerView.Adapter<UrlAdapter.UrlViewHolder> {
 		return urlList.size();
 	}
 
-	public static class UrlViewHolder extends RecyclerView.ViewHolder implements  Url.OnProgressChangeListener {
+	public static class UrlViewHolder extends RecyclerView.ViewHolder implements Url.OnProgressChangeListener {
 
 		ItemUrlBinding binding;
 		Url currentUrl;
@@ -50,13 +50,13 @@ public class UrlAdapter extends RecyclerView.Adapter<UrlAdapter.UrlViewHolder> {
 			super(binding.getRoot());
 			this.binding = binding;
 			binding.urlCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-				if(currentUrl != null){
-					 currentUrl.isSelected = isChecked;
+				if (currentUrl != null) {
+					currentUrl.isSelected = isChecked;
 				}
 			});
 		}
 
-		public void bind(@NonNull Url url){
+		public void bind(@NonNull Url url) {
 			currentUrl = url;
 			binding.urlTextview.setText(url.url);
 			binding.sizeTextview.setText(url.size > 0 ? url.size + " bytes" : "Calculating...");

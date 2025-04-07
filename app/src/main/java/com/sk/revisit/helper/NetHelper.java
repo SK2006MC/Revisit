@@ -16,11 +16,11 @@ public class NetHelper {
 	String TAG = NetHelper.class.getSimpleName();
 	OkHttpClient okHttpClient;
 
-	public NetHelper(OkHttpClient client){
+	public NetHelper(OkHttpClient client) {
 		this.okHttpClient = client;
 	}
 
-	public Response head(String url){
+	public Response head(String url) {
 		Request request = new Request.Builder().head().url(url).build();
 		long size;
 		try {
@@ -37,7 +37,7 @@ public class NetHelper {
 				}
 			});
 		} catch (Exception e) {
-			Log.e(TAG,e.toString());
+			Log.e(TAG, e.toString());
 		}
 		return null;
 	}

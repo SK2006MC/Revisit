@@ -17,6 +17,7 @@
 
 </LinearLayout>
 ```
+
 ```xml res/layout/item_page.xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -42,6 +43,7 @@
 
 </LinearLayout>
 ```
+
 ```java java/com/sk/revisit/activities/WebpagesActivity.java
 package com.sk.revisit.activities;
 
@@ -160,6 +162,7 @@ public class WebpagesActivity extends AppCompatActivity {
 }
 
 ```
+
 ```java java/com/sk/revisit/adapter/WebpageItemAdapter.java
 package com.sk.revisit.adapter;
 

@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -31,8 +30,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -41,12 +38,12 @@ public class DownloadActivity extends AppCompatActivity {
 
 	private static final String TAG = "DownloadActivity";
 	private final Set<String> urlsStr = new HashSet<>();
+	private final List<Url> urlList = new ArrayList<>();
+	private final Handler mainHandler = new Handler(Looper.getMainLooper());
 	private ActivityDownloadBinding binding;
 	private MyUtils myUtils;
 	private MySettingsManager settingsManager;
 	private UrlAdapter urlAdapter;
-	private final List<Url> urlList = new ArrayList<>();
-	private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +58,10 @@ public class DownloadActivity extends AppCompatActivity {
 		initUI();
 	}
 
-	public void refresh(){
+	public void refresh() {
 		urlAdapter.notifyDataSetChanged();
 	}
+
 	private void initRecyclerView() {
 		binding.urlsRecyclerview.setAdapter(urlAdapter);
 		binding.urlsRecyclerview.setLayoutManager(new LinearLayoutManager(this));
@@ -156,7 +154,7 @@ public class DownloadActivity extends AppCompatActivity {
 			return;
 		}
 
-		myUtils.executorService.execute(()->{
+		myUtils.executorService.execute(() -> {
 			AtomicLong totalSize = new AtomicLong(0);
 			for (Url url : urlList) {
 				Request request = new Request.Builder().head().url(url.url).build();

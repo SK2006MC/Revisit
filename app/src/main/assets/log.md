@@ -32,6 +32,7 @@
 		android:layout_height="wrap_content" />
 </LinearLayout>
 ```
+
 ```xml res/layout/item_log.xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -69,6 +70,7 @@
 	</ScrollView>
 </LinearLayout>
 ```
+
 ```java java/com/sk/revisit/activities/LogActivity.java
 package com.sk.revisit.activities;
 
@@ -120,6 +122,7 @@ public class LogActivity extends AppCompatActivity {
 	}
 }
 ```
+
 ```java java/com/sk/revisit/adapter/LogRecyclerAdapter.java
 package com.sk.revisit.adapter;
 

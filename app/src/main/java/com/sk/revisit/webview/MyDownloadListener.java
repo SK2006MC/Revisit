@@ -34,10 +34,10 @@ public class MyDownloadListener implements DownloadListener {
 
 	@Override
 	public void onDownloadStart(String url, String userAgent, String contentDisposition,
-								String mimetype, long contentLength) {
+	                            String mimetype, long contentLength) {
 		if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 			Toast.makeText(context, "Storage permission is required to download files", Toast.LENGTH_SHORT).show();
-			// TODO call a function to request permissions here
+			//requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 			return;
 		}
 
@@ -61,7 +61,7 @@ public class MyDownloadListener implements DownloadListener {
 				if (!downloadDir.exists()) {
 					if (!downloadDir.mkdirs()) {
 						showToast("Failed to create directory");
-						//TODO ask user for location then save in setings use sm.setDownloadStoragePath(path);
+						//askForSaveLocation();
 						return;
 					}
 				}
@@ -88,6 +88,14 @@ public class MyDownloadListener implements DownloadListener {
 			}
 		}).start();
 	}
+
+	/*void askForSaveLocation() {
+		Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		intent.setType("");
+		intent.putExtra(Intent.EXTRA_TITLE, "Download");
+		context.startActivity(intent);
+	}*/
 
 	private String getFilenameFromContentDisposition(String contentDisposition, String url) {
 		String filename = null;

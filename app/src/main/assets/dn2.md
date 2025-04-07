@@ -475,46 +475,73 @@ Key improvements and explanations:
 
 * **Layout improvements:**
     * More consistent padding and margins.
-    * Used `android:layout_weight` to distribute space more effectively, especially for the `TextView` displaying the total size.
-    * Clearer naming of IDs (e.g., `calc_button` instead of `calc`, `total_size_textview` instead of `total`).
+    * Used `android:layout_weight` to distribute space more effectively, especially for the
+      `TextView` displaying the total size.
+    * Clearer naming of IDs (e.g., `calc_button` instead of `calc`, `total_size_textview` instead of
+      `total`).
     * Used `strings.xml` for all text values.
-    * Replaced the individual `TextView`s for progress, completed, and status with a single `status_textview` that can be updated dynamically.  This reduces clutter and makes the UI easier to manage.
+    * Replaced the individual `TextView`s for progress, completed, and status with a single
+      `status_textview` that can be updated dynamically. This reduces clutter and makes the UI
+      easier to manage.
     * Added `ProgressBar` to `item_url.xml`.
 
 * **Thread Management with `ExecutorService`:**
-    * **Background Tasks:** Uses an `ExecutorService` (`executorService`) to perform network operations (calculating size, downloading) in the background.  This prevents blocking the main thread and causing ANR (Application Not Responding) errors.  A fixed thread pool is used to limit the number of concurrent tasks.
-    * **Main Thread Updates:** Uses a `Handler` (`mainHandler`) to post updates back to the main thread for UI changes.  Only the main thread can safely update UI elements.  `runOnUiThread()` could also be used, but `Handler` is often preferred for more complex scenarios.
+    * **Background Tasks:** Uses an `ExecutorService` (`executorService`) to perform network
+      operations (calculating size, downloading) in the background. This prevents blocking the main
+      thread and causing ANR (Application Not Responding) errors. A fixed thread pool is used to
+      limit the number of concurrent tasks.
+    * **Main Thread Updates:** Uses a `Handler` (`mainHandler`) to post updates back to the main
+      thread for UI changes. Only the main thread can safely update UI elements.  `runOnUiThread()`
+      could also be used, but `Handler` is often preferred for more complex scenarios.
     * **Shutdown:**  The `executorService` is shut down in `onDestroy()` to prevent resource leaks.
     * **Error Handling:** Includes basic error handling (e.g., checking if `req.txt` exists).
 
 * **RecyclerView Efficiency:**
-    * **`notifyItemChanged()`:** Instead of calling `notifyDataSetChanged()` (which redraws the entire RecyclerView), `notifyItemChanged(position)` is used to update only the specific item that has changed.  This is significantly more efficient, especially with large lists.  The `position` is obtained using `urlList.indexOf(url)`.
-    * **Data Updates:** RecyclerView adapters are optimized to detect data changes and update only the affected views.  If you change the data behind the adapter, you need to notify the adapter.
+    * **`notifyItemChanged()`:** Instead of calling `notifyDataSetChanged()` (which redraws the
+      entire RecyclerView), `notifyItemChanged(position)` is used to update only the specific item
+      that has changed. This is significantly more efficient, especially with large lists. The
+      `position` is obtained using `urlList.indexOf(url)`.
+    * **Data Updates:** RecyclerView adapters are optimized to detect data changes and update only
+      the affected views. If you change the data behind the adapter, you need to notify the adapter.
 
 * **Data Handling:**
-    * **`Url` Class:** Added `isDownloaded`, `isSelected`, `isUpdateAvailable` to the `Url` data class.
+    * **`Url` Class:** Added `isDownloaded`, `isSelected`, `isUpdateAvailable` to the `Url` data
+      class.
     * **Clearer Variable Names:**  Renamed `urls` RecyclerView to `urls_recyclerview`.
-    * The `Url` object now holds the state of each URL, including download progress, size, and selection status.
+    * The `Url` object now holds the state of each URL, including download progress, size, and
+      selection status.
 
 * **UI Updates and Logic:**
-    * **Progress Updates:**  The `setProgress()` method in the `Url` class is now responsible for updating the progress value *and* notifying the adapter to update the UI.  The `progressListener` is removed; it's no longer needed with `notifyItemChanged()`.
-    * **Size Calculation:**  The `calculateTotalSize()` method now simulates size calculation on a background thread and updates the total size `TextView` on the main thread.
-    * **Download Logic:** The `downloadSelectedUrls()` method now iterates through the `urlList`, checks which URLs are selected, and starts a download task for each selected URL on the `ExecutorService`. It simulates download progress and completion.
-    * **Refresh Button:** The refresh button now reloads the URLs from the file and refreshes the RecyclerView.
-    * **`showAlert()` Method:** Replaced `alert()` with `showAlert()` and used `Toast.LENGTH_SHORT` for less intrusive messages.
+    * **Progress Updates:**  The `setProgress()` method in the `Url` class is now responsible for
+      updating the progress value *and* notifying the adapter to update the UI. The
+      `progressListener` is removed; it's no longer needed with `notifyItemChanged()`.
+    * **Size Calculation:**  The `calculateTotalSize()` method now simulates size calculation on a
+      background thread and updates the total size `TextView` on the main thread.
+    * **Download Logic:** The `downloadSelectedUrls()` method now iterates through the `urlList`,
+      checks which URLs are selected, and starts a download task for each selected URL on the
+      `ExecutorService`. It simulates download progress and completion.
+    * **Refresh Button:** The refresh button now reloads the URLs from the file and refreshes the
+      RecyclerView.
+    * **`showAlert()` Method:** Replaced `alert()` with `showAlert()` and used `Toast.LENGTH_SHORT`
+      for less intrusive messages.
 
 * **Code Clarity and Structure:**
     * **Comments:**  Added comments to explain key parts of the code.
     * **Naming Conventions:** Used more descriptive and consistent naming conventions.
-    * **Separation of Concerns:** The code is better organized into methods for specific tasks (e.g., `loadUrisFromFile()`, `initRecyclerView()`, `downloadSelectedUrls()`, `calculateTotalSize()`, `initUI()`).
+    * **Separation of Concerns:** The code is better organized into methods for specific tasks (
+      e.g., `loadUrisFromFile()`, `initRecyclerView()`, `downloadSelectedUrls()`,
+      `calculateTotalSize()`, `initUI()`).
 
 * **Correctness:**
     * **Thread Safety:** Ensures that UI updates are performed on the main thread.
 
 * **Other Improvements:**
     * Used modern Android coding practices.
-    * Added a check to `WebpageItemAdapter` to avoid unnecessary updates when setting the webpage items.
+    * Added a check to `WebpageItemAdapter` to avoid unnecessary updates when setting the webpage
+      items.
     * Simplified `WebpageItemAdapter`.
 
-This revised code provides a much more robust, efficient, and user-friendly download activity.  It addresses the original issues of UI responsiveness and RecyclerView performance. Remember to replace the simulated download and size calculation logic with your actual network implementation.
+This revised code provides a much more robust, efficient, and user-friendly download activity. It
+addresses the original issues of UI responsiveness and RecyclerView performance. Remember to replace
+the simulated download and size calculation logic with your actual network implementation.
 

@@ -80,8 +80,8 @@ public class SQLiteDBM {
 	public Map<String, String> selectAllFromUrlsWhereUrl(String url) {
 		lock.readLock().lock();
 		try (SQLiteDatabase db = dbHelper.getReadableDatabase();
-			 Cursor cursor = db.query(TABLE_STORED_URLS, new String[]{COLUMN_FILE_PATH, COLUMN_LAST_MODIFIED, COLUMN_ETAG},
-					 COLUMN_URL + "=?", new String[]{url}, null, null, null)) {
+		     Cursor cursor = db.query(TABLE_STORED_URLS, new String[]{COLUMN_FILE_PATH, COLUMN_LAST_MODIFIED, COLUMN_ETAG},
+				     COLUMN_URL + "=?", new String[]{url}, null, null, null)) {
 
 			if (cursor.moveToFirst()) {
 				Map<String, String> details = new HashMap<>();
@@ -119,7 +119,7 @@ public class SQLiteDBM {
 	public Set<String> selectUniqueHostFromUrls() {
 		lock.readLock().lock();
 		try (SQLiteDatabase db = dbHelper.getReadableDatabase();
-			 Cursor cursor = db.query(true, TABLE_STORED_URLS, new String[]{COLUMN_HOST}, null, null, null, null, null, null)) {
+		     Cursor cursor = db.query(true, TABLE_STORED_URLS, new String[]{COLUMN_HOST}, null, null, null, null, null, null)) {
 
 			Set<String> hosts = new HashSet<>();
 			while (cursor.moveToNext()) {
@@ -137,7 +137,7 @@ public class SQLiteDBM {
 	public ArrayList<String> selectUrlFromUrls() {
 		lock.readLock().lock();
 		try (SQLiteDatabase db = dbHelper.getReadableDatabase();
-			 Cursor cursor = db.query(TABLE_STORED_URLS, new String[]{COLUMN_URL}, null, null, null, null, null)) {
+		     Cursor cursor = db.query(TABLE_STORED_URLS, new String[]{COLUMN_URL}, null, null, null, null, null)) {
 
 			ArrayList<String> urls = new ArrayList<>();
 			while (cursor.moveToNext()) {
@@ -148,6 +148,7 @@ public class SQLiteDBM {
 			lock.readLock().unlock();
 		}
 	}
+
 
 	/**
 	 * Database helper class.
