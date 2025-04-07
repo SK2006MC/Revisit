@@ -23,9 +23,9 @@ import okhttp3.ResponseBody;
 public class MimeTypeHelper {
 
 	private static final String TAG = "MimeTypeHelper";
+	private static final String MIME_FILE_EXTENSION = ".mime";
 	private final OkHttpClient client;
 	private final MyUtils utils;
-	private static final String MIME_FILE_EXTENSION = ".mime";
 
 	public MimeTypeHelper(MyUtils utils) {
 		this.utils = utils;

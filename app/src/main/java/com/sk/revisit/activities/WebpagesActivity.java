@@ -4,16 +4,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.sk.revisit.log.Log;
 import com.sk.revisit.adapter.WebpageItemAdapter;
 import com.sk.revisit.databinding.ActivityWebpagesBinding;
+import com.sk.revisit.log.Log;
 import com.sk.revisit.managers.MySettingsManager;
 
 import java.io.File;
@@ -22,16 +26,16 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class WebpagesActivity extends AppCompatActivity  {
+public class WebpagesActivity extends AppCompatActivity {
 
 	private static final String TAG = "WebpagesActivity";
 	private static final String HTML_EXTENSION = ".html";
+	private final ExecutorService executor = Executors.newSingleThreadExecutor();
+	private final Handler mainHandler = new Handler(Looper.getMainLooper());
 	private ActivityWebpagesBinding binding;
 	private WebpageItemAdapter pageItemAdapter;
-	private MySettingsManager settingsManager;
 	private String ROOT_PATH;
-	private ExecutorService executor = Executors.newSingleThreadExecutor();
-	private Handler mainHandler = new Handler(Looper.getMainLooper());
+	private List<String> htmlFilesPaths;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +43,35 @@ public class WebpagesActivity extends AppCompatActivity  {
 		binding = ActivityWebpagesBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
-		settingsManager = new MySettingsManager(this);
+		MySettingsManager settingsManager = new MySettingsManager(this);
 		ROOT_PATH = settingsManager.getRootStoragePath();
 
 		setupRecyclerView();
 		setupRefreshButton();
 
-		loadWebpages(); // Initial load
+		loadWebpages();
+
+		EditText searchBar = binding.searchBar;
+		searchBar.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+				// Not needed for this example
+			}
+
+			@Override
+			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+				// Not needed for this example
+			}
+
+			@Override
+			public void afterTextChanged(Editable editable) {
+				filterPagesByKeywords(editable.toString());
+			}
+		});
+	}
+
+	void filterPagesByKeywords(String keywords) {
+		pageItemAdapter.filter(keywords);
 	}
 
 	private void setupRecyclerView() {
@@ -59,35 +85,32 @@ public class WebpagesActivity extends AppCompatActivity  {
 	}
 
 	private void loadWebpages() {
-		//Log.d(TAG, "Loading webpages...");
-		pageItemAdapter.setWebpageItems(new ArrayList<>()); // Clear the previous items
+		pageItemAdapter.setWebpageItems(new ArrayList<>());
 
 		if (ROOT_PATH == null || ROOT_PATH.isEmpty()) {
-			showError("Error: Invalid storage path.");
+			alert("Error: Invalid storage path.");
 			return;
 		}
 
 		File rootDir = new File(ROOT_PATH);
 		if (!rootDir.exists() || !rootDir.isDirectory()) {
-			showError("Error: Invalid storage directory.");
+			alert("Error: Invalid storage directory.");
 			return;
 		}
 
 		executor.execute(() -> {
-			List<String> htmlFilesPaths = new ArrayList<>();
+			htmlFilesPaths = new ArrayList<>();
 			searchRecursive(rootDir, HTML_EXTENSION, htmlFilesPaths);
-
 			mainHandler.post(() -> {
 				if (htmlFilesPaths.isEmpty()) {
 					Toast.makeText(this, "No HTML files found.", Toast.LENGTH_SHORT).show();
 				}
 				pageItemAdapter.setWebpageItems(htmlFilesPaths);
-				//Log.d(TAG, "Loaded Items: " + htmlFilesPaths.toString());
 			});
 		});
 	}
 
-	private void searchRecursive(File dir, String extension, List<String> files) {
+	private void searchRecursive(@NonNull File dir, String extension, List<String> files) {
 		File[] fileList = dir.listFiles();
 		if (fileList == null) {
 			return;
@@ -101,7 +124,7 @@ public class WebpagesActivity extends AppCompatActivity  {
 		}
 	}
 
-	private void showError(String message) {
+	private void alert(String message) {
 		Log.e(TAG, message);
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
@@ -119,11 +142,7 @@ public class WebpagesActivity extends AppCompatActivity  {
 		intent.putExtra("loadUrl", true);
 		intent.putExtra("url", filename);
 		startActivity(intent);
-		alert("loading...."+filename);
-//		finish();
-	}
-
-	private void alert(String msg) {
-		Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
+		alert("loading..  " + filename);
+		finish();
 	}
 }

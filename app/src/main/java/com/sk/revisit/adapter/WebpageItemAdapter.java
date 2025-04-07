@@ -6,26 +6,46 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sk.revisit.R;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class WebpageItemAdapter extends RecyclerView.Adapter<WebpageItemAdapter.WebpageItemViewHolder> {
 
 	private List<String> webpageFileNames;
+	private List<String> originalWebpageFileNames;
 
 	public WebpageItemAdapter(List<String> webpageFileNames) {
 		this.webpageFileNames = webpageFileNames;
+		this.originalWebpageFileNames = new ArrayList<>(webpageFileNames);
 	}
 
 	public void setWebpageItems(List<String> newWebpageFileNames) {
-		if (!Objects.equals(this.webpageFileNames, newWebpageFileNames)) {
-			this.webpageFileNames = newWebpageFileNames;
-			notifyDataSetChanged();
+		WebpageItemDiffCallback diffCallback = new WebpageItemDiffCallback(this.webpageFileNames, newWebpageFileNames);
+		DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+		this.originalWebpageFileNames = new ArrayList<>(newWebpageFileNames);
+		this.webpageFileNames = newWebpageFileNames;
+		diffResult.dispatchUpdatesTo(this);
+	}
+
+	public void filter(String query) {
+		List<String> filteredList;
+		if (query.trim().isEmpty()) {
+			filteredList = originalWebpageFileNames;
+		} else {
+			filteredList = new ArrayList<>();
+			for (String item : originalWebpageFileNames) {
+				if (item.toLowerCase().contains(query.toLowerCase())) {
+					filteredList.add(item);
+				}
+			}
 		}
+		setWebpageItems(filteredList);
 	}
 
 	@NonNull
@@ -46,12 +66,43 @@ public class WebpageItemAdapter extends RecyclerView.Adapter<WebpageItemAdapter.
 		return webpageFileNames.size();
 	}
 
-	public class WebpageItemViewHolder extends RecyclerView.ViewHolder {
-		TextView fileNameTextView;
+	public static class WebpageItemViewHolder extends RecyclerView.ViewHolder {
+		public TextView fileNameTextView;
 
-		public WebpageItemViewHolder(@NonNull View itemView) {
+		public WebpageItemViewHolder(View itemView) {
 			super(itemView);
 			fileNameTextView = itemView.findViewById(R.id.nametext);
+		}
+	}
+
+	public static class WebpageItemDiffCallback extends DiffUtil.Callback {
+
+		private final List<String> oldList;
+		private final List<String> newList;
+
+		public WebpageItemDiffCallback(List<String> oldList, List<String> newList) {
+			this.oldList = oldList;
+			this.newList = newList;
+		}
+
+		@Override
+		public int getOldListSize() {
+			return oldList.size();
+		}
+
+		@Override
+		public int getNewListSize() {
+			return newList.size();
+		}
+
+		@Override
+		public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+			return oldList.get(oldItemPosition).equals(newList.get(newItemPosition));
+		}
+
+		@Override
+		public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+			return oldList.get(oldItemPosition).equals(newList.get(newItemPosition));
 		}
 	}
 }

@@ -9,32 +9,35 @@
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
 		android:orientation="horizontal"
-		android:padding="8dp"
-		android:gravity="center_vertical">
+		android:padding="8dp">
+
+		<TextView
+			android:id="@+id/host"
+			android:layout_width="70dp"
+			android:layout_height="wrap_content"
+			android:text="@string/host" />
 
 		<TextView
 			android:id="@+id/nametext"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
-			android:onClick="loadPage"
-			android:text="host"
-			android:textSize="16sp"
-			android:textColor="@android:color/black"
-			android:padding="8dp"
 			android:clickable="true"
 			android:focusable="true"
-			android:foreground="?android:attr/selectableItemBackground"/>
+			android:onClick="loadPage"
+			android:padding="8dp"
+			android:text="@string/url"
+			android:textSize="16sp" />
 
 		<TextView
 			android:id="@+id/size"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="size"
-			android:visibility="gone"
-			android:textSize="14sp"
-			android:padding="8dp"/>
+			android:padding="8dp"
+			android:text="@string/size"
+			android:textSize="14sp" />
 
 	</LinearLayout>
 

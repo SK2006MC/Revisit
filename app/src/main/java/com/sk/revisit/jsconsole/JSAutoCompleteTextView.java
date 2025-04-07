@@ -130,7 +130,7 @@ public class JSAutoCompleteTextView extends AppCompatAutoCompleteTextView {
 		});
 	}
 
-	private List<String> getSuggestions(String result,String userInput) {
+	private List<String> getSuggestions(String result, String userInput) {
 		List<String> suggestions = new ArrayList<>();
 
 		try {
@@ -175,7 +175,7 @@ public class JSAutoCompleteTextView extends AppCompatAutoCompleteTextView {
 			String jsCode = "(function() { return Object.getOwnPropertyNames(" + obj + "); })();";
 
 			executeJavaScript(jsCode, result -> {
-				List<String> suggestions = getSuggestions(result,input);
+				List<String> suggestions = getSuggestions(result, input);
 				// Cache the results
 				suggestionCache.put(input, new ArrayList<>(suggestions)); // Store a copy
 				updateAdapter(suggestions);
@@ -225,12 +225,10 @@ public class JSAutoCompleteTextView extends AppCompatAutoCompleteTextView {
 		String command = getText().toString();
 		if (command.trim().isEmpty()) return;
 
-		executeJavaScript(command, result -> {
-			handler.post(() -> {
-				Toast.makeText(getContext(), "Result: " + result, Toast.LENGTH_SHORT).show(); // Show Result
-				setText(""); // Clear the input
-			});
-		});
+		executeJavaScript(command, result -> handler.post(() -> {
+			Toast.makeText(getContext(), "Result: " + result, Toast.LENGTH_SHORT).show(); // Show Result
+			setText(""); // Clear the input
+		}));
 
 		// Hide the keyboard
 		InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);

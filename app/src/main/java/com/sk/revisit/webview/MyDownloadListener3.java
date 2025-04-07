@@ -107,12 +107,10 @@ public class MyDownloadListener3 implements DownloadListener {
 		});
 	}
 
-	// --- Helper Classes ---
-
 	public void handleDirectorySelection(Uri uri) {
 		if (uri != null) {
 			File directory = new File(Objects.requireNonNull(uri.getPath()));
-			settingsManager.setDownloadStoragePath(directory.getAbsolutePath());
+			settingsManager.setRootStoragePath(directory.getAbsolutePath());
 			uiHandler.showToast("Download location set successfully.");
 		} else {
 			uiHandler.showToast("Directory selection cancelled.");
@@ -220,9 +218,7 @@ public class MyDownloadListener3 implements DownloadListener {
 			new android.os.Handler(context.getMainLooper()).post(() -> new AlertDialog.Builder(context)
 					.setTitle("Download Location Required")
 					.setMessage("Please select a download location.")
-					.setPositiveButton("OK", (dialog, which) -> {
-						pickFolder();
-					})
+					.setPositiveButton("OK", (dialog, which) -> pickFolder())
 					.setNegativeButton("Cancel", (dialog, which) -> {
 						dialog.dismiss();
 						showToast("Download cancelled");

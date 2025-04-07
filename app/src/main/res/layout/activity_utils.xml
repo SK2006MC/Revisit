@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:padding="5dp"
-	android:orientation="vertical">
+	android:orientation="vertical"
+	android:padding="5dp">
 
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -12,22 +12,22 @@
 
 		<EditText
 			android:id="@+id/url"
-			android:hint="Enter a url to test buildLocalPath function"
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
-			android:layout_weight="1" />
+			android:layout_weight="1"
+			android:hint="@string/enter_a_url_to_test_buildlocalpath_function" />
 
 		<TextView
 			android:id="@+id/localpath"
-			android:text="local path"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
+			android:layout_height="wrap_content"
+			android:text="@string/local_path" />
 
 		<Button
-			android:text="Test"
 			android:id="@+id/exeBuildLocalPath"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content" />
+			android:layout_height="wrap_content"
+			android:text="@string/test" />
 
 	</LinearLayout>
 
@@ -39,13 +39,13 @@
 
 		<EditText
 			android:id="@+id/url2"
-			android:hint="Enter a url to test"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
+			android:layout_height="wrap_content"
+			android:hint="@string/enter_a_url_to_test" />
 
 		<TextView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="output"/>
+			android:text="@string/output" />
 	</LinearLayout>
 </LinearLayout>

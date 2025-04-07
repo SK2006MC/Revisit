@@ -42,7 +42,7 @@ public class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.
 		this.logs = logs;
 	}
 
-	public class LogViewHolder extends RecyclerView.ViewHolder {
+	public static class LogViewHolder extends RecyclerView.ViewHolder {
 
 		private final TextView logTagTextView;
 		private final TextView logMessageTextView;

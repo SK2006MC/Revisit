@@ -7,6 +7,7 @@
 
 	<ImageView
 		android:id="@+id/expandhost"
+		android:contentDescription="@string/click_to_expand_this_host_s_urls"
 		android:layout_width="20dp"
 		android:layout_height="20dp"
 		android:src="@drawable/baseline_expand_more_24" />

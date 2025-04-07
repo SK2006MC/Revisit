@@ -7,69 +7,69 @@
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:gravity="center_vertical">
+		android:gravity="center_vertical"
+		android:orientation="horizontal">
 
 		<Button
 			android:id="@+id/refresh_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Refresh"
-			android:layout_marginEnd="8dp"/>
+			android:layout_marginEnd="8dp"
+			android:text="@string/refresh" />
 
 		<Button
 			android:id="@+id/calc_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/calculate_size"
-			android:layout_marginEnd="8dp"/>
+			android:layout_marginEnd="8dp"
+			android:text="@string/calculate_size" />
 
 		<TextView
 			android:id="@+id/total_size_textview"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
-			android:textSize="16sp"
-			android:text="@string/total" />
+			android:text="@string/total"
+			android:textSize="16sp" />
 
 	</LinearLayout>
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="horizontal"
+		android:layout_marginTop="8dp"
 		android:gravity="center_vertical"
-		android:layout_marginTop="8dp">
+		android:orientation="horizontal">
 
 		<Button
 			android:id="@+id/download_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/download"
-			android:layout_marginEnd="8dp"/>
+			android:layout_marginEnd="8dp"
+			android:text="@string/download" />
 
 		<TextView
 			android:id="@+id/progress_textview"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:visibility="gone"
 			android:layout_marginEnd="8dp"
-			android:text="Progress"/>
+			android:text="@string/progress"
+			android:visibility="gone" />
 
 		<TextView
 			android:id="@+id/completed_textview"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:visibility="gone"
 			android:layout_marginEnd="8dp"
-			android:text="Completed"/>
+			android:text="@string/completed"
+			android:visibility="gone" />
 
 		<TextView
 			android:id="@+id/status_textview"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:visibility="gone"
-			android:text="Status"/>
+			android:text="@string/status"
+			android:visibility="gone" />
 
 	</LinearLayout>
 
@@ -77,7 +77,7 @@
 		android:id="@+id/urls_recyclerview"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:layout_weight="1"
-		android:layout_marginTop="8dp"/>
+		android:layout_marginTop="8dp"
+		android:layout_weight="1" />
 
 </LinearLayout>

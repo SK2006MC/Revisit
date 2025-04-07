@@ -7,14 +7,6 @@
 	<TextView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:gravity="center"
-		android:text="@string/settings"
-		android:textColor="@color/black"
-		android:textSize="30sp" />
-
-	<TextView
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
 		android:text="@string/title_rootpath"
 		android:textColor="@color/black"
 		android:textSize="25sp" />
@@ -31,44 +23,47 @@
 		android:text="@string/pick" />
 
 	<TextView
-		style="@style/AppTheme"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Url Requests filename:"
+		android:text="@string/url_requests_filename"
 		android:textSize="25sp" />
 
 	<EditText
 		android:id="@+id/reqFileName"
+		android:hint="@string/file_name"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" />
 
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Log filename:" />
+		android:text="@string/log_filename" />
 
 	<EditText
 		android:id="@+id/logFileName"
+		android:hint="@string/file_name"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" />
 
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Database filename:" />
+		android:text="@string/database_filename" />
 
 	<EditText
 		android:id="@+id/dbFileName"
+		android:hint="@string/file_name"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" />
 
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="User Agent String:" />
+		android:text="@string/user_agent_string" />
 
 	<EditText
 		android:id="@+id/userAgentString"
+		android:hint="@string/user_agent_string"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" />
 

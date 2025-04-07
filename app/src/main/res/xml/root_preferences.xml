@@ -1,0 +1,64 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<PreferenceCategory app:title="Basic">
+
+		<ListPreference
+			app:entries="@array/theme_entries"
+			app:entryValues="@array/theme_values"
+			app:key="theme"
+			app:title="Theme" />
+
+		<EditTextPreference
+			app:key="rootPath"
+			app:title="Root Path" />
+
+		<EditTextPreference
+			app:key="userAgentCustom"
+			app:title="Custom User Agent" />
+
+		<ListPreference
+			app:entries="@array/userAgents_entries"
+			app:entryValues="@array/userAgents_values"
+			app:key="userAgentDefaults"
+			app:title="Default User Agents" />
+
+		<EditTextPreference
+			app:defaultValue="3000"
+			app:key="timeoutDuration"
+			app:title="Max TimeOut in ms" />
+
+	</PreferenceCategory>
+
+	<PreferenceCategory app:title="@string/messages_header">
+
+		<EditTextPreference
+			app:key="signature"
+			app:title="@string/signature_title"
+			app:useSimpleSummaryProvider="true" />
+
+		<ListPreference
+			app:defaultValue="reply"
+			app:entries="@array/reply_entries"
+			app:entryValues="@array/reply_values"
+			app:key="reply"
+			app:title="@string/reply_title"
+			app:useSimpleSummaryProvider="true" />
+
+	</PreferenceCategory>
+
+	<PreferenceCategory app:title="@string/sync_header">
+
+		<SwitchPreferenceCompat
+			app:key="sync"
+			app:title="@string/sync_title" />
+
+		<SwitchPreferenceCompat
+			app:dependency="sync"
+			app:key="attachment"
+			app:summaryOff="@string/attachment_summary_off"
+			app:summaryOn="@string/attachment_summary_on"
+			app:title="@string/attachment_title" />
+
+	</PreferenceCategory>
+
+</PreferenceScreen>

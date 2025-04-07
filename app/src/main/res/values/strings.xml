@@ -68,4 +68,43 @@
 	<string name="utils">Utils</string>
 	<string name="total">total</string>
 	<string name="keep_uptodate">keep uptodate?</string>
+	<string name="use_internet">Use Internet?</string>
+	<string name="search">Search</string>
+	<string name="enter_keywords_here">Enter keywords here</string>
+	<string name="host">Host</string>
+	<string name="url">Url</string>
+	<string name="size">Size</string>
+	<string name="TAG">TAG</string>
+	<string name="errors">errors</string>
+	<!-- Preference Titles -->
+	<string name="messages_header">Messages</string>
+	<string name="sync_header">Sync</string>
+
+	<!-- Messages Preferences -->
+	<string name="signature_title">Your signature</string>
+	<string name="reply_title">Default reply action</string>
+
+	<!-- Sync Preferences -->
+	<string name="sync_title">Sync email periodically</string>
+	<string name="attachment_title">Download incoming attachments</string>
+	<string name="attachment_summary_on">Automatically download attachments for incoming emails
+	</string>
+	<string name="attachment_summary_off">Only download attachments when manually requested</string>
+	<string name="intercepted_url_log_here">Intercepted url log here</string>
+	<string name="click_to_expand_this_host_s_urls">Click to expand this Host\'s urls</string>
+	<string name="file_name">File name</string>
+	<string name="user_agent_string">User Agent String</string>
+	<string name="progress">Progress</string>
+	<string name="completed">Completed</string>
+	<string name="status">Status</string>
+	<string name="log">Log</string>
+	<string name="refresh_logs">Refresh logs</string>
+	<string name="url_requests_filename">Url Requests filename:</string>
+	<string name="log_filename">Log filename:</string>
+	<string name="database_filename">Database filename:</string>
+	<string name="output">Output</string>
+	<string name="enter_a_url_to_test">Enter a url to test</string>
+	<string name="test">Test</string>
+	<string name="local_path">local path</string>
+	<string name="enter_a_url_to_test_buildlocalpath_function">Enter a url to test buildLocalPath function</string>
 </resources>

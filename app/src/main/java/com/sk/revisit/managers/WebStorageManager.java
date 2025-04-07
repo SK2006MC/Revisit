@@ -17,7 +17,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.Headers;
@@ -81,11 +80,11 @@ public class WebStorageManager {
 		return new MyUtils.DownloadListener() {
 			//urlLog
 			@Override
-			public void onStart(Uri uri,long contentLength){
+			public void onStart(Uri uri, long contentLength) {
 				//ToDo create a item_url_log
 				//urlLog.text = uri.toString()
 			}
-			
+
 			@Override
 			public void onSuccess(File file, Headers headers) {
 				MyUtils.resolved.incrementAndGet();
@@ -103,9 +102,9 @@ public class WebStorageManager {
 				utils.saveReq(uriStr);
 //				utils.log(TAG, "Download failed for: " + uriStr, e);
 			}
-			
+
 			@Override
-			public void onEnd(File file){
+			public void onEnd(File file) {
 				//urllog.pb.visible=gone
 			}
 		};
@@ -119,7 +118,7 @@ public class WebStorageManager {
 			MyUtils.resolved.incrementAndGet();
 			InputStream inputStream = new FileInputStream(localFile);
 			WebResourceResponse response = new WebResourceResponse(mimeType, UTF_8, inputStream);
-			response.setResponseHeaders(Collections.singletonMap("Access-Control-Allow-Origin","*"));
+			response.setResponseHeaders(Collections.singletonMap("Access-Control-Allow-Origin", "*"));
 			return response;
 		} catch (FileNotFoundException e) {
 			MyUtils.failed.incrementAndGet();
@@ -133,17 +132,17 @@ public class WebStorageManager {
 		String mimeType = utils.getMimeTypeFromMeta(localFilePath);
 		if (mimeType == null) {
 			utils.createMimeTypeMeta(uri);
-			if(localFilePath.contains(":")){
-					localFilePath = localFilePath.split(":")[0];
+			if (localFilePath.contains(":")) {
+				localFilePath = localFilePath.split(":")[0];
 			}
 			mimeType = utils.getMimeType(localFilePath);
 		}
 		return mimeType;
 	}
 
-	Map<String,String> getHeaders(String path,Uri uri){
-		Map<String,String> headers = new HashMap<>();
-		path = path+".head";
+	Map<String, String> getHeaders(String path, Uri uri) {
+		Map<String, String> headers = new HashMap<>();
+		path = path + ".head";
 		File file = new File(path);
 //		if(file.exists()){
 //				headersb = parse(file);
@@ -153,7 +152,7 @@ public class WebStorageManager {
 //		}
 		return null;
 	}
-	
+
 	@NonNull
 	private WebResourceResponse createNoOfflineFileResponse() {
 		return new WebResourceResponse("text/html", UTF_8, new ByteArrayInputStream(NO_OFFLINE_FILE_MESSAGE.getBytes()));

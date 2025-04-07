@@ -2,7 +2,6 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:layout_gravity="end"
-	android:background="#FFFFFF"
 	android:orientation="vertical">
 
 	<ScrollView
@@ -19,6 +18,7 @@
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
 			android:padding="8dp" />
+
 	</ScrollView>
 
 	<LinearLayout
@@ -28,7 +28,6 @@
 
 		<com.sk.revisit.jsconsole.JSAutoCompleteTextView
 			android:id="@+id/js_input"
-			style="@style/TextAppearance.AppCompat"
 			android:layout_width="0dp"
 			android:layout_height="fill_parent"
 			android:layout_weight="1"
@@ -39,12 +38,13 @@
 		<ImageButton
 			android:id="@+id/execute_js_btn"
 			android:layout_width="wrap_content"
-			android:layout_height="40dp"
+			android:layout_height="48dp"
 			android:contentDescription="@string/execute_the_jscode"
 			android:src="@drawable/baseline_play_arrow_24" />
 	</LinearLayout>
 
 	<androidx.recyclerview.widget.RecyclerView
+		android:contentDescription="@string/intercepted_url_log_here"
 		android:id="@+id/urls_log_layout"
 		android:layout_width="match_parent"
 		android:layout_height="200dp"
