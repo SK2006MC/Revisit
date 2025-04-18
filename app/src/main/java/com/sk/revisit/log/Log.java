@@ -2,7 +2,11 @@ package com.sk.revisit.log;
 
 import androidx.annotation.NonNull;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Log {
@@ -40,4 +44,15 @@ public class Log {
 	public static List<String[]> getLogs() {
 		return new ArrayList<>(logs);
 	}
+
+	public static void saveLog(File path) throws Exception {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+		for (String[] log : logs) {
+			writer.write(Arrays.toString(log));
+			writer.newLine();
+			writer.flush();
+		}
+		writer.close();
+	}
+
 }
