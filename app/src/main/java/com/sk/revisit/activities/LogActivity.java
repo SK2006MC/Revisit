@@ -14,6 +14,7 @@ import com.sk.revisit.databinding.ActivityLogBinding;
 import com.sk.revisit.log.Log;
 
 import java.util.List;
+import java.util.Objects;
 
 public class LogActivity extends AppCompatActivity {
 
@@ -35,7 +36,7 @@ public class LogActivity extends AppCompatActivity {
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, LinearLayoutManager.VERTICAL);
-		dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.divider));
+		dividerItemDecoration.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(this, R.drawable.divider)));
 		recyclerView.addItemDecoration(dividerItemDecoration);
 
 		List<String[]> logs = Log.getLogs();

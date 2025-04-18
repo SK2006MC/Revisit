@@ -55,7 +55,7 @@ public class HostAdapter extends RecyclerView.Adapter<HostAdapter.HostViewHolder
 	}
 
 	public static class HostViewHolder extends RecyclerView.ViewHolder {
-		ItemHostBinding binding;
+		final ItemHostBinding binding;
 
 		public HostViewHolder(@NonNull ItemHostBinding binding) {
 			super(binding.getRoot());

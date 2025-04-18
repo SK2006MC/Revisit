@@ -87,7 +87,7 @@ public class MyDownloadListener3 implements DownloadListener {
 			}
 
 			@Override
-			public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+			public void onResponse(@NonNull Call call, @NonNull Response response) {
 				if (!response.isSuccessful()) {
 					Log.e(TAG, "Unexpected code " + response);
 					uiHandler.showToast("Download failed: Unexpected code " + response.code());

@@ -6,7 +6,7 @@ public class Url {
 	public double progress;
 	public boolean isDownloaded;
 	public boolean isSelected;
-	public boolean isUpdateAvailable;
+	public final boolean isUpdateAvailable;
 	public OnProgressChangeListener listener;
 
 	public Url(String url) {

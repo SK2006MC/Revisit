@@ -187,7 +187,7 @@ public class DownloadActivity extends AppCompatActivity {
 					Log.e(TAG, " ", e);
 				}
 			}
-			mainHandler.post(() -> binding.totalSizeTextview.setText(String.format(Locale.ENGLISH, format, totalSize)));
+			mainHandler.post(() -> binding.totalSizeTextview.setText(String.format(Locale.ENGLISH, format, totalSize.get())));
 		});
 	}
 

@@ -25,7 +25,7 @@ public class MyDownloadListener implements DownloadListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private final Context context;
 	private final OkHttpClient client = new OkHttpClient(); // Use OkHttp client
-	MySettingsManager sm;
+	final MySettingsManager sm;
 
 	public MyDownloadListener(Context context) {
 		this.context = context;

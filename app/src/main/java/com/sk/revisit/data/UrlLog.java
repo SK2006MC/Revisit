@@ -1,8 +1,8 @@
 package com.sk.revisit.data;
 
 public class UrlLog {
-	public String url;
-	public long size;
+	public final String url;
+	public final long size;
 	double p;
 	boolean isComplete;
 	private OnProgressChangeListener listener;

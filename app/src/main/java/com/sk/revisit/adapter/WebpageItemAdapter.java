@@ -67,7 +67,7 @@ public class WebpageItemAdapter extends RecyclerView.Adapter<WebpageItemAdapter.
 	}
 
 	public static class WebpageItemViewHolder extends RecyclerView.ViewHolder {
-		public TextView fileNameTextView;
+		public final TextView fileNameTextView;
 
 		public WebpageItemViewHolder(View itemView) {
 			super(itemView);

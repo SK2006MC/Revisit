@@ -8,7 +8,7 @@ import com.sk.revisit.jsconsole.JSConsoleLogger;
 
 public class MyWebChromeClient extends WebChromeClient {
 
-	JSConsoleLogger jsLogger;
+	final JSConsoleLogger jsLogger;
 	ProgressChangeListener listener;
 
 	public MyWebChromeClient(JSConsoleLogger jsLogger, ProgressChangeListener listener) {

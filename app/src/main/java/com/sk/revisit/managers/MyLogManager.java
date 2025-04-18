@@ -10,7 +10,7 @@ import java.io.FileWriter;
 
 public class MyLogManager {
 	private static final String TAG = "MyLogManager";
-	public Context context;
+	public final Context context;
 	private BufferedWriter writer;
 
 	public MyLogManager(Context context, String filePath) {

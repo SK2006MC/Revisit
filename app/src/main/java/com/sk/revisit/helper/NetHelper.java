@@ -13,8 +13,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class NetHelper {
-	String TAG = NetHelper.class.getSimpleName();
-	OkHttpClient okHttpClient;
+	final String TAG = NetHelper.class.getSimpleName();
+	final OkHttpClient okHttpClient;
 
 	public NetHelper(OkHttpClient client) {
 		this.okHttpClient = client;
@@ -31,7 +31,7 @@ public class NetHelper {
 				}
 
 				@Override
-				public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+				public void onResponse(@NonNull Call call, @NonNull Response response) {
 					assert response.body() != null;
 //					size = response.body().contentLength();
 				}

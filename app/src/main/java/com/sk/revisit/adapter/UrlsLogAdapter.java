@@ -36,7 +36,7 @@ public class UrlsLogAdapter extends RecyclerView.Adapter<UrlsLogAdapter.UrlViewH
 	}
 
 	public static class UrlViewHolder extends RecyclerView.ViewHolder {
-		ItemUrllogBinding binding;
+		final ItemUrllogBinding binding;
 
 		UrlViewHolder(ItemUrllogBinding binding) {
 			super(binding.getRoot());
@@ -46,9 +46,7 @@ public class UrlsLogAdapter extends RecyclerView.Adapter<UrlsLogAdapter.UrlViewH
 		public void bind(UrlLog urlLog) {
 			binding.urlText.setText(urlLog.url);
 			binding.size.setText((int) urlLog.size);
-			urlLog.setOnProgressChangeListener((p) -> {
-				binding.progress.setProgress((int) p);
-			});
+			urlLog.setOnProgressChangeListener((p) -> binding.progress.setProgress((int) p));
 		}
 	}
 }

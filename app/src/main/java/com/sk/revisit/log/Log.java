@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Log {
 
-	static ArrayList<String[]> logs = new ArrayList<>();
+	static final ArrayList<String[]> logs = new ArrayList<>();
 
 	public static void e(String tag, String msg, @NonNull Exception e) {
 		logs.add(new String[]{tag, msg, e.getMessage()});

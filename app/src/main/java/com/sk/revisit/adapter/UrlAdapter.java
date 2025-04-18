@@ -39,7 +39,7 @@ public class UrlAdapter extends RecyclerView.Adapter<UrlAdapter.UrlViewHolder> {
 
 	public static class UrlViewHolder extends RecyclerView.ViewHolder implements Url.OnProgressChangeListener {
 
-		ItemUrlBinding binding;
+		final ItemUrlBinding binding;
 		Url currentUrl;
 
 		public UrlViewHolder(@NonNull ItemUrlBinding binding) {
