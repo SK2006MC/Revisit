@@ -104,7 +104,7 @@ public class DownloadActivity extends AppCompatActivity {
 	}
 
 	void saveToFile(Set<String> urls, File file) {
-		getMainExecutor().execute(() -> {
+		myUtils.executorService.execute(() -> {
 			try {
 				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
 				for (String url : urls) {

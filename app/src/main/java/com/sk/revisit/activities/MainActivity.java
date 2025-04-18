@@ -24,15 +24,15 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
-import com.sk.revisit.jsconsole.JSAutoCompleteTextView;
-import com.sk.revisit.jsconsole.JSConsoleLogger;
-import com.sk.revisit.jsconsole.JSWebViewManager;
-import com.sk.revisit.log.Log;
 import com.sk.revisit.MyUtils;
 import com.sk.revisit.R;
 import com.sk.revisit.databinding.ActivityMainBinding;
 import com.sk.revisit.databinding.NavHeaderBinding;
 import com.sk.revisit.databinding.NavJsBinding;
+import com.sk.revisit.jsconsole.JSAutoCompleteTextView;
+import com.sk.revisit.jsconsole.JSConsoleLogger;
+import com.sk.revisit.jsconsole.JSWebViewManager;
+import com.sk.revisit.log.Log;
 import com.sk.revisit.managers.MySettingsManager;
 import com.sk.revisit.managers.WebStorageManager;
 import com.sk.revisit.webview.MyDownloadListener;
@@ -49,18 +49,17 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
 	private static final String TAG = "MainActivity";
-	final String fm = "requests %d\nresolved %d\nfailed %d";
-	TextView inf;
+	final String urlLogsFormat = "requests %d\nresolved %d\nfailed %d";
+	TextView urlLogsTextView;
 	MySettingsManager settingsManager;
 	private EditText urlEditText;
 	private WebView mainWebView;
 	private ScrollView jsConsoleScrollView;
 	private LinearLayout jsConsoleLayout;
-	private LinearLayout bg;
+	private LinearLayout backgroundLinearLayout;
 	private JSAutoCompleteTextView jsInputTextView;
 	private ImageButton executeJsButton;
-	@SuppressLint("UseSwitchCompatOrMaterialCode")
-	private SwitchCompat su;
+	private SwitchCompat keepUptodateSwitch;
 	private JSConsoleLogger jsConsoleLogger;
 	private JSWebViewManager jsWebViewManager;
 	private MyUtils myUtils;
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
 		jsInputTextView.setWebView(mainWebView);
 
-		su.setOnCheckedChangeListener((v, c) -> MyUtils.shouldUpdate = c);
+		keepUptodateSwitch.setOnCheckedChangeListener((v, c) -> MyUtils.shouldUpdate = c);
 		initProgressBar(mainWebView);
 	}
 
@@ -153,10 +152,12 @@ public class MainActivity extends AppCompatActivity {
 	private void initializeUI() {
 		NavHeaderBinding navHeaderBinding = NavHeaderBinding.bind(binding.myNav.getHeaderView(0));
 		urlEditText = navHeaderBinding.urlEditText;
-		su = navHeaderBinding.su;
-		bg = navHeaderBinding.bg;
-		inf = navHeaderBinding.inf;
-		inf.setOnClickListener((v) -> inf.setText(String.format(Locale.ENGLISH, fm, MyUtils.requests.get(), MyUtils.resolved.get(), MyUtils.failed.get())));
+		keepUptodateSwitch = navHeaderBinding.keepUptodate;
+		backgroundLinearLayout = navHeaderBinding.background;
+		urlLogsTextView = navHeaderBinding.urlLogs;
+		urlLogsTextView.setOnClickListener((v) -> urlLogsTextView.setText(String.format(Locale.ENGLISH, urlLogsFormat, MyUtils.requests.get(), MyUtils.resolved.get(), MyUtils.failed.get())));
+		SwitchCompat useInternetSwitch = navHeaderBinding.useInternet;
+		useInternetSwitch.setOnCheckedChangeListener((b, s) -> keepUptodateSwitch.setEnabled(s));
 
 		mainWebView = binding.myWebView;
 
@@ -198,9 +199,9 @@ public class MainActivity extends AppCompatActivity {
 	public void changeBgColor(boolean isAvailable) {
 		runOnUiThread(() -> {
 			if (isAvailable) {
-				bg.setBackgroundColor(ContextCompat.getColor(this, R.color.black));
+				backgroundLinearLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.black));
 			} else {
-				bg.setBackgroundColor(ContextCompat.getColor(this, R.color.teal_700));
+				backgroundLinearLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.teal_700));
 			}
 		});
 	}
@@ -287,8 +288,8 @@ public class MainActivity extends AppCompatActivity {
 		// webSettings.setUserAgentString(); // Consider setting a custom User-Agent if needed
 	}
 
-	@Override
-	public void onBackPressed() {
+	public void initOnBackPressed() {
+		//getOnBackPressedDispatcher();
 		DrawerLayout drawerLayout = binding.drawerLayout;
 		NavigationView mainNav = binding.myNav;
 		LinearLayout jsl = binding.jsnav.getRoot();
@@ -300,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
 			} else if (mainWebView.canGoBack()) {
 				mainWebView.goBack();
 			} else {
-				super.onBackPressed();
+				//	super.onBackPressed();
 			}
 		} catch (Exception e) {
 			showAlert(e.toString());

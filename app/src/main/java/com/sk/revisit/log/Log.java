@@ -1,5 +1,7 @@
 package com.sk.revisit.log;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +9,7 @@ public class Log {
 
 	static ArrayList<String[]> logs = new ArrayList<>();
 
-	public static void e(String tag, String msg, Exception e) {
+	public static void e(String tag, String msg, @NonNull Exception e) {
 		logs.add(new String[]{tag, msg, e.getMessage()});
 	}
 
@@ -22,11 +24,9 @@ public class Log {
 	public static void i(String tag, String msg) {
 		logs.add(new String[]{tag, msg});
 	}
-
 	public static void v(String tag, String msg) {
 		logs.add(new String[]{tag, msg});
 	}
-
 	public static void w(String tag, String msg) {
 		logs.add(new String[]{tag, msg});
 	}

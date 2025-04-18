@@ -9,7 +9,6 @@ public class MySettingsManager {
 	private static final String KEY_ROOT_PATH = "root_path";
 	private static final String KEY_DN_PATH = "dn_path";
 	private static final String KEY_IS_FIRST = "is_first";
-	private static String reqFileName = "req.txt";
 	private final SharedPreferences prefs;
 
 	public MySettingsManager(Context context) {
@@ -32,13 +31,8 @@ public class MySettingsManager {
 		prefs.edit().putBoolean(KEY_IS_FIRST, o).apply();
 	}
 
-	public String getReqFileName() {
-		return reqFileName;
-	}
-
 	public void setRootStoragePath(String folderPath) {
 		prefs.edit().putString(KEY_ROOT_PATH, folderPath).apply();
 	}
-
 
 }
