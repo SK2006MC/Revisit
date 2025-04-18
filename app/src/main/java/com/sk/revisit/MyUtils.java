@@ -48,12 +48,11 @@ public class MyUtils {
 	public static AtomicLong failed = new AtomicLong(0);
 	public static boolean isNetworkAvailable = false;
 	public static boolean shouldUpdate = false;
-
+	public final OkHttpClient client;
+	public final ExecutorService executorService;
 	private final SQLiteDBM dbm;
 	private final String rootPath;
 	private final Context context;
-	public final OkHttpClient client;
-	public final ExecutorService executorService;
 	private final LoggerHelper logger;
 	private final MimeTypeHelper mimeTypeHelper;
 	private final NetHelper netHelper;

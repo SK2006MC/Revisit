@@ -30,11 +30,11 @@ public class WebpagesActivity extends AppCompatActivity {
 
 	private static final String TAG = "WebpagesActivity";
 	private static final String HTML_EXTENSION = ".html";
+	private final ExecutorService executor = Executors.newSingleThreadExecutor();
+	private final Handler mainHandler = new Handler(Looper.getMainLooper());
 	private ActivityWebpagesBinding binding;
 	private WebpageItemAdapter pageItemAdapter;
 	private String ROOT_PATH;
-	private final ExecutorService executor = Executors.newSingleThreadExecutor();
-	private final Handler mainHandler = new Handler(Looper.getMainLooper());
 	private List<String> htmlFilesPaths;
 
 	@Override

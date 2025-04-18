@@ -2,16 +2,12 @@ package com.sk.revisit.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sk.revisit.data.Url;
 import com.sk.revisit.databinding.ItemUrlBinding;
-import com.sk.revisit.log.Log;
 
 import java.util.List;
 

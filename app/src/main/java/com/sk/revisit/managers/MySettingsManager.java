@@ -19,6 +19,10 @@ public class MySettingsManager {
 		return prefs.getString(KEY_ROOT_PATH, null);
 	}
 
+	public void setRootStoragePath(String folderPath) {
+		prefs.edit().putString(KEY_ROOT_PATH, folderPath).apply();
+	}
+
 	public String getDownloadStoragePath() {
 		return prefs.getString(KEY_DN_PATH, null);
 	}
@@ -29,10 +33,6 @@ public class MySettingsManager {
 
 	public void setIsFirst(boolean o) {
 		prefs.edit().putBoolean(KEY_IS_FIRST, o).apply();
-	}
-
-	public void setRootStoragePath(String folderPath) {
-		prefs.edit().putString(KEY_ROOT_PATH, folderPath).apply();
 	}
 
 }

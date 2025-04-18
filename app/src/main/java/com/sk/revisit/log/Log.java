@@ -24,9 +24,11 @@ public class Log {
 	public static void i(String tag, String msg) {
 		logs.add(new String[]{tag, msg});
 	}
+
 	public static void v(String tag, String msg) {
 		logs.add(new String[]{tag, msg});
 	}
+
 	public static void w(String tag, String msg) {
 		logs.add(new String[]{tag, msg});
 	}

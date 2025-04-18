@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sk.revisit.log.Log;
 import com.sk.revisit.R;
 import com.sk.revisit.adapter.LogRecyclerAdapter;
 import com.sk.revisit.databinding.ActivityLogBinding;
+import com.sk.revisit.log.Log;
 
 import java.util.List;
 

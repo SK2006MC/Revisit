@@ -13,8 +13,8 @@
 			android:id="@+id/pageLoad"
 			android:layout_width="match_parent"
 			android:layout_height="10dp"
-			android:visibility="gone"
-			android:progressTint="@color/teal_200" />
+			android:progressTint="@color/teal_200"
+			android:visibility="gone" />
 
 		<WebView
 			android:id="@+id/myWebView"
