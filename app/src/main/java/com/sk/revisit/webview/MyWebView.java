@@ -5,8 +5,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 import com.sk.revisit.MyUtils;
 import com.sk.revisit.jsconsole.JSConsoleLogger;
@@ -16,9 +14,9 @@ import com.sk.revisit.managers.WebStorageManager;
 public class MyWebView extends WebView {
 
 	MyUtils myUtils;
-	LinearLayout linearLayout;
-	ScrollView scrollView;
+	MyWebViewClient.UrlLoadListener urlLoadListener;
 	MyWebChromeClient.ProgressChangeListener progressChangeListener;
+	JSConsoleLogger jsConsoleLogger;
 
 
 	public MyWebView(Context context) {
@@ -40,12 +38,12 @@ public class MyWebView extends WebView {
 		this.myUtils = myUtils;
 	}
 
-	public void setLinearLayout(LinearLayout linearLayout) {
-		this.linearLayout = linearLayout;
+	public void setUrlLoadListener(MyWebViewClient.UrlLoadListener urlLoadListener) {
+		this.urlLoadListener = urlLoadListener;
 	}
 
-	public void setScrollView(ScrollView scrollView) {
-		this.scrollView = scrollView;
+	public void setJsConsoleLogger(JSConsoleLogger jsConsoleLogger) {
+		this.jsConsoleLogger = jsConsoleLogger;
 	}
 
 	public void setProgressChangeListener(MyWebChromeClient.ProgressChangeListener progressChangeListener) {
@@ -55,10 +53,11 @@ public class MyWebView extends WebView {
 	public void init() {
 		WebStorageManager webStorageManager = new WebStorageManager(myUtils);
 		MyWebViewClient webViewClient = new MyWebViewClient(webStorageManager);
+		webViewClient.setUrlLoadListener(urlLoadListener);
 		setWebViewClient(webViewClient);
 
-		JSConsoleLogger jsConsoleLogger = new JSConsoleLogger(getContext(), linearLayout, scrollView);
 		MyWebChromeClient webChromeClient = new MyWebChromeClient(jsConsoleLogger, progressChangeListener);
+		webChromeClient.setProgressListener(progressChangeListener);
 		setWebChromeClient(webChromeClient);
 
 		setDownloadListener(new MyDownloadListener(getContext()));

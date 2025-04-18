@@ -1,6 +1,5 @@
 package com.sk.revisit.activities;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -8,8 +7,6 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Bundle;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -35,10 +32,7 @@ import com.sk.revisit.jsconsole.JSConsoleLogger;
 import com.sk.revisit.jsconsole.JSWebViewManager;
 import com.sk.revisit.log.Log;
 import com.sk.revisit.managers.MySettingsManager;
-import com.sk.revisit.managers.WebStorageManager;
-import com.sk.revisit.webview.MyDownloadListener;
-import com.sk.revisit.webview.MyWebChromeClient;
-import com.sk.revisit.webview.MyWebViewClient;
+import com.sk.revisit.webview.MyWebView;
 
 import java.io.File;
 import java.util.Locale;
@@ -50,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 	private TextView urlLogsTextView;
 	private MySettingsManager settingsManager;
 	private EditText urlEditText;
-	private WebView mainWebView;
+	private MyWebView mainWebView;
 	private LinearLayout jsConsoleLayout, backgroundLinearLayout;
 	private JSAutoCompleteTextView jsInputTextView;
 	private SwitchCompat keepUpToDateSwitch;
@@ -80,16 +74,7 @@ public class MainActivity extends AppCompatActivity {
 		initNavView();
 		initWebView(mainWebView);
 
-		initProgressBar(mainWebView);
 		initOnBackPressed();
-	}
-
-	void initProgressBar(WebView webView) {
-		MyWebChromeClient chromeClient = (MyWebChromeClient) webView.getWebChromeClient();
-
-		if (chromeClient != null) {
-			chromeClient.setProgressListener(progress -> binding.pageLoad.setProgress(progress));
-		}
 	}
 
 	private void initializeUI() {
@@ -150,27 +135,12 @@ public class MainActivity extends AppCompatActivity {
 		keepUpToDateSwitch.setOnCheckedChangeListener((v, c) -> MyUtils.shouldUpdate = c);
 	}
 
-	@SuppressLint("SetJavaScriptEnabled")
-	private void initWebView(@NonNull WebView webView) {
-
-		MyWebViewClient client = new MyWebViewClient(new WebStorageManager(myUtils));
-		client.setUrlLoadListener(url -> runOnUiThread(() -> urlEditText.setText(url)));
-		webView.setWebViewClient(client);
-
-		webView.setDownloadListener(new MyDownloadListener(this));
-
-		WebSettings webSettings = webView.getSettings();
-		webSettings.setAllowContentAccess(true);
-		webSettings.setAllowFileAccess(true);
-		webSettings.setAllowFileAccessFromFileURLs(true);
-		webSettings.setAllowUniversalAccessFromFileURLs(true);
-		webSettings.setDatabaseEnabled(true);
-		webSettings.setDomStorageEnabled(true);
-		webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-		webSettings.setJavaScriptEnabled(true);
-		webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-		webSettings.setUseWideViewPort(true);
-		//webSettings.setUserAgentString();
+	private void initWebView(@NonNull MyWebView webView) {
+		webView.setMyUtils(myUtils);
+		webView.setJsConsoleLogger(jsConsoleLogger);
+		webView.setUrlLoadListener(url -> runOnUiThread(() -> urlEditText.setText(url)));
+		webView.setProgressChangeListener(progress -> binding.pageLoad.setProgress(progress));
+		webView.init();
 	}
 
 	private void initNetworkChangeListener() {
@@ -276,8 +246,9 @@ public class MainActivity extends AppCompatActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		myUtils.shutdown();
-		File saveLogPath = new File(settingsManager.getRootStoragePath() + "/log2.txt");
+		mainWebView.destroyWebView();
 
+		File saveLogPath = new File(settingsManager.getRootStoragePath() + "/log2.txt");
 		try {
 			Log.saveLog(saveLogPath);
 		} catch (Exception e) {
