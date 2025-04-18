@@ -14,52 +14,52 @@ import java.util.List;
 
 public class HostAdapter extends RecyclerView.Adapter<HostAdapter.HostViewHolder> {
 
-	private List<Host> hosts;
+    private List<Host> hosts;
 
-	public HostAdapter(List<Host> hosts) {
-		this.hosts = hosts;
-	}
+    public HostAdapter(List<Host> hosts) {
+        this.hosts = hosts;
+    }
 
-	public void setHosts(List<Host> hosts) {
-		this.hosts = hosts;
-	}
+    public void setHosts(List<Host> hosts) {
+        this.hosts = hosts;
+    }
 
-	@NonNull
-	@Override
-	public HostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		ItemHostBinding binding = ItemHostBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-		return new HostViewHolder(binding);
-	}
+    @NonNull
+    @Override
+    public HostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ItemHostBinding binding = ItemHostBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new HostViewHolder(binding);
+    }
 
-	@Override
-	public void onBindViewHolder(@NonNull HostViewHolder holder, int position) {
-		ItemHostBinding binding = holder.binding;
-		Host host = hosts.get(position);
+    @Override
+    public void onBindViewHolder(@NonNull HostViewHolder holder, int position) {
+        Host host = hosts.get(position);
+        holder.bind(host);
+    }
 
-		binding.hostText.setText(host.getName());
-		binding.expandhost.setOnClickListener(v -> host.isExpanded = !host.isExpanded);
-		binding.hostCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> host.isSelected = isChecked);
-		binding.hostSize.setText(String.valueOf(host.totalSize));
-		binding.hostProgressbar.setProgress(0);
+    @Override
+    public int getItemCount() {
+        return hosts.size();
+    }
 
-		List<Url> urls = host.getUrls();
-		UrlAdapter urlAdapter = new UrlAdapter(urls);
-		binding.urls.setAdapter(urlAdapter);
+    public static class HostViewHolder extends RecyclerView.ViewHolder {
+        private final ItemHostBinding binding;
 
+        public HostViewHolder(@NonNull ItemHostBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
 
-	}
+        void bind(Host host) {
+            binding.hostText.setText(host.getName());
+            binding.expandhost.setOnClickListener(v -> host.isExpanded = !host.isExpanded);
+            binding.hostCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> host.isSelected = isChecked);
+            binding.hostSize.setText(String.valueOf(host.totalSize));
+            binding.hostProgressbar.setProgress(0);
 
-	@Override
-	public int getItemCount() {
-		return hosts.size();
-	}
-
-	public static class HostViewHolder extends RecyclerView.ViewHolder {
-		ItemHostBinding binding;
-
-		public HostViewHolder(@NonNull ItemHostBinding binding) {
-			super(binding.getRoot());
-			this.binding = binding;
-		}
-	}
+            List<Url> urls = host.getUrls();
+            UrlAdapter urlAdapter = new UrlAdapter(urls);
+            binding.urls.setAdapter(urlAdapter);
+        }
+    }
 }

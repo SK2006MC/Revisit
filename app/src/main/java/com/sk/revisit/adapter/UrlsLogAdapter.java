@@ -13,43 +13,41 @@ import java.util.List;
 
 public class UrlsLogAdapter extends RecyclerView.Adapter<UrlsLogAdapter.UrlViewHolder> {
 
-	List<UrlLog> urlLogs;
+    List<UrlLog> urlLogs;
 
-	public UrlsLogAdapter() {
-	}
+    public UrlsLogAdapter() {
+    }
 
-	@NonNull
-	@Override
-	public UrlViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		ItemUrllogBinding binding = ItemUrllogBinding.inflate(LayoutInflater.from(parent.getContext()));
-		return new UrlViewHolder(binding);
-	}
+    @NonNull
+    @Override
+    public UrlViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ItemUrllogBinding binding = ItemUrllogBinding.inflate(LayoutInflater.from(parent.getContext()));
+        return new UrlViewHolder(binding);
+    }
 
-	@Override
-	public void onBindViewHolder(@NonNull UrlViewHolder holder, int position) {
-		holder.bind(urlLogs.get(position));
-	}
+    @Override
+    public void onBindViewHolder(@NonNull UrlViewHolder holder, int position) {
+        holder.bind(urlLogs.get(position));
+    }
 
-	@Override
-	public int getItemCount() {
-		return urlLogs.size();
-	}
+    @Override
+    public int getItemCount() {
+        return urlLogs.size();
+    }
 
-	public static class UrlViewHolder extends RecyclerView.ViewHolder {
-		ItemUrllogBinding binding;
+    public static class UrlViewHolder extends RecyclerView.ViewHolder {
+        final ItemUrllogBinding binding;
 
-		UrlViewHolder(ItemUrllogBinding binding) {
-			super(binding.getRoot());
-			this.binding = binding;
-		}
+        UrlViewHolder(ItemUrllogBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
 
-		public void bind(UrlLog urlLog) {
-			binding.urlText.setText(urlLog.url);
-			binding.size.setText((int) urlLog.size);
-			urlLog.setOnProgressChangeListener((p) -> {
-				binding.progress.setProgress((int) p);
-			});
-		}
-	}
+        public void bind(UrlLog urlLog) {
+            binding.urlText.setText(urlLog.url);
+            binding.size.setText((int) urlLog.size);
+            urlLog.setOnProgressChangeListener((p) -> binding.progress.setProgress((int) p));
+        }
+    }
 }
 

@@ -4,19 +4,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.Toast;
+import android.util.Log;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.sk.revisit.GVars;
 import com.sk.revisit.MyUtils;
 import com.sk.revisit.R;
+import com.sk.revisit.Revisit;
 import com.sk.revisit.adapter.UrlAdapter;
 import com.sk.revisit.data.Url;
 import com.sk.revisit.databinding.ActivityDownloadBinding;
-import com.sk.revisit.log.Log;
 import com.sk.revisit.managers.MySettingsManager;
 
 import java.io.BufferedReader;
@@ -37,178 +37,170 @@ import okhttp3.Headers;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class DownloadActivity extends AppCompatActivity {
+public class DownloadActivity extends BaseActivity {
 
-	private static final String TAG = "DownloadActivity";
-	final String format = "Total Size: %d bytes";
-	private final Set<String> urlsStr = new HashSet<>();
-	private final List<Url> urlsList = new ArrayList<>();
-	private final Handler mainHandler = new Handler(Looper.getMainLooper());
-	private ActivityDownloadBinding binding;
-	private MyUtils myUtils;
-	private MySettingsManager settingsManager;
-	private UrlAdapter urlsAdapter;
+    final String format = "Total Size: %d bytes";
+    private final Set<String> urlsStr = new HashSet<>();
+    private final List<Url> urlsList = new ArrayList<>();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private ActivityDownloadBinding binding;
+    private MyUtils myUtils;
+    private MySettingsManager settingsManager;
+    private UrlAdapter urlsAdapter;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		binding = ActivityDownloadBinding.inflate(getLayoutInflater());
-		setContentView(binding.getRoot());
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityDownloadBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-		settingsManager = new MySettingsManager(this);
-		myUtils = new MyUtils(this, settingsManager.getRootStoragePath());
+        settingsManager = new MySettingsManager(this);
+        myUtils = new MyUtils(this, settingsManager.getRootStoragePath());
 
-		loadUrlsFromFile();
-		initUI();
-	}
+        urlsAdapter = new UrlAdapter(urlsList);
+        initUI();
+        loadUrlsFromFile();
+    }
 
-	public void refresh() {
-		urlsAdapter.notifyDataSetChanged();
-	}
+    private void loadUrlsFromFile() {
+        urlsStr.clear();
+        urlsList.clear();
+        urlsAdapter.notifyDataSetChanged();
 
-	private void initRecyclerView() {
-		binding.urlsRecyclerview.setAdapter(urlsAdapter);
-		binding.urlsRecyclerview.setLayoutManager(new LinearLayoutManager(this));
-		DividerItemDecoration decoration = new DividerItemDecoration(
-				binding.urlsRecyclerview.getContext(),
-				LinearLayoutManager.VERTICAL
-		);
-		decoration.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(this, R.drawable.divider)));
-		binding.urlsRecyclerview.addItemDecoration(decoration);
-	}
+        String filePath = settingsManager.getRootStoragePath() + File.separator + GVars.reqFileName;
+        File reqFile = new File(filePath);
 
-	private void loadUrlsFromFile() {
-		urlsStr.clear();
-		String filePath = settingsManager.getRootStoragePath() + File.separator + "req.txt";
+        if (!reqFile.exists()) {
+            Log.e(TAG, GVars.reqFileName + " not found at: " + filePath);
+            alert(GVars.reqFileName + " not found at: " + filePath);
+            return;
+        }
 
-		File reqFile = new File(filePath);
-		if (!reqFile.exists()) {
-			Log.e(TAG, "req.txt not found at: " + filePath);
-			showAlert("req.txt not found at: " + filePath);
-			return;
-		}
+        try (BufferedReader reader = new BufferedReader(new FileReader(reqFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String urlStr = line.trim();
+                urlsStr.add(urlStr);
+                Url url = new Url(urlStr);
+                urlsList.add(url);
+                urlsAdapter.notifyItemInserted(urlsList.size() - 1);
+            }
+        } catch (IOException e) {
+            alert("Error reading " + filePath);
+            Log.e(TAG, "Error reading " + filePath, e);
+        }
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(reqFile))) {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				String url = line.trim();
-				urlsStr.add(url);
-			}
-		} catch (IOException e) {
-			showAlert("Error reading req.txt");
-		}
+        saveToFile(urlsStr, reqFile);
+    }
 
-		for (String urlStr : urlsStr) {
-			urlsList.add(new Url(urlStr));
-		}
-		saveToFile(urlsStr, reqFile);
-		urlsAdapter = new UrlAdapter(urlsList);
-	}
+    private void initUI() {
+        binding.totalSizeTextview.setText(getString(R.string.total));
+        binding.refreshButton.setOnClickListener(v -> loadUrlsFromFile());
 
-	void saveToFile(Set<String> urls, File file) {
-		myUtils.executorService.execute(() -> {
-			try {
-				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-				for (String url : urls) {
-					fileWriter.write(url);
-					fileWriter.newLine();
-				}
-				fileWriter.close();
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}
-		});
-	}
+        binding.calcButton.setOnClickListener(v -> calculateTotalSize());
+        binding.downloadButton.setOnClickListener(v -> downloadSelectedUrls());
 
-	private void downloadSelectedUrls() {
-		List<Url> selectedUrls = new ArrayList<>();
-		for (Url url : urlsList) {
-			if (url.isSelected) {
-				selectedUrls.add(url);
-			}
-		}
+        binding.urlsRecyclerview.setAdapter(urlsAdapter);
+        binding.urlsRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        DividerItemDecoration decoration = new DividerItemDecoration(
+                binding.urlsRecyclerview.getContext(),
+                LinearLayoutManager.VERTICAL
+        );
+        decoration.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(this, R.drawable.divider)));
+        binding.urlsRecyclerview.addItemDecoration(decoration);
+    }
 
-		if (selectedUrls.isEmpty()) {
-			showAlert("No URLs selected for download.");
-			return;
-		}
+    private void downloadSelectedUrls() {
+        List<Integer> selectedPositions = new ArrayList<>();
+        for (int i = 0; i < urlsList.size(); i++) {
+            if (urlsList.get(i).isSelected) {
+                selectedPositions.add(i);
+            }
+        }
 
-		for (Url url : selectedUrls) {
-			myUtils.download(Uri.parse(url.url), new MyUtils.DownloadListener() {
-				@Override
-				public void onStart(Uri uri, long contentLength) {
-					url.size = contentLength;
-				}
+        if (selectedPositions.isEmpty()) {
+            alert("No URLs selected for download.");
+            return;
+        }
 
-				@Override
-				public void onSuccess(File file, Headers headers) {
-					url.isDownloaded = true;
-					url.setProgress(100);
-				}
+        for (int position : selectedPositions) {
+            Url url = urlsList.get(position);
+            myUtils.download(Uri.parse(url.url), new MyUtils.DownloadListener() {
+                private void notifyUpdate() {
+                    mainHandler.post(() -> urlsAdapter.notifyItemChanged(position));
+                }
 
-				@Override
-				public void onProgress(double p) {
-					url.setProgress(p);
-				}
+                @Override
+                public void onStart(Uri uri, long contentLength) {
+                    url.size = contentLength;
+                }
 
-				@Override
-				public void onFailure(Exception e) {
-					url.isDownloaded = false;
-				}
+                @Override
+                public void onSuccess(File file, Headers headers) {
+                    url.isDownloaded = true;
+                    url.setProgress(100);
+                    notifyUpdate();
+                }
 
-				@Override
-				public void onEnd(File file) {
-				}
-			});
-		}
-	}
+                @Override
+                public void onProgress(double p) {
+                    url.setProgress(p);
+                    notifyUpdate();
+                }
 
-	private void calculateTotalSize() {
-		if (!MyUtils.isNetworkAvailable) {
-			showAlert("No network available!");
-			return;
-		}
+                @Override
+                public void onFailure(Exception e) {
+                    url.isDownloaded = false;
+                    notifyUpdate();
+                }
 
-		myUtils.executorService.execute(() -> {
-			AtomicLong totalSize = new AtomicLong(0);
-			for (Url url : urlsList) {
-				Request request = new Request.Builder().head().url(url.url).build();
-				try {
-					Response response = myUtils.client.newCall(request).execute();
-					assert response.body() != null;
-					if (response.isSuccessful()) {
-						url.size = response.body().contentLength();
-						totalSize.addAndGet(url.size);
-					} else {
-						url.size = -1;
-					}
-					mainHandler.post(() -> urlsAdapter.notifyItemChanged(urlsList.indexOf(url)));
-				} catch (IOException e) {
-					Log.e(TAG, " ", e);
-				}
-			}
-			mainHandler.post(() -> binding.totalSizeTextview.setText(String.format(Locale.ENGLISH, format, totalSize)));
-		});
-	}
+                @Override
+                public void onEnd(File file) {
+                }
+            });
+        }
+    }
 
-	private void initUI() {
-		binding.totalSizeTextview.setText(getString(R.string.total));
-		binding.refreshButton.setOnClickListener(v -> {
-			loadUrlsFromFile();
-			refresh();
-		});
-		binding.calcButton.setOnClickListener(v -> calculateTotalSize());
-		binding.downloadButton.setOnClickListener(v -> downloadSelectedUrls());
-		initRecyclerView();
-	}
+    private void calculateTotalSize() {
+        if (!Revisit.isNetworkAvailable) {
+            alert("No network available!");
+            return;
+        }
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		myUtils.shutdown();
-	}
+        myUtils.executorService.execute(() -> {
+            AtomicLong totalSize = new AtomicLong(0);
+            for (Url url : urlsList) {
+                Request request = new Request.Builder().head().url(url.url).build();
+                try {
+                    Response response = myUtils.client.newCall(request).execute();
+                    assert response.body() != null;
+                    if (response.isSuccessful()) {
+                        url.size = response.body().contentLength();
+                        totalSize.addAndGet(url.size);
+                    } else {
+                        url.size = -1;
+                    }
+                    mainHandler.post(() -> urlsAdapter.notifyItemChanged(urlsList.indexOf(url)));
+                } catch (IOException e) {
+                    Log.e(TAG, " ", e);
+                }
+                mainHandler.post(() -> binding.totalSizeTextview.setText(String.format(Locale.ENGLISH, format, totalSize.get())));
+            }
+        });
+    }
 
-	private void showAlert(String msg) {
-		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-	}
+    void saveToFile(Set<String> urls, File file) {
+        myUtils.executorService.execute(() -> {
+            try {
+                BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
+                for (String url : urls) {
+                    fileWriter.write(url);
+                    fileWriter.newLine();
+                }
+                fileWriter.close();
+            } catch (IOException e) {
+                Log.e(TAG, e.toString());
+            }
+        });
+    }
 }

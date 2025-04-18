@@ -1,51 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical"
-	android:padding="5dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-		<EditText
-			android:id="@+id/url"
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_weight="1"
-			android:hint="@string/enter_a_url_to_test_buildlocalpath_function" />
+        <EditText
+            android:id="@+id/url"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:autofillHints="name"
+            android:hint="@string/enter_a_url_to_test_buildlocalpath_function"
+            android:inputType="textUri" />
 
-		<TextView
-			android:id="@+id/localpath"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="@string/local_path" />
+        <TextView
+            android:id="@+id/localpath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/local_path" />
 
-		<Button
-			android:id="@+id/exeBuildLocalPath"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/test" />
+        <Button
+            android:id="@+id/exeBuildLocalPath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/test" />
 
-	</LinearLayout>
+    </LinearLayout>
 
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical">
 
-		<EditText
-			android:id="@+id/url2"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:hint="@string/enter_a_url_to_test" />
+        <EditText
+            android:id="@+id/textwatch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="name"
+            android:hint="@string/enter_a_url_to_test"
+            android:inputType="textUri" />
 
-		<TextView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="@string/output" />
-	</LinearLayout>
+        <TextView
+            android:id="@+id/op2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/output" />
+
+        <TextView
+            android:id="@+id/op3"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
+        <TextView
+            android:id="@+id/op4"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
+        <TextView
+            android:id="@+id/op5"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
+    </LinearLayout>
+
 </LinearLayout>

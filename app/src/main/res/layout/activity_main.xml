@@ -1,39 +1,46 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:id="@+id/drawer_layout"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-		<com.google.android.material.progressindicator.LinearProgressIndicator
-			android:id="@+id/pageLoad"
-			android:layout_width="match_parent"
-			android:layout_height="10dp"
-			android:progressTint="@color/teal_200"
-			android:visibility="gone" />
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/pageLoad"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            app:indicatorColor="@color/teal_200" />
 
-		<com.sk.revisit.webview.MyWebView
-			android:id="@+id/myWebView"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent" />
+        <com.sk.revisit.webview.MyWebView
+            android:id="@+id/myWebView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-	</LinearLayout>
+    </LinearLayout>
 
-	<com.google.android.material.navigation.NavigationView
-		android:id="@+id/myNav"
-		android:layout_width="240dp"
-		android:layout_height="match_parent"
-		android:layout_gravity="start"
-		android:orientation="vertical"
-		app:headerLayout="@layout/nav_header"
-		app:menu="@menu/nav_menu" />
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/myNav"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:orientation="vertical"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_menu" />
 
-	<include
-		android:id="@+id/jsnav"
-		layout="@layout/nav_js" />
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav2"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end">
+
+        <include
+            android:id="@+id/jsnav"
+            layout="@layout/nav_js" />
+
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

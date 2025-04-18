@@ -1,38 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="3dp">
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center_vertical"
-		android:orientation="horizontal"
-		android:padding="8dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
-		<TextView
-			style="@style/TextAppearance.AppCompat.Headline"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/log" />
+        <TextView
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/log" />
 
-		<ImageButton
-			android:id="@+id/refresh_button"
-			android:layout_width="24dp"
-			android:layout_height="24dp"
-			android:background="?attr/selectableItemBackgroundBorderless"
-			android:contentDescription="@string/refresh_logs"
-			android:padding="8dp"
-			android:src="@drawable/baseline_refresh_24" />
+        <ImageButton
+            android:id="@+id/refresh_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="@string/refresh_logs"
+            android:padding="8dp"
+            android:src="@drawable/baseline_refresh_24" />
 
-	</LinearLayout>
+    </LinearLayout>
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/logs_recycler_view"
-		android:layout_width="match_parent"
-		android:layout_height="0dp"
-		android:layout_weight="1" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/logs_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="4dp" />
 
 </LinearLayout>

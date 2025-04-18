@@ -1,54 +1,57 @@
 plugins {
-    id 'com.android.application'
+	id 'com.android.application'
 }
 
 android {
-    namespace 'com.sk.revisit'
-    compileSdk 35
+	namespace 'com.sk.revisit'
+	compileSdk 35
 
-    defaultConfig {
-        applicationId "com.sk.revisit"
-        minSdk 27
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
+	defaultConfig {
+		applicationId "com.sk.revisit"
+		minSdk 27
+		targetSdk 34
+		versionCode 1
+		versionName "1.0"
 
-        vectorDrawables {
-            useSupportLibrary true
-        }
-    }
+		vectorDrawables {
+			useSupportLibrary true
+		}
+	}
 
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            multiDexEnabled true
-        }
-        debug {
-            multiDexEnabled true
-        }
-    }
+	buildTypes {
+		release {
+			minifyEnabled true
+			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+			multiDexEnabled true
+		}
+		debug {
+			multiDexEnabled true
+		}
+	}
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_11
+		targetCompatibility JavaVersion.VERSION_11
+	}
 
-    buildFeatures {
-        viewBinding true
-    }
-    dependenciesInfo {
-        includeInApk true
-        includeInBundle true
-    }
+	buildFeatures {
+		viewBinding true
+	}
+	dependenciesInfo {
+		includeInApk true
+		includeInBundle true
+	}
 
-    buildToolsVersion '36.0.0 rc4'
+	buildToolsVersion '36.0.0 rc4'
 }
 
 dependencies {
-    implementation "com.squareup.okhttp3:okhttp:4.12.0"
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'androidx.annotation:annotation:1.9.1'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.preference:preference:1.2.1'
+	implementation "com.squareup.okhttp3:okhttp:4.12.0"
+	implementation 'androidx.appcompat:appcompat:1.7.0'
+	implementation 'androidx.annotation:annotation:1.9.1'
+	implementation 'com.google.android.material:material:1.12.0'
+	implementation 'androidx.preference:preference:1.2.1'
+	// implementation "androidx.room:room-runtime:2.6.1"
+	// annotationProcessor "androidx.room:room-compiler:2.6.1"
+	// implementation "androidx.room:room-ktx:2.6.1"
 }

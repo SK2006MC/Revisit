@@ -2,19 +2,17 @@ package com.sk.revisit.activities;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.sk.revisit.databinding.ActivityUpdateBinding;
 
-public class UpdateActivity extends AppCompatActivity {
+public class UpdateActivity extends BaseActivity {
 
-	ActivityUpdateBinding binding;
+    ActivityUpdateBinding binding;
 
-	@Override
-	protected void onCreate(Bundle arg0) {
-		super.onCreate(arg0);
-		binding = ActivityUpdateBinding.inflate(getLayoutInflater());
-		setContentView(binding.getRoot());
-	}
+    @Override
+    protected void onCreate(Bundle arg0) {
+        super.onCreate(arg0);
+        binding = ActivityUpdateBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+    }
 
 }

@@ -1,58 +1,58 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:orientation="vertical"
-	android:padding="4dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="4dp">
 
-	<LinearLayout
-		android:id="@+id/background"
-		android:layout_width="match_parent"
-		android:layout_height="160dp"
-		android:background="@color/black"
-		android:gravity="center"
-		android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="@color/black"
+        android:gravity="center"
+        android:orientation="vertical">
 
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:singleLine="true"
-			android:text="@string/revisit"
-			android:textColor="@android:color/white"
-			android:textSize="18sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="@string/revisit"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
 
-		<TextView
-			android:id="@+id/urlLogs"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/revisit"
-			android:textColor="@android:color/white"
-			android:textSize="16sp" />
+        <TextView
+            android:id="@+id/urlLogs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/revisit"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
 
-	</LinearLayout>
+    </LinearLayout>
 
-	<EditText
-		android:id="@+id/urlEditText"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:autofillHints="google.com"
-		android:hint="@string/enter_a_url"
-		android:imeOptions="actionDone"
-		android:inputType="textUri" />
+    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+        android:id="@+id/urlAppCompatAutoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="google.com"
+        android:hint="@string/enter_a_url"
+        android:imeOptions="actionDone"
+        android:inputType="textUri" />
 
-	<androidx.appcompat.widget.SwitchCompat
-		android:id="@+id/useInternet"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:checked="false"
-		android:text="@string/use_internet" />
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/useInternet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:checked="false"
+        android:text="@string/use_internet" />
 
-	<androidx.appcompat.widget.SwitchCompat
-		android:id="@+id/keepUptodate"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:checked="false"
-		android:enabled="false"
-		android:text="@string/keep_uptodate" />
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/keepUptodate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:enabled="false"
+        android:text="@string/keep_uptodate" />
 
 </LinearLayout>

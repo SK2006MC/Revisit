@@ -1,108 +1,120 @@
 package com.sk.revisit.adapter;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sk.revisit.R;
+import com.sk.revisit.data.ItemPage;
+import com.sk.revisit.databinding.ItemPageBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WebpageItemAdapter extends RecyclerView.Adapter<WebpageItemAdapter.WebpageItemViewHolder> {
 
-	private List<String> webpageFileNames;
-	private List<String> originalWebpageFileNames;
+    private List<ItemPage> webPages;
+    private List<ItemPage> webPagesOrg;
 
-	public WebpageItemAdapter(List<String> webpageFileNames) {
-		this.webpageFileNames = webpageFileNames;
-		this.originalWebpageFileNames = new ArrayList<>(webpageFileNames);
-	}
+    public WebpageItemAdapter(List<ItemPage> webPages) {
+        this.webPagesOrg = webPages;
+        this.webPages = webPages;
+    }
 
-	public void setWebpageItems(List<String> newWebpageFileNames) {
-		WebpageItemDiffCallback diffCallback = new WebpageItemDiffCallback(this.webpageFileNames, newWebpageFileNames);
-		DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+    public void setWebPagesOrg(List<ItemPage> webPagesOrg) {
+        this.webPagesOrg = webPagesOrg;
+        this.webPages = webPagesOrg;
+    }
 
-		this.originalWebpageFileNames = new ArrayList<>(newWebpageFileNames);
-		this.webpageFileNames = newWebpageFileNames;
-		diffResult.dispatchUpdatesTo(this);
-	}
+    public void sort() {
+        //webPages.sort(ItemPage::getSize);
+    }
 
-	public void filter(String query) {
-		List<String> filteredList;
-		if (query.trim().isEmpty()) {
-			filteredList = originalWebpageFileNames;
-		} else {
-			filteredList = new ArrayList<>();
-			for (String item : originalWebpageFileNames) {
-				if (item.toLowerCase().contains(query.toLowerCase())) {
-					filteredList.add(item);
-				}
-			}
-		}
-		setWebpageItems(filteredList);
-	}
+    public void setWebPages(List<ItemPage> newWebpages) {
+        WebpageItemDiffCallback diffCallback = new WebpageItemDiffCallback(webPagesOrg, newWebpages);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+        webPages = newWebpages;
+        diffResult.dispatchUpdatesTo(this);
+    }
 
-	@NonNull
-	@Override
-	public WebpageItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_page, parent, false);
-		return new WebpageItemViewHolder(view);
-	}
+    public void filter(String query) {
+        List<ItemPage> filteredList;
+        if (query.trim().isEmpty()) {
+            filteredList = webPagesOrg;
+        } else {
+            filteredList = new ArrayList<>();
+            for (ItemPage page : webPagesOrg) {
+                if (page.fileName.toLowerCase().contains(query.toLowerCase())) {
+                    filteredList.add(page);
+                }
+            }
+        }
+        setWebPages(filteredList);
+    }
 
-	@Override
-	public void onBindViewHolder(@NonNull WebpageItemViewHolder holder, int position) {
-		String webpageFileName = webpageFileNames.get(position);
-		holder.fileNameTextView.setText(webpageFileName);
-	}
+    @NonNull
+    @Override
+    public WebpageItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ItemPageBinding binding = ItemPageBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new WebpageItemViewHolder(binding);
+    }
 
-	@Override
-	public int getItemCount() {
-		return webpageFileNames.size();
-	}
+    @Override
+    public void onBindViewHolder(@NonNull WebpageItemViewHolder holder, int position) {
+        ItemPage page = webPages.get(position);
+        holder.bind(page);
+    }
 
-	public static class WebpageItemViewHolder extends RecyclerView.ViewHolder {
-		public TextView fileNameTextView;
+    @Override
+    public int getItemCount() {
+        return webPages.size();
+    }
 
-		public WebpageItemViewHolder(View itemView) {
-			super(itemView);
-			fileNameTextView = itemView.findViewById(R.id.nametext);
-		}
-	}
+    public static class WebpageItemViewHolder extends RecyclerView.ViewHolder {
+        ItemPageBinding binding;
 
-	public static class WebpageItemDiffCallback extends DiffUtil.Callback {
+        public WebpageItemViewHolder(ItemPageBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
 
-		private final List<String> oldList;
-		private final List<String> newList;
+        public void bind(ItemPage page) {
+            binding.host.setText(page.host);
+            binding.size.setText(page.sizeStr);
+            binding.nametext.setText(page.fileName);
+        }
+    }
 
-		public WebpageItemDiffCallback(List<String> oldList, List<String> newList) {
-			this.oldList = oldList;
-			this.newList = newList;
-		}
+    public static class WebpageItemDiffCallback extends DiffUtil.Callback {
 
-		@Override
-		public int getOldListSize() {
-			return oldList.size();
-		}
+        private final List<ItemPage> oldList;
+        private final List<ItemPage> newList;
 
-		@Override
-		public int getNewListSize() {
-			return newList.size();
-		}
+        public WebpageItemDiffCallback(List<ItemPage> oldList, List<ItemPage> newList) {
+            this.oldList = oldList;
+            this.newList = newList;
+        }
 
-		@Override
-		public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-			return oldList.get(oldItemPosition).equals(newList.get(newItemPosition));
-		}
+        @Override
+        public int getOldListSize() {
+            return oldList.size();
+        }
 
-		@Override
-		public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-			return oldList.get(oldItemPosition).equals(newList.get(newItemPosition));
-		}
-	}
+        @Override
+        public int getNewListSize() {
+            return newList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldList.get(oldItemPosition).equals(newList.get(newItemPosition));
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldList.get(oldItemPosition).equals(newList.get(newItemPosition));
+        }
+    }
 }

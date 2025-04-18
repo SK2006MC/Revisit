@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:gravity="center"
-	android:orientation="horizontal">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
 
-	<ImageView
-		android:id="@+id/expandhost"
-		android:contentDescription="@string/click_to_expand_this_host_s_urls"
-		android:layout_width="20dp"
-		android:layout_height="20dp"
-		android:src="@drawable/baseline_expand_more_24" />
+    <ImageView
+        android:id="@+id/expandhost"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:contentDescription="@string/click_to_expand_this_host_s_urls"
+        android:src="@drawable/baseline_expand_more_24" />
 
-	<CheckBox
-		android:id="@+id/host_checkbox"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
+    <CheckBox
+        android:id="@+id/host_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-	<TextView
-		android:id="@+id/host_text"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_weight="1" />
+    <TextView
+        android:id="@+id/host_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
-	<TextView
-		android:id="@+id/host_size"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/host_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-	<ProgressBar
-		android:id="@+id/host_progressbar"
-		style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
+    <ProgressBar
+        android:id="@+id/host_progressbar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/urls"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/urls"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

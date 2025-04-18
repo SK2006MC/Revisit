@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/fullscreen"
+        android:title="@string/fullscreen" />
+
+    <item
+        android:id="@+id/edit_html"
+        android:icon="@drawable/baseline_edit_24"
+        android:title="@string/edit_html"
+        app:showAsAction="always" />
+</menu>

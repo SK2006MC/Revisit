@@ -1,127 +1,58 @@
 package com.sk.revisit.webview;
 
-import android.Manifest;
+import android.app.DownloadManager;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Environment;
 import android.webkit.DownloadListener;
+import android.webkit.URLUtil;
+import android.webkit.WebView;
 import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
-
-import com.sk.revisit.log.Log;
-import com.sk.revisit.managers.MySettingsManager;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-//for a webview
 public class MyDownloadListener implements DownloadListener {
-	private final String TAG = this.getClass().getSimpleName();
-	private final Context context;
-	private final OkHttpClient client = new OkHttpClient(); // Use OkHttp client
-	MySettingsManager sm;
+    private Context context;
+    private WebView webView;
 
-	public MyDownloadListener(Context context) {
-		this.context = context;
-		this.sm = new MySettingsManager(context);
-	}
+    public MyDownloadListener(Context context, WebView webView) {
+        this.context = context;
+        this.webView = webView;
+    }
 
-	@Override
-	public void onDownloadStart(String url, String userAgent, String contentDisposition,
-	                            String mimetype, long contentLength) {
-		if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-			Toast.makeText(context, "Storage permission is required to download files", Toast.LENGTH_SHORT).show();
-			//requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-			return;
-		}
+    @Override
+    public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+        if (url.startsWith("blob:")) {
+            // Handle blob URLs via JS interface
+            String jsCode =
+                    "var xhr = new XMLHttpRequest();" +
+                            "xhr.open('GET', '" + url + "', true);" +
+                            "xhr.responseType = 'blob';" +
+                            "xhr.onload = function() {" +
+                            "  var reader = new FileReader();" +
+                            "  reader.onloadend = function() {" +
+                            "    var base64data = reader.result.split(',')[1];" +
+                            "    window.AndroidBlobDownloader.processBase64(base64data, '" +
+                            URLUtil.guessFileName(url, contentDisposition, mimetype) + "', '" + mimetype + "');" +
+                            "  };" +
+                            "  reader.readAsDataURL(xhr.response);" +
+                            "};" +
+                            "xhr.send();";
+            webView.evaluateJavascript(jsCode, null);
+            Toast.makeText(context, "Processing blob download...", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-		String filename = getFilenameFromContentDisposition(contentDisposition, url);
-		downloadFile(url, filename, mimetype);
-	}
+        String fileName = URLUtil.guessFileName(url, contentDisposition, mimetype);
 
-	private void downloadFile(String url, String filename, String mimetype) {
-		Request request = new Request.Builder().url(url).build();
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setTitle(fileName);
+        request.setDescription("Downloading file...");
+        request.setMimeType(mimetype);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
 
-		new Thread(() -> {  // Run on background thread
-			try (Response response = client.newCall(request).execute()) {
-				if (!response.isSuccessful()) {
-					throw new IOException("Unexpected code " + response);
-				}
-
-				assert response.body() != null;
-				InputStream inputStream = response.body().byteStream();
-
-				File downloadDir = new File(sm.getDownloadStoragePath());
-				if (!downloadDir.exists()) {
-					if (!downloadDir.mkdirs()) {
-						showToast("Failed to create directory");
-						//askForSaveLocation();
-						return;
-					}
-				}
-
-				File file = new File(downloadDir, filename);
-
-				try (FileOutputStream outputStream = new FileOutputStream(file)) {
-					byte[] buffer = new byte[4096];
-					int bytesRead;
-					while ((bytesRead = inputStream.read(buffer)) != -1) {
-						outputStream.write(buffer, 0, bytesRead);
-					}
-					outputStream.flush();
-					showToast("Download complete: " + filename); // Download complete
-				} catch (IOException e) {
-					Log.e(TAG, e.toString());
-					showToast("Error writing file: " + e.getMessage());
-				} finally {
-					inputStream.close(); // Close input stream
-				}
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-				showToast("Download failed: " + e.getMessage()); // Network or server error
-			}
-		}).start();
-	}
-
-	/*void askForSaveLocation() {
-		Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-		intent.addCategory(Intent.CATEGORY_OPENABLE);
-		intent.setType("");
-		intent.putExtra(Intent.EXTRA_TITLE, "Download");
-		context.startActivity(intent);
-	}*/
-
-	private String getFilenameFromContentDisposition(String contentDisposition, String url) {
-		String filename = null;
-		if (contentDisposition != null) {
-			try {
-				String[] parts = contentDisposition.split("filename=");
-				if (parts.length > 1) {
-					filename = parts[1].replaceAll("\"", "").trim();
-				}
-			} catch (Exception e) {
-				Log.e(TAG, e.toString());
-			}
-		}
-		if (filename == null || filename.isEmpty()) {
-			filename = url.substring(url.lastIndexOf('/') + 1);
-			if (filename.isEmpty()) {
-				filename = "downloaded_file";
-			}
-		}
-		return filename;
-	}
-
-	private void showToast(String message) {
-		// Ensure the toast runs on the UI thread
-		new android.os.Handler(context.getMainLooper()).post(() ->
-				Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-		);
-	}
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        if (downloadManager != null) {
+            downloadManager.enqueue(request);
+        }
+    }
 }
