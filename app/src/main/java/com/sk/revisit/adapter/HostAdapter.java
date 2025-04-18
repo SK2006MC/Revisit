@@ -37,12 +37,8 @@ public class HostAdapter extends RecyclerView.Adapter<HostAdapter.HostViewHolder
 		Host host = hosts.get(position);
 
 		binding.hostText.setText(host.getName());
-		binding.expandhost.setOnClickListener(v -> {
-			host.isExpanded = !host.isExpanded;
-		});
-		binding.hostCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-			host.isSelected = isChecked;
-		});
+		binding.expandhost.setOnClickListener(v -> host.isExpanded = !host.isExpanded);
+		binding.hostCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> host.isSelected = isChecked);
 		binding.hostSize.setText(String.valueOf(host.totalSize));
 		binding.hostProgressbar.setProgress(0);
 

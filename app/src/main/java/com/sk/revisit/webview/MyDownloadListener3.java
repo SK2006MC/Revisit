@@ -218,9 +218,7 @@ public class MyDownloadListener3 implements DownloadListener {
 			new android.os.Handler(context.getMainLooper()).post(() -> new AlertDialog.Builder(context)
 					.setTitle("Download Location Required")
 					.setMessage("Please select a download location.")
-					.setPositiveButton("OK", (dialog, which) -> {
-						pickFolder();
-					})
+					.setPositiveButton("OK", (dialog, which) -> pickFolder())
 					.setNegativeButton("Cancel", (dialog, which) -> {
 						dialog.dismiss();
 						showToast("Download cancelled");

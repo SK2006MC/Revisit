@@ -257,12 +257,10 @@ public class JSAutoCompleteTextView1 extends AppCompatAutoCompleteTextView {
 		String command = getText().toString();
 		if (command.trim().isEmpty()) return;
 
-		executeJavaScript(command, result -> {
-			handler.post(() -> {
-				Toast.makeText(getContext(), "Result: " + result, Toast.LENGTH_SHORT).show(); // Show Result
-				setText(""); // Clear the input
-			});
-		});
+		executeJavaScript(command, result -> handler.post(() -> {
+			Toast.makeText(getContext(), "Result: " + result, Toast.LENGTH_SHORT).show(); // Show Result
+			setText(""); // Clear the input
+		}));
 
 		// Hide the keyboard
 		InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
