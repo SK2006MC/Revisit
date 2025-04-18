@@ -12,6 +12,8 @@
 
 		<EditText
 			android:id="@+id/url"
+			android:autofillHints="name"
+			android:inputType="textUri"
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
 			android:layout_weight="1"
@@ -39,6 +41,8 @@
 
 		<EditText
 			android:id="@+id/url2"
+			android:autofillHints="name"
+			android:inputType="textUri"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:hint="@string/enter_a_url_to_test" />

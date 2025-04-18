@@ -11,23 +11,28 @@
 
 		<EditText
 			android:id="@+id/search_bar"
+			android:autofillHints="name"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:hint="@string/enter_keywords_here" />
+			android:hint="@string/enter_keywords_here"
+			android:inputType="text" />
 
 		<LinearLayout
+			style="?android:attr/buttonBarStyle"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="horizontal">
 
 			<Button
 				android:id="@+id/webpages_refresh_button"
+				style="?android:attr/buttonBarButtonStyle"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="@string/refresh" />
 
 			<Button
 				android:id="@+id/searchBtn"
+				style="?android:attr/buttonBarButtonStyle"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="@string/search" />
