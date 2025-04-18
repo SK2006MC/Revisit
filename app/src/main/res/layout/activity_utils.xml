@@ -15,19 +15,19 @@
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
 			android:layout_weight="1"
-			android:hint="Enter a url to test buildLocalPath function" />
+			android:hint="@string/enter_a_url_to_test_buildlocalpath_function" />
 
 		<TextView
 			android:id="@+id/localpath"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="local path" />
+			android:text="@string/local_path" />
 
 		<Button
 			android:id="@+id/exeBuildLocalPath"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Test" />
+			android:text="@string/test" />
 
 	</LinearLayout>
 
@@ -41,11 +41,11 @@
 			android:id="@+id/url2"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:hint="Enter a url to test" />
+			android:hint="@string/enter_a_url_to_test" />
 
 		<TextView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="output" />
+			android:text="@string/output" />
 	</LinearLayout>
 </LinearLayout>

@@ -15,7 +15,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginEnd="8dp"
-			android:text="Refresh" />
+			android:text="@string/refresh" />
 
 		<Button
 			android:id="@+id/calc_button"
@@ -53,7 +53,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginEnd="8dp"
-			android:text="Progress"
+			android:text="@string/progress"
 			android:visibility="gone" />
 
 		<TextView
@@ -61,14 +61,14 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginEnd="8dp"
-			android:text="Completed"
+			android:text="@string/completed"
 			android:visibility="gone" />
 
 		<TextView
 			android:id="@+id/status_textview"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Status"
+			android:text="@string/status"
 			android:visibility="gone" />
 
 	</LinearLayout>

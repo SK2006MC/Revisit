@@ -16,14 +16,14 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
-			android:text="Log" />
+			android:text="@string/log" />
 
 		<ImageButton
 			android:id="@+id/refresh_button"
 			android:layout_width="24dp"
 			android:layout_height="24dp"
 			android:background="?attr/selectableItemBackgroundBorderless"
-			android:contentDescription="Refresh logs"
+			android:contentDescription="@string/refresh_logs"
 			android:padding="8dp"
 			android:src="@drawable/baseline_refresh_24" />
 

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
@@ -39,6 +40,7 @@ import okhttp3.Response;
 public class DownloadActivity extends AppCompatActivity {
 
 	private static final String TAG = "DownloadActivity";
+	final String format = "Total Size: %d bytes";
 	private final Set<String> urlsStr = new HashSet<>();
 	private final List<Url> urlsList = new ArrayList<>();
 	private final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -185,7 +187,7 @@ public class DownloadActivity extends AppCompatActivity {
 					Log.e(TAG, " ", e);
 				}
 			}
-			mainHandler.post(() -> binding.totalSizeTextview.setText("Total Size: " + totalSize + " bytes"));
+			mainHandler.post(() -> binding.totalSizeTextview.setText(String.format(Locale.ENGLISH, format, totalSize)));
 		});
 	}
 
