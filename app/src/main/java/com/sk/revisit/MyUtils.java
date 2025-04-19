@@ -72,6 +72,10 @@ public class MyUtils {
 		this.netHelper = new NetHelper(this.client);
 	}
 
+	public Context getContext() {
+		return this.context;
+	}
+
 	public Response head(String url) {
 		return this.netHelper.head(url);
 	}

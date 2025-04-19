@@ -52,6 +52,7 @@ public class SQLiteDBM {
 		this.executor = Executors.newFixedThreadPool(2);
 	}
 
+
 	/**
 	 * Inserts a URL if it does not already exist.
 	 */
@@ -186,6 +187,10 @@ public class SQLiteDBM {
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_STORED_URLS);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_DOWNLOAD_REQUESTS);
 			onCreate(db);
+		}
+
+		public String getDatabasePath() {
+			return databasePath;
 		}
 	}
 }

@@ -33,20 +33,8 @@ public class HostAdapter extends RecyclerView.Adapter<HostAdapter.HostViewHolder
 
 	@Override
 	public void onBindViewHolder(@NonNull HostViewHolder holder, int position) {
-		ItemHostBinding binding = holder.binding;
 		Host host = hosts.get(position);
-
-		binding.hostText.setText(host.getName());
-		binding.expandhost.setOnClickListener(v -> host.isExpanded = !host.isExpanded);
-		binding.hostCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> host.isSelected = isChecked);
-		binding.hostSize.setText(String.valueOf(host.totalSize));
-		binding.hostProgressbar.setProgress(0);
-
-		List<Url> urls = host.getUrls();
-		UrlAdapter urlAdapter = new UrlAdapter(urls);
-		binding.urls.setAdapter(urlAdapter);
-
-
+		holder.bind(host);
 	}
 
 	@Override
@@ -55,11 +43,23 @@ public class HostAdapter extends RecyclerView.Adapter<HostAdapter.HostViewHolder
 	}
 
 	public static class HostViewHolder extends RecyclerView.ViewHolder {
-		final ItemHostBinding binding;
+		private final ItemHostBinding binding;
 
 		public HostViewHolder(@NonNull ItemHostBinding binding) {
 			super(binding.getRoot());
 			this.binding = binding;
+		}
+
+		void bind(Host host) {
+			binding.hostText.setText(host.getName());
+			binding.expandhost.setOnClickListener(v -> host.isExpanded = !host.isExpanded);
+			binding.hostCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> host.isSelected = isChecked);
+			binding.hostSize.setText(String.valueOf(host.totalSize));
+			binding.hostProgressbar.setProgress(0);
+
+			List<Url> urls = host.getUrls();
+			UrlAdapter urlAdapter = new UrlAdapter(urls);
+			binding.urls.setAdapter(urlAdapter);
 		}
 	}
 }

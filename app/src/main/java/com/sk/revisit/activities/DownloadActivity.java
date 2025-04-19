@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.sk.revisit.GVars;
 import com.sk.revisit.MyUtils;
 import com.sk.revisit.R;
 import com.sk.revisit.adapter.UrlAdapter;
@@ -62,29 +63,14 @@ public class DownloadActivity extends AppCompatActivity {
 		initUI();
 	}
 
-	public void refresh() {
-		urlsAdapter.notifyDataSetChanged();
-	}
-
-	private void initRecyclerView() {
-		binding.urlsRecyclerview.setAdapter(urlsAdapter);
-		binding.urlsRecyclerview.setLayoutManager(new LinearLayoutManager(this));
-		DividerItemDecoration decoration = new DividerItemDecoration(
-				binding.urlsRecyclerview.getContext(),
-				LinearLayoutManager.VERTICAL
-		);
-		decoration.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(this, R.drawable.divider)));
-		binding.urlsRecyclerview.addItemDecoration(decoration);
-	}
-
 	private void loadUrlsFromFile() {
 		urlsStr.clear();
-		String filePath = settingsManager.getRootStoragePath() + File.separator + "req.txt";
+		String filePath = settingsManager.getRootStoragePath() + File.separator + GVars.reqFileName;
 
 		File reqFile = new File(filePath);
 		if (!reqFile.exists()) {
-			Log.e(TAG, "req.txt not found at: " + filePath);
-			showAlert("req.txt not found at: " + filePath);
+			Log.e(TAG, GVars.reqFileName + " not found at: " + filePath);
+			showAlert(GVars.reqFileName + " not found at: " + filePath);
 			return;
 		}
 
@@ -95,7 +81,7 @@ public class DownloadActivity extends AppCompatActivity {
 				urlsStr.add(url);
 			}
 		} catch (IOException e) {
-			showAlert("Error reading req.txt");
+			showAlert("Error reading " + filePath);
 		}
 
 		for (String urlStr : urlsStr) {
@@ -105,19 +91,28 @@ public class DownloadActivity extends AppCompatActivity {
 		urlsAdapter = new UrlAdapter(urlsList);
 	}
 
-	void saveToFile(Set<String> urls, File file) {
-		myUtils.executorService.execute(() -> {
-			try {
-				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-				for (String url : urls) {
-					fileWriter.write(url);
-					fileWriter.newLine();
-				}
-				fileWriter.close();
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}
+	private void initUI() {
+		binding.totalSizeTextview.setText(getString(R.string.total));
+		binding.refreshButton.setOnClickListener(v -> {
+			loadUrlsFromFile();
+			refresh();
 		});
+
+		binding.calcButton.setOnClickListener(v -> calculateTotalSize());
+		binding.downloadButton.setOnClickListener(v -> downloadSelectedUrls());
+
+		binding.urlsRecyclerview.setAdapter(urlsAdapter);
+		binding.urlsRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+		DividerItemDecoration decoration = new DividerItemDecoration(
+				binding.urlsRecyclerview.getContext(),
+				LinearLayoutManager.VERTICAL
+		);
+		decoration.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(this, R.drawable.divider)));
+		binding.urlsRecyclerview.addItemDecoration(decoration);
+	}
+
+	public void refresh() {
+		urlsAdapter.notifyDataSetChanged();
 	}
 
 	private void downloadSelectedUrls() {
@@ -191,21 +186,25 @@ public class DownloadActivity extends AppCompatActivity {
 		});
 	}
 
-	private void initUI() {
-		binding.totalSizeTextview.setText(getString(R.string.total));
-		binding.refreshButton.setOnClickListener(v -> {
-			loadUrlsFromFile();
-			refresh();
-		});
-		binding.calcButton.setOnClickListener(v -> calculateTotalSize());
-		binding.downloadButton.setOnClickListener(v -> downloadSelectedUrls());
-		initRecyclerView();
-	}
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		myUtils.shutdown();
+	}
+
+	void saveToFile(Set<String> urls, File file) {
+		myUtils.executorService.execute(() -> {
+			try {
+				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
+				for (String url : urls) {
+					fileWriter.write(url);
+					fileWriter.newLine();
+				}
+				fileWriter.close();
+			} catch (IOException e) {
+				Log.e(TAG, e.toString());
+			}
+		});
 	}
 
 	private void showAlert(String msg) {
