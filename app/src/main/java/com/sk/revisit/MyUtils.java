@@ -42,7 +42,6 @@ public class MyUtils {
 	private static final int MAX_THREADS = 8;
 	private static final String INDEX_HTML = "index.html";
 	private static final int BUFF_SIZE = 1024 * 8;
-
 	public static final AtomicLong requests = new AtomicLong(0);
 	public static final AtomicLong resolved = new AtomicLong(0);
 	public static final AtomicLong failed = new AtomicLong(0);
@@ -142,8 +141,18 @@ public class MyUtils {
 
 	@NonNull
 	public String getMimeType(String filename) {
+		String mimeType = "application/octet-stream";
 		String extension = MimeTypeMap.getFileExtensionFromUrl(filename);
-		return extension != null ? Objects.requireNonNull(MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)) : "application/octet-stream";
+		if (extension != null) {
+			MimeTypeMap s = MimeTypeMap.getSingleton();
+			if (s != null) {
+				mimeType = s.getMimeTypeFromExtension(extension);
+			}
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+		}
+		return mimeType;
 	}
 
 	public void createMimeTypeMeta(Uri uri) {
@@ -254,6 +263,10 @@ public class MyUtils {
 	public void shutdown() {
 		executorService.shutdown();
 		logger.shutdown();
+	}
+
+	public String getRootPath() {
+		return rootPath;
 	}
 
 	public interface OnCreateLogListener {

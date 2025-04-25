@@ -181,6 +181,6 @@ public class WebpagesActivity extends AppCompatActivity {
 		intent.putExtra("url", filename);
 		startActivity(intent);
 		alert("loading..  " + filename);
-		finish();
+		//finish();
 	}
 }

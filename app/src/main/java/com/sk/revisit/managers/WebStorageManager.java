@@ -46,7 +46,6 @@ public class WebStorageManager {
 		utils.saveUrl(uriStr);
 
 		if (!URLUtil.isNetworkUrl(uriStr)) {
-			//utils.log(TAG, "Not a network URL: " + uriStr);
 			return null;
 		}
 

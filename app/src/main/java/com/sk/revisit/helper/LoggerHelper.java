@@ -2,30 +2,30 @@ package com.sk.revisit.helper;
 
 import android.util.Base64;
 
-import com.sk.revisit.managers.MyLogManager;
+import com.sk.revisit.log.FileLogger;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 public class LoggerHelper {
-	private final MyLogManager myLogManager;
-	private final MyLogManager req;
-	private final MyLogManager resp;
-	private final MyLogManager urls;
+	private final FileLogger myfileLogger;
+	private final FileLogger req;
+	private final FileLogger resp;
+	private final FileLogger urls;
 	private final ExecutorService loggingExecutor;
 
 	public LoggerHelper(android.content.Context context, String rootPath) {
-		this.myLogManager = new MyLogManager(context, rootPath + "/log.txt");
-		this.req = new MyLogManager(context, rootPath + "/req.txt");
-		this.urls = new MyLogManager(context, rootPath + "/urls.txt");
-		this.resp = new MyLogManager(context, rootPath + "/saved.base64");
+		this.myfileLogger = new FileLogger( rootPath + "/log.txt");
+		this.req = new FileLogger( rootPath + "/req.txt");
+		this.urls = new FileLogger( rootPath + "/urls.txt");
+		this.resp = new FileLogger( rootPath + "/saved.base64");
 
 		this.loggingExecutor = Executors.newSingleThreadExecutor(new LoggingThreadFactory());
 	}
 
 	public void log(String msg) {
-		loggingExecutor.execute(() -> myLogManager.log(msg));
+		loggingExecutor.execute(() -> myfileLogger.log(msg));
 	}
 
 	public void saveReq(String msg) {
@@ -45,7 +45,7 @@ public class LoggerHelper {
 		urls.close();
 		req.close();
 		resp.close();
-		myLogManager.close();
+		myfileLogger.close();
 
 	}
 

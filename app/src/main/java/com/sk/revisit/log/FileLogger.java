@@ -1,4 +1,4 @@
-package com.sk.revisit.managers;
+package com.sk.revisit.log;
 
 import android.content.Context;
 
@@ -8,13 +8,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-public class MyLogManager {
-	private static final String TAG = "MyLogManager";
-	public final Context context;
+public class FileLogger {
+	private static final String TAG = "FileLogger";
+	public String filePath;
 	private BufferedWriter writer;
 
-	public MyLogManager(Context context, String filePath) {
-		this.context = context;
+	public FileLogger(String filePath) {
+		this.filePath = filePath;
 		File file = new File(filePath);
 		try {
 			if (!file.exists()) {
@@ -22,7 +22,7 @@ public class MyLogManager {
 			}
 			this.writer = new BufferedWriter(new FileWriter(file, true));
 		} catch (Exception e) {
-			Log.e(TAG, "Error initializing MyLogManager: " + e.getMessage());
+			Log.e(TAG, "Error initializing FileLogger: " + e.getMessage());
 		}
 	}
 

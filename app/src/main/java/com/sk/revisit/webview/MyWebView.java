@@ -10,6 +10,8 @@ import com.sk.revisit.MyUtils;
 import com.sk.revisit.jsconsole.JSConsoleLogger;
 import com.sk.revisit.managers.WebStorageManager;
 
+import java.io.File;
+
 
 public class MyWebView extends WebView {
 
@@ -60,7 +62,7 @@ public class MyWebView extends WebView {
 		webChromeClient.setProgressListener(progressChangeListener);
 		setWebChromeClient(webChromeClient);
 
-		setDownloadListener(new MyDownloadListener(getContext()));
+		setDownloadListener(new MyDownloadListener(getContext(),this));
 	}
 
 	@SuppressLint("SetJavaScriptEnabled")
@@ -69,23 +71,31 @@ public class MyWebView extends WebView {
 		webSettings.setAllowContentAccess(true);
 		webSettings.setAllowFileAccess(true);
 		webSettings.setAllowUniversalAccessFromFileURLs(true);
+		String webViewDBPath = myUtils.getRootPath()+"/webViewCache";
+		File webViewDBF =  new File(webViewDBPath);
+		if(webViewDBF.exists()){
+			webViewDBF.mkdirs();
+		}
+		webSettings.setDatabasePath(webViewDBPath);
 		webSettings.setDatabaseEnabled(true);
 		webSettings.setDomStorageEnabled(true);
 		webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
 		webSettings.setJavaScriptEnabled(true);
 		webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 		webSettings.setUseWideViewPort(true);
+		webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
 		//webSettings.setUserAgentString();
-		setWebContentsDebuggingEnabled(false);
+		//setWebContentsDebuggingEnabled(false);
 	}
 
 	public void destroyWebView() {
-		clearHistory();
+		//clearHistory();
 		//clearCache(true);
 		loadUrl("about:blank");
 		pauseTimers();
 		removeJavascriptInterface("Revisit");
 		removeAllViews();
+		//destroy();
 		//destroy();
 	}
 }
