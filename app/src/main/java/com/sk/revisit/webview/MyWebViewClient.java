@@ -30,7 +30,7 @@ public class MyWebViewClient extends WebViewClient {
 		if (listener != null) {
 			listener.load(url.toString());
 		}
-		return true;
+		return false;
 	}
 
 	public void setUrlLoadListener(UrlLoadListener listener) {

@@ -81,11 +81,11 @@ public class MyWebView extends WebView {
 
 	public void destroyWebView() {
 		clearHistory();
-		clearCache(true);
+		//clearCache(true);
 		loadUrl("about:blank");
 		pauseTimers();
 		removeJavascriptInterface("Revisit");
 		removeAllViews();
-		destroy();
+		//destroy();
 	}
 }

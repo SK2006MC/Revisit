@@ -2,6 +2,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:layout_gravity="end"
+	android:background="#eeeeee"
 	android:orientation="vertical">
 
 	<ScrollView
@@ -41,6 +42,7 @@
 			android:layout_height="48dp"
 			android:contentDescription="@string/execute_the_jscode"
 			android:src="@drawable/baseline_play_arrow_24" />
+
 	</LinearLayout>
 
 	<androidx.recyclerview.widget.RecyclerView
