@@ -71,12 +71,12 @@ public class MyWebView extends WebView {
 		webSettings.setAllowContentAccess(true);
 		webSettings.setAllowFileAccess(true);
 		webSettings.setAllowUniversalAccessFromFileURLs(true);
-		String webViewDBPath = myUtils.getRootPath()+"/webViewCache";
-		File webViewDBF =  new File(webViewDBPath);
-		if(webViewDBF.exists()){
-			webViewDBF.mkdirs();
-		}
-		webSettings.setDatabasePath(webViewDBPath);
+		// String webViewDBPath = myUtils.getRootPath()+"/webViewCache";
+		// File webViewDBF =  new File(webViewDBPath);
+		// if(webViewDBF.exists()){
+		// 	webViewDBF.mkdirs();
+		// }
+		// webSettings.setDatabasePath(webViewDBPath);
 		webSettings.setDatabaseEnabled(true);
 		webSettings.setDomStorageEnabled(true);
 		webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
