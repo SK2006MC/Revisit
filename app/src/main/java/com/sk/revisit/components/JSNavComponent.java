@@ -8,13 +8,13 @@ import android.widget.ScrollView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.sk.revisit.databinding.NavJsBinding;
-import com.sk.revisit.jsconsole.JSAutoCompleteTextView2;
+import com.sk.revisit.jsconsole.JSAutoCompleteTextView;
 import com.sk.revisit.jsconsole.JSConsoleLogger;
 import com.sk.revisit.jsconsole.JSWebViewManager;
 
 public class JSNavComponent extends Component {
 
-	JSAutoCompleteTextView2 jsAutoCompleteTextView;
+	JSAutoCompleteTextView jsAutoCompleteTextView;
 	JSConsoleLogger jsConsoleLogger;
 	JSWebViewManager jsWebViewManager;
 	LinearLayout jsConsoleLayout;

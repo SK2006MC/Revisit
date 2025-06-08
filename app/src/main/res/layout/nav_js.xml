@@ -26,7 +26,7 @@
 		android:layout_height="wrap_content"
 		android:orientation="horizontal">
 
-		<com.sk.revisit.jsconsole.JSAutoCompleteTextView2
+		<com.sk.revisit.jsconsole.JSAutoCompleteTextView
 			android:id="@+id/js_input"
 			android:layout_width="0dp"
 			android:layout_height="fill_parent"
