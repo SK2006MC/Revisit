@@ -1,9 +1,5 @@
 package com.sk.revisit.log;
 
-import android.content.Context;
-
-import com.sk.revisit.log.Log;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

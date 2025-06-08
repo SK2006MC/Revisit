@@ -38,13 +38,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class MyUtils {
+	public static final AtomicLong requests = new AtomicLong(0);
+	public static final AtomicLong resolved = new AtomicLong(0);
+	public static final AtomicLong failed = new AtomicLong(0);
 	private static final String TAG = "MyUtils";
 	private static final int MAX_THREADS = 8;
 	private static final String INDEX_HTML = "index.html";
 	private static final int BUFF_SIZE = 1024 * 8;
-	public static final AtomicLong requests = new AtomicLong(0);
-	public static final AtomicLong resolved = new AtomicLong(0);
-	public static final AtomicLong failed = new AtomicLong(0);
 	public static boolean isNetworkAvailable = false;
 	public static boolean shouldUpdate = false;
 	public final OkHttpClient client;

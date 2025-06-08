@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -19,7 +18,7 @@ import com.sk.revisit.managers.MySettingsManager;
 
 import java.io.File;
 
-public class FirstActivity extends AppCompatActivity {
+public class FirstActivity extends BaseActivity {
 
 	private static final int REQUEST_CODE_PICK_FOLDER = 101;
 	private static final int PERMISSION_REQUEST_STORAGE = 102;
@@ -31,12 +30,15 @@ public class FirstActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		binding = ActivityFirstBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
-		settingsManager = new MySettingsManager(this);
+
+		settingsManager = getRevisitApp().getMySettingsManager();
+
 		binding.pickPath.setOnClickListener((view) -> openDirectoryChooser());
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
 				ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_STORAGE);
 		}
+
 		binding.start.setOnClickListener((view) -> {
 			settingsManager.setIsFirst(false);
 			startActivity(new Intent(this, MainActivity.class));

@@ -27,6 +27,7 @@
 
 		<Button
 			android:id="@+id/pickPath"
+			style="?android:attr/buttonBarButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/pick" />
@@ -58,6 +59,7 @@
 		android:orientation="vertical">
 
 		<Button
+			style="?android:attr/buttonBarButtonStyle"
 			android:id="@+id/start"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"

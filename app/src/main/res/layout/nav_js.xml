@@ -2,7 +2,6 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:layout_gravity="end"
-	android:background="#eeeeee"
 	android:orientation="vertical">
 
 	<ScrollView
@@ -27,7 +26,7 @@
 		android:layout_height="wrap_content"
 		android:orientation="horizontal">
 
-		<com.sk.revisit.jsconsole.JSAutoCompleteTextView
+		<com.sk.revisit.jsconsole.JSAutoCompleteTextView2
 			android:id="@+id/js_input"
 			android:layout_width="0dp"
 			android:layout_height="fill_parent"
@@ -46,10 +45,10 @@
 	</LinearLayout>
 
 	<androidx.recyclerview.widget.RecyclerView
-		android:contentDescription="@string/intercepted_url_log_here"
 		android:id="@+id/urls_log_layout"
 		android:layout_width="match_parent"
 		android:layout_height="200dp"
+		android:contentDescription="@string/intercepted_url_log_here"
 		android:orientation="vertical"
 		android:padding="8dp" />
 

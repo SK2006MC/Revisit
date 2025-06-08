@@ -6,14 +6,13 @@ import android.os.Bundle;
 import android.os.Environment;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.sk.revisit.fragments.SettingsFragment;
 import com.sk.revisit.managers.MySettingsManager;
 
 import java.io.File;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends BaseActivity {
 
 	private static final int REQUEST_CODE_PICK_FOLDER = 101;
 	MySettingsManager settingsManager;

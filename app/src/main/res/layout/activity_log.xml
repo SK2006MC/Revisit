@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:padding="3dp"
 	android:orientation="vertical">
 
 	<LinearLayout
@@ -22,8 +23,8 @@
 			android:id="@+id/refresh_button"
 			android:layout_width="24dp"
 			android:layout_height="24dp"
-			android:background="?attr/selectableItemBackgroundBorderless"
 			android:contentDescription="@string/refresh_logs"
+			style="?android:attr/buttonBarButtonStyle"
 			android:padding="8dp"
 			android:src="@drawable/baseline_refresh_24" />
 
@@ -31,6 +32,7 @@
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/logs_recycler_view"
+		android:padding="4dp"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:layout_weight="1" />

@@ -12,13 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.sk.revisit.adapter.WebpageItemAdapter;
 import com.sk.revisit.data.ItemPage;
 import com.sk.revisit.databinding.ActivityWebpagesBinding;
-import com.sk.revisit.log.Log;
 import com.sk.revisit.managers.MySettingsManager;
 
 import java.io.File;
@@ -33,9 +31,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
-public class WebpagesActivity extends AppCompatActivity {
+public class WebpagesActivity extends BaseActivity {
 
-	private static final String TAG = "WebpagesActivity";
 	private static final String HTML_EXTENSION = ".html";
 	private final ExecutorService executor = Executors.newSingleThreadExecutor();
 	private final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -67,12 +64,10 @@ public class WebpagesActivity extends AppCompatActivity {
 		binding.searchBar.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-				// Not needed for this example
 			}
 
 			@Override
 			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-				// Not needed for this example
 			}
 
 			@Override
@@ -162,15 +157,10 @@ public class WebpagesActivity extends AppCompatActivity {
 		}
 	}
 
-	private void alert(String message) {
-		Log.e(TAG, message);
-		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-	}
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		executor.shutdownNow(); // Shutdown the executor
+		executor.shutdownNow();
 	}
 
 	public void loadPage(View v) {
@@ -181,6 +171,6 @@ public class WebpagesActivity extends AppCompatActivity {
 		intent.putExtra("url", filename);
 		startActivity(intent);
 		alert("loading..  " + filename);
-		//finish();
+		finish();
 	}
 }

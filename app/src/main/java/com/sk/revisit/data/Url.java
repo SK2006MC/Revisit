@@ -2,11 +2,11 @@ package com.sk.revisit.data;
 
 public class Url {
 	public final String url;
+	public final boolean isUpdateAvailable;
 	public long size;
 	public double progress;
 	public boolean isDownloaded;
 	public boolean isSelected;
-	public final boolean isUpdateAvailable;
 	public OnProgressChangeListener listener;
 
 	public Url(String url) {

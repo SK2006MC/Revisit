@@ -4,9 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,9 +36,8 @@ import okhttp3.Headers;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class DownloadActivity extends AppCompatActivity {
+public class DownloadActivity extends BaseActivity {
 
-	private static final String TAG = "DownloadActivity";
 	final String format = "Total Size: %d bytes";
 	private final Set<String> urlsStr = new HashSet<>();
 	private final List<Url> urlsList = new ArrayList<>();
@@ -70,7 +67,7 @@ public class DownloadActivity extends AppCompatActivity {
 		File reqFile = new File(filePath);
 		if (!reqFile.exists()) {
 			Log.e(TAG, GVars.reqFileName + " not found at: " + filePath);
-			showAlert(GVars.reqFileName + " not found at: " + filePath);
+			alert(GVars.reqFileName + " not found at: " + filePath);
 			return;
 		}
 
@@ -81,7 +78,7 @@ public class DownloadActivity extends AppCompatActivity {
 				urlsStr.add(url);
 			}
 		} catch (IOException e) {
-			showAlert("Error reading " + filePath);
+			alert("Error reading " + filePath);
 		}
 
 		for (String urlStr : urlsStr) {
@@ -124,7 +121,7 @@ public class DownloadActivity extends AppCompatActivity {
 		}
 
 		if (selectedUrls.isEmpty()) {
-			showAlert("No URLs selected for download.");
+			alert("No URLs selected for download.");
 			return;
 		}
 
@@ -160,7 +157,7 @@ public class DownloadActivity extends AppCompatActivity {
 
 	private void calculateTotalSize() {
 		if (!MyUtils.isNetworkAvailable) {
-			showAlert("No network available!");
+			alert("No network available!");
 			return;
 		}
 
@@ -186,12 +183,6 @@ public class DownloadActivity extends AppCompatActivity {
 		});
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		myUtils.shutdown();
-	}
-
 	void saveToFile(Set<String> urls, File file) {
 		myUtils.executorService.execute(() -> {
 			try {
@@ -205,9 +196,5 @@ public class DownloadActivity extends AppCompatActivity {
 				Log.e(TAG, e.toString());
 			}
 		});
-	}
-
-	private void showAlert(String msg) {
-		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 	}
 }

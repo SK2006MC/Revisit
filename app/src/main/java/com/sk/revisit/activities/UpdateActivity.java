@@ -2,11 +2,9 @@ package com.sk.revisit.activities;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.sk.revisit.databinding.ActivityUpdateBinding;
 
-public class UpdateActivity extends AppCompatActivity {
+public class UpdateActivity extends BaseActivity {
 
 	ActivityUpdateBinding binding;
 

@@ -16,14 +16,13 @@ public class MyWebChromeClient extends WebChromeClient {
 		this.listener = listener;
 	}
 
-	public void setProgressListener(ProgressChangeListener listener) {
-		this.listener = listener;
-	}
-
 	@Override
 	public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-		jsLogger.logConsoleMessage(consoleMessage);
-		return true;
+		if (jsLogger != null) {
+			jsLogger.logConsoleMessage(consoleMessage);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -32,6 +31,10 @@ public class MyWebChromeClient extends WebChromeClient {
 		if (listener != null) {
 			listener.onChange(progress);
 		}
+	}
+
+	public void setProgressListener(ProgressChangeListener listener) {
+		this.listener = listener;
 	}
 
 	public interface ProgressChangeListener {

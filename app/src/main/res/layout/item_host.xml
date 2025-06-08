@@ -7,9 +7,9 @@
 
 	<ImageView
 		android:id="@+id/expandhost"
-		android:contentDescription="@string/click_to_expand_this_host_s_urls"
 		android:layout_width="20dp"
 		android:layout_height="20dp"
+		android:contentDescription="@string/click_to_expand_this_host_s_urls"
 		android:src="@drawable/baseline_expand_more_24" />
 
 	<CheckBox
@@ -35,8 +35,8 @@
 		android:layout_height="wrap_content" />
 
 	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/urls"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+			android:id="@+id/urls"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent" />
 
 </LinearLayout>

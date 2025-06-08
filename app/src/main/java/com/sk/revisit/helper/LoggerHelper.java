@@ -16,10 +16,10 @@ public class LoggerHelper {
 	private final ExecutorService loggingExecutor;
 
 	public LoggerHelper(android.content.Context context, String rootPath) {
-		this.myfileLogger = new FileLogger( rootPath + "/log.txt");
-		this.req = new FileLogger( rootPath + "/req.txt");
-		this.urls = new FileLogger( rootPath + "/urls.txt");
-		this.resp = new FileLogger( rootPath + "/saved.base64");
+		this.myfileLogger = new FileLogger(rootPath + "/log.txt");
+		this.req = new FileLogger(rootPath + "/req.txt");
+		this.urls = new FileLogger(rootPath + "/urls.txt");
+		this.resp = new FileLogger(rootPath + "/saved.base64");
 
 		this.loggingExecutor = Executors.newSingleThreadExecutor(new LoggingThreadFactory());
 	}

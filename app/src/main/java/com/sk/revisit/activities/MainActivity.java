@@ -1,22 +1,17 @@
 package com.sk.revisit.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Bundle;
-import android.widget.EditText;
-import android.widget.ImageButton;
+import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -24,12 +19,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.sk.revisit.MyUtils;
 import com.sk.revisit.R;
+import com.sk.revisit.Revisit;
+import com.sk.revisit.components.JSNavComponent;
+import com.sk.revisit.components.UrlBarComponent;
 import com.sk.revisit.databinding.ActivityMainBinding;
 import com.sk.revisit.databinding.NavHeaderBinding;
-import com.sk.revisit.databinding.NavJsBinding;
-import com.sk.revisit.jsconsole.JSAutoCompleteTextView;
-import com.sk.revisit.jsconsole.JSConsoleLogger;
-import com.sk.revisit.jsconsole.JSWebViewManager;
 import com.sk.revisit.log.Log;
 import com.sk.revisit.managers.MySettingsManager;
 import com.sk.revisit.webview.MyWebView;
@@ -37,19 +31,17 @@ import com.sk.revisit.webview.MyWebView;
 import java.io.File;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
-	private static final String TAG = MainActivity.class.getSimpleName();
 	final String urlLogsFormat = "Requested: %d\nResolved: %d\nFailed: %d";
+	JSNavComponent jsNavComponent;
+	UrlBarComponent urlBarComponent;
+	Revisit revisitApp;
 	private TextView urlLogsTextView;
 	private MySettingsManager settingsManager;
-	private EditText urlEditText;
 	private MyWebView mainWebView;
-	private LinearLayout jsConsoleLayout, backgroundLinearLayout;
-	private JSAutoCompleteTextView jsInputTextView;
+	private LinearLayout backgroundLinearLayout;
 	private SwitchCompat keepUpToDateSwitch;
-	private JSConsoleLogger jsConsoleLogger;
-	private JSWebViewManager jsWebViewManager;
 	private MyUtils myUtils;
 	private ActivityMainBinding binding;
 	private ConnectivityManager.NetworkCallback networkCallback;
@@ -57,9 +49,10 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		settingsManager = new MySettingsManager(this);
-		myUtils = new MyUtils(this, settingsManager.getRootStoragePath());
-		myUtils.log(TAG, "hi");
+
+		revisitApp = getRevisitApp();
+		myUtils = revisitApp.getMyUtils();
+		settingsManager = revisitApp.getMySettingsManager();
 
 		if (settingsManager.getIsFirst()) {
 			startMyActivity(FirstActivity.class);
@@ -81,65 +74,37 @@ public class MainActivity extends AppCompatActivity {
 		mainWebView = binding.myWebView;
 
 		NavHeaderBinding navHeaderBinding = NavHeaderBinding.bind(binding.myNav.getHeaderView(0));
-		urlEditText = navHeaderBinding.urlEditText;
 		keepUpToDateSwitch = navHeaderBinding.keepUptodate;
 		backgroundLinearLayout = navHeaderBinding.background;
 		urlLogsTextView = navHeaderBinding.urlLogs;
 		urlLogsTextView.setOnClickListener((v) -> urlLogsTextView.setText(String.format(Locale.ENGLISH, urlLogsFormat, MyUtils.requests.get(), MyUtils.resolved.get(), MyUtils.failed.get())));
+
 		SwitchCompat useInternetSwitch = navHeaderBinding.useInternet;
 		useInternetSwitch.setOnCheckedChangeListener((b, s) -> {
 			MyUtils.isNetworkAvailable = s;
 			keepUpToDateSwitch.setEnabled(s);
 		});
 
-		NavJsBinding jsConsole = binding.jsnav;
-		jsInputTextView = jsConsole.jsInput;
-		jsConsoleLayout = jsConsole.consoleLayout;
-
-		ScrollView jsConsoleScrollView = jsConsole.consoleScrollView;
-		ImageButton executeJsButton = jsConsole.executeJsBtn;
-		jsConsoleLogger = new JSConsoleLogger(this, jsConsoleLayout, jsConsoleScrollView);
-		jsWebViewManager = new JSWebViewManager(this, mainWebView, jsConsoleLogger);
-
-		//init urlEditText
-		urlEditText.setOnFocusChangeListener((view, hasFocus) -> {
-			if (hasFocus) return;
-			try {
-				mainWebView.loadUrl(urlEditText.getText().toString());
-			} catch (Exception e) {
-				showAlert(e.toString());
-			}
-		});
-
-		urlEditText.setOnEditorActionListener((v, actionId, event) -> {
-			try {
-				mainWebView.loadUrl(urlEditText.getText().toString());
-			} catch (Exception e) {
-				showAlert(e.toString());
-			}
-			return true;
-		});
-
-		//init js execute button
-		executeJsButton.setOnClickListener(v -> {
-			String code = jsInputTextView.getText().toString();
-			jsWebViewManager.executeJS(code, r -> jsConsoleLogger.logConsoleMessage(">" + code + "\n" + r + "\n"));
-		});
-
-		executeJsButton.setOnLongClickListener(arg0 -> {
-			jsConsoleLayout.removeAllViewsInLayout();
-			return true;
-		});
-
-		jsInputTextView.setWebView(mainWebView);
 		keepUpToDateSwitch.setOnCheckedChangeListener((v, c) -> MyUtils.shouldUpdate = c);
+
+		urlBarComponent = new UrlBarComponent(this, navHeaderBinding.urlEditText, mainWebView);
+		jsNavComponent = new JSNavComponent(this, binding.jsnav, mainWebView);
 	}
 
 	private void initWebView(@NonNull MyWebView webView) {
 		webView.setMyUtils(myUtils);
-		webView.setJsConsoleLogger(jsConsoleLogger);
-		webView.setUrlLoadListener(url -> runOnUiThread(() -> urlEditText.setText(url)));
-		webView.setProgressChangeListener(progress -> binding.pageLoad.setProgress(progress));
+		webView.setJSNavComponent(jsNavComponent);
+		webView.setUrlLoadListener(url -> urlBarComponent.setText(url));
+
+		webView.setProgressChangeListener(progress -> {
+			binding.pageLoad.setProgress(progress);
+			if(progress==100)
+				binding.pageLoad.setVisibility(View.GONE);
+			else if(progress==0)
+				binding.pageLoad.setVisibility(View.VISIBLE);
+
+		});
+
 		webView.init();
 	}
 
@@ -193,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 			} else if (id == R.id.nav_about) {
 				startMyActivity(AboutActivity.class);
 			} else if (id == R.id.nav_web) {
-				startMyActivity(WebpagesActivity.class);
+				startMyActivity(WebpagesActivity.class, true);
 			} else if (id == R.id.nav_logs) {
 				startMyActivity(LogActivity.class);
 			} else if (id == R.id.nav_utils) {
@@ -224,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 						finish();
 					}
 				} catch (Exception e) {
-					showAlert(e.toString());
+					alert(e.toString());
 				}
 			}
 		});
@@ -237,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
 			String url = getIntent().getStringExtra("url");
 			if (url != null) {
 				mainWebView.loadUrl(url);
-				urlEditText.setText(url);
+				urlBarComponent.setText(url);
 			}
 		}
 	}
@@ -245,27 +210,18 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		myUtils.shutdown();
 		mainWebView.destroyWebView();
 
 		File saveLogPath = new File(settingsManager.getRootStoragePath() + "/log2.txt");
 		try {
 			Log.saveLog(saveLogPath);
 		} catch (Exception e) {
-			showAlert(e.toString());
+			alert(e.toString());
 		}
 
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		if (networkCallback != null) {
 			connectivityManager.unregisterNetworkCallback(networkCallback);
 		}
-	}
-
-	private void showAlert(String message) {
-		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-	}
-
-	private void startMyActivity(Class<?> activityClass) {
-		startActivity(new Intent(this, activityClass));
 	}
 }

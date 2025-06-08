@@ -11,9 +11,9 @@
 
 		<EditText
 			android:id="@+id/search_bar"
-			android:autofillHints="name"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:autofillHints="name"
 			android:hint="@string/enter_keywords_here"
 			android:inputType="text" />
 

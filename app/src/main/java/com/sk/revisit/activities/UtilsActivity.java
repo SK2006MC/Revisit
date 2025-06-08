@@ -2,16 +2,14 @@ package com.sk.revisit.activities;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.sk.revisit.MyUtils;
 import com.sk.revisit.databinding.ActivityUtilsBinding;
 import com.sk.revisit.managers.MySettingsManager;
 
-public class UtilsActivity extends AppCompatActivity {
+public class UtilsActivity extends BaseActivity {
 
 	ActivityUtilsBinding binding;
 	MyUtils utils;
@@ -34,9 +32,5 @@ public class UtilsActivity extends AppCompatActivity {
 				alert(e.toString());
 			}
 		});
-	}
-
-	private void alert(String msg) {
-		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
 	}
 }

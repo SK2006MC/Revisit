@@ -93,13 +93,6 @@ public class JSAutoCompleteTextView3 extends AppCompatAutoCompleteTextView {
 		webView = null;
 	}
 
-	public void setWebView(WebView webView) {
-		if (webView == null) {
-			throw new IllegalArgumentException("WebView cannot be null.");
-		}
-		this.webView = webView;
-	}
-
 	private void initTextChangedListener() {
 		addTextChangedListener(
 				new TextWatcher() {

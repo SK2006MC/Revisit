@@ -2,7 +2,6 @@ package com.sk.revisit.activities;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,7 +15,7 @@ import com.sk.revisit.log.Log;
 import java.util.List;
 import java.util.Objects;
 
-public class LogActivity extends AppCompatActivity {
+public class LogActivity extends BaseActivity {
 
 	private ActivityLogBinding binding;
 	private LogRecyclerAdapter adapter;

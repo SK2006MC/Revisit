@@ -7,10 +7,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.sk.revisit.MyUtils;
+import com.sk.revisit.components.JSNavComponent;
 import com.sk.revisit.jsconsole.JSConsoleLogger;
 import com.sk.revisit.managers.WebStorageManager;
-
-import java.io.File;
 
 
 public class MyWebView extends WebView {
@@ -19,6 +18,7 @@ public class MyWebView extends WebView {
 	MyWebViewClient.UrlLoadListener urlLoadListener;
 	MyWebChromeClient.ProgressChangeListener progressChangeListener;
 	JSConsoleLogger jsConsoleLogger;
+	JSNavComponent jsNavComponent;
 
 
 	public MyWebView(Context context) {
@@ -44,8 +44,9 @@ public class MyWebView extends WebView {
 		this.urlLoadListener = urlLoadListener;
 	}
 
-	public void setJsConsoleLogger(JSConsoleLogger jsConsoleLogger) {
-		this.jsConsoleLogger = jsConsoleLogger;
+	public void setJSNavComponent(JSNavComponent jsComponent) {
+		this.jsNavComponent = jsComponent;
+		this.jsConsoleLogger = jsNavComponent.getJsConsoleLogger();
 	}
 
 	public void setProgressChangeListener(MyWebChromeClient.ProgressChangeListener progressChangeListener) {
@@ -62,7 +63,7 @@ public class MyWebView extends WebView {
 		webChromeClient.setProgressListener(progressChangeListener);
 		setWebChromeClient(webChromeClient);
 
-		setDownloadListener(new MyDownloadListener(getContext(),this));
+		setDownloadListener(new MyDownloadListener(getContext(), this));
 	}
 
 	@SuppressLint("SetJavaScriptEnabled")
@@ -95,7 +96,6 @@ public class MyWebView extends WebView {
 		pauseTimers();
 		removeJavascriptInterface("Revisit");
 		removeAllViews();
-		//destroy();
-		//destroy();
+		destroy();
 	}
 }
