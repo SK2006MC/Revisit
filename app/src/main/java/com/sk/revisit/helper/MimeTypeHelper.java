@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.sk.revisit.MyUtils;
+import com.sk.revisit.Revisit;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -39,7 +40,7 @@ public class MimeTypeHelper {
 	 */
 	public void createMimeTypeMeta(Uri uri) {
 
-		if (!MyUtils.isNetworkAvailable) {
+		if (!Revisit.isNetworkAvailable) {
 			Log.w(TAG, "Network not available. Skipping MIME type metadata creation.");
 			return;
 		}

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.sk.revisit.GVars;
 import com.sk.revisit.MyUtils;
 import com.sk.revisit.R;
+import com.sk.revisit.Revisit;
 import com.sk.revisit.adapter.UrlAdapter;
 import com.sk.revisit.data.Url;
 import com.sk.revisit.databinding.ActivityDownloadBinding;
@@ -156,7 +157,7 @@ public class DownloadActivity extends BaseActivity {
 	}
 
 	private void calculateTotalSize() {
-		if (!MyUtils.isNetworkAvailable) {
+		if (!Revisit.isNetworkAvailable) {
 			alert("No network available!");
 			return;
 		}

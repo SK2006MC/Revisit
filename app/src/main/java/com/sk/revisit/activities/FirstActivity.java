@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 
 import com.sk.revisit.databinding.ActivityFirstBinding;
 import com.sk.revisit.managers.MySettingsManager;
+import com.sk.revisit.helper.PermissionHelper;
 
 import java.io.File;
 
@@ -34,8 +35,8 @@ public class FirstActivity extends BaseActivity {
 		settingsManager = getRevisitApp().getMySettingsManager();
 
 		binding.pickPath.setOnClickListener((view) -> openDirectoryChooser());
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-				ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+		if (!PermissionHelper.hasPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) ||
+				!PermissionHelper.hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_STORAGE);
 		}
 

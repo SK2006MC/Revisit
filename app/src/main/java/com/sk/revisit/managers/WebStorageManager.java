@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.sk.revisit.MyUtils;
+import com.sk.revisit.Revisit;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -34,7 +35,7 @@ public class WebStorageManager {
 
 	@Nullable
 	public WebResourceResponse getResponse(@NonNull WebResourceRequest request) {
-		MyUtils.requests.incrementAndGet();
+		Revisit.requests.incrementAndGet();
 
 		if (!GET_METHOD.equals(request.getMethod())) {
 			//utils.log(TAG, "Request method is not GET: " + request.getMethod());
@@ -60,12 +61,12 @@ public class WebStorageManager {
 		//utils.log(TAG,localPath+",exists="+fileExists);
 
 		if (fileExists) {
-			if (MyUtils.shouldUpdate && MyUtils.isNetworkAvailable) {
+			if (Revisit.shouldUpdate && Revisit.isNetworkAvailable) {
 				utils.download(uri, createDownloadListener(uriStr, localPath));
 			}
 			return loadFromLocal(localFile, uri);
 		} else {
-			if (MyUtils.isNetworkAvailable) {
+			if (Revisit.isNetworkAvailable) {
 				utils.download(uri, createDownloadListener(uriStr, localPath));
 				return loadFromLocal(localFile, uri);
 			}
@@ -86,7 +87,7 @@ public class WebStorageManager {
 
 			@Override
 			public void onSuccess(File file, Headers headers) {
-				MyUtils.resolved.incrementAndGet();
+				Revisit.resolved.incrementAndGet();
 //				utils.saveResp(String.format(Locale.ENGLISH,"[\"%s\",\"%s\",%d,\"%s\"]", uriStr, localPath, file.length(), headers.toString()));
 			}
 
@@ -97,7 +98,7 @@ public class WebStorageManager {
 
 			@Override
 			public void onFailure(Exception e) {
-				MyUtils.failed.incrementAndGet();
+				Revisit.failed.incrementAndGet();
 				utils.saveReq(uriStr);
 //				utils.log(TAG, "Download failed for: " + uriStr, e);
 			}
@@ -114,13 +115,13 @@ public class WebStorageManager {
 		String localFilePath = localFile.getAbsolutePath();
 		try {
 			String mimeType = getMimeType(localFilePath, uri);
-			MyUtils.resolved.incrementAndGet();
+			Revisit.resolved.incrementAndGet();
 			InputStream inputStream = new FileInputStream(localFile);
 			WebResourceResponse response = new WebResourceResponse(mimeType, UTF_8, inputStream);
 			response.setResponseHeaders(Collections.singletonMap("Access-Control-Allow-Origin", "*"));
 			return response;
 		} catch (FileNotFoundException e) {
-			MyUtils.failed.incrementAndGet();
+			Revisit.failed.incrementAndGet();
 			//utils.log(TAG, "File not found: " + localFile.getAbsolutePath(), e);
 			return null;
 		}

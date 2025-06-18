@@ -76,15 +76,15 @@ public class MainActivity extends BaseActivity {
 		keepUpToDateSwitch = navHeaderBinding.keepUptodate;
 		backgroundLinearLayout = navHeaderBinding.background;
 		urlLogsTextView = navHeaderBinding.urlLogs;
-		urlLogsTextView.setOnClickListener((v) -> urlLogsTextView.setText(String.format(Locale.ENGLISH, urlLogsFormat, MyUtils.requests.get(), MyUtils.resolved.get(), MyUtils.failed.get())));
+		urlLogsTextView.setOnClickListener((v) -> urlLogsTextView.setText(String.format(Locale.ENGLISH, urlLogsFormat, Revisit.requests.get(), Revisit.resolved.get(), Revisit.failed.get())));
 
 		SwitchCompat useInternetSwitch = navHeaderBinding.useInternet;
 		useInternetSwitch.setOnCheckedChangeListener((b, s) -> {
-			MyUtils.isNetworkAvailable = s;
+			Revisit.isNetworkAvailable = s;
 			keepUpToDateSwitch.setEnabled(s);
 		});
 
-		keepUpToDateSwitch.setOnCheckedChangeListener((v, c) -> MyUtils.shouldUpdate = c);
+		keepUpToDateSwitch.setOnCheckedChangeListener((v, c) -> Revisit.shouldUpdate = c);
 
 		urlBarComponent = new UrlBarComponent(this, navHeaderBinding.urlEditText, mainWebView);
 		jsNavComponent = new JSNavComponent(this, binding.jsnav, mainWebView);

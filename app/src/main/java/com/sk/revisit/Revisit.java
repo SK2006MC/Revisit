@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.sk.revisit.activities.BaseActivity;
 import com.sk.revisit.managers.MySettingsManager;
 
@@ -16,11 +18,18 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Revisit extends Application {
 
+	public static final AtomicLong requests = new AtomicLong(0);
+	public static final AtomicLong resolved = new AtomicLong(0);
+	public static final AtomicLong failed = new AtomicLong(0);
 	private static final Handler MAIN_THREAD_HANDLER = new Handler(Looper.getMainLooper());
-	private static final String TAG = Revisit.class.getSimpleName();
+	public static final String TAG = Revisit.class.getSimpleName();
+	public static final int MAX_THREADS = 8;
+	public static boolean isNetworkAvailable = false;
+	public static boolean shouldUpdate = false;
 	MyUtils myUtils;
 	MySettingsManager mySettingsManager;
 	BaseActivity lastActivity;
@@ -47,26 +56,22 @@ public class Revisit extends Application {
 			mPreviousExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
 
 			CrashAnalyticsThreadHandler crashHandler = new CrashAnalyticsThreadHandler(this);
-			if (crashHandler != null) {
-				Thread.setDefaultUncaughtExceptionHandler(crashHandler);
-				Log.d(TAG, "Crash analytics initialized successfully");
+			Thread.setDefaultUncaughtExceptionHandler(crashHandler);
+			Log.d(TAG, "Crash analytics initialized successfully");
 
-				// Post a check to main thread to verify handler is set
-				MAIN_THREAD_HANDLER.post(new Runnable() {
-					@Override
-					public void run() {
-						Thread.UncaughtExceptionHandler currentHandler =
-								Thread.getDefaultUncaughtExceptionHandler();
-						if (currentHandler instanceof CrashAnalyticsThreadHandler) {
-							Log.d(TAG, "Crash handler verified on main thread");
-						} else {
-							Log.w(TAG, "Crash handler not set on main thread");
-						}
+			// Post a check to main thread to verify handler is set
+			MAIN_THREAD_HANDLER.post(new Runnable() {
+				@Override
+				public void run() {
+					Thread.UncaughtExceptionHandler currentHandler =
+							Thread.getDefaultUncaughtExceptionHandler();
+					if (currentHandler instanceof CrashAnalyticsThreadHandler) {
+						Log.d(TAG, "Crash handler verified on main thread");
+					} else {
+						Log.w(TAG, "Crash handler not set on main thread");
 					}
-				});
-			} else {
-				Log.e(TAG, "Failed to create crash handler");
-			}
+				}
+			});
 		} catch (Exception e) {
 			Log.e(TAG, "Error initializing crash analytics", e);
 			// Restore previous handler if initialization fails
@@ -123,7 +128,7 @@ public class Revisit extends Application {
 		}
 
 		@Override
-		public void uncaughtException(Thread thread, Throwable ex) {
+		public void uncaughtException(@NonNull Thread thread, @NonNull Throwable ex) {
 			try {
 				// Get stack trace as string
 				Writer result = new StringWriter();

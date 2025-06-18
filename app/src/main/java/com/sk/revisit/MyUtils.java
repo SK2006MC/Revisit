@@ -4,12 +4,12 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
 
 import com.sk.revisit.data.UrlLog;
+import com.sk.revisit.helper.FileHelper;
 import com.sk.revisit.helper.LoggerHelper;
 import com.sk.revisit.helper.MimeTypeHelper;
 import com.sk.revisit.helper.NetHelper;
@@ -27,7 +27,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,15 +37,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class MyUtils {
-	public static final AtomicLong requests = new AtomicLong(0);
-	public static final AtomicLong resolved = new AtomicLong(0);
-	public static final AtomicLong failed = new AtomicLong(0);
 	private static final String TAG = "MyUtils";
-	private static final int MAX_THREADS = 8;
-	private static final String INDEX_HTML = "index.html";
 	private static final int BUFF_SIZE = 1024 * 8;
-	public static boolean isNetworkAvailable = false;
-	public static boolean shouldUpdate = false;
 	public final OkHttpClient client;
 	public final ExecutorService executorService;
 	private final SQLiteDBM dbm;
@@ -60,7 +52,7 @@ public class MyUtils {
 	public MyUtils(Context context, String rootPath) {
 		this.rootPath = rootPath;
 		this.context = context;
-		this.executorService = Executors.newFixedThreadPool(MAX_THREADS, new CustomThreadFactory());
+		this.executorService = Executors.newFixedThreadPool(Revisit.MAX_THREADS, new CustomThreadFactory());
 		this.client = new OkHttpClient.Builder()
 				.connectTimeout(10, TimeUnit.SECONDS)
 				.readTimeout(30, TimeUnit.SECONDS)
@@ -112,10 +104,11 @@ public class MyUtils {
 	 * Builds a local file path based on the given URI.
 	 */
 	public String buildLocalPath(@NonNull Uri uri) {
-		String lastPathSegment = uri.getLastPathSegment();
 		String host = uri.getAuthority();
 		String path = uri.getPath();
 		String query = uri.getQuery();
+		String lastPathSegment = uri.getLastPathSegment();
+		StringBuilder localPathBuilder = new StringBuilder();
 
 		if (query != null) {
 			query = Base64.encodeToString(query.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
@@ -125,18 +118,24 @@ public class MyUtils {
 			log(TAG, "Invalid URI: Host or path is empty.");
 			return null;
 		}
-
-		String localPath = rootPath + File.separator + host + path;
-
-		if (lastPathSegment == null || !lastPathSegment.contains(".")) {
-			return localPath.endsWith("/") ? localPath + INDEX_HTML : localPath + File.separator + INDEX_HTML;
-		}
+		char sep = File.separatorChar;
+		localPathBuilder.append(rootPath)
+				.append(sep)
+				.append(host)
+				.append(sep)
+				.append(path);
 
 		if (query != null) {
-			localPath = localPath + ':' + query;
+			localPathBuilder.append('_').append(query);
 		}
 
-		return localPath;
+		if (lastPathSegment == null || !lastPathSegment.contains(".")) {
+			localPathBuilder.append("/index.html");
+		}
+
+		String localPath = localPathBuilder.toString();
+
+		return localPath.replaceAll("/+", "/");
 	}
 
 	@NonNull
@@ -181,7 +180,7 @@ public class MyUtils {
 
 			File localFile = new File(localFilePath);
 
-			if (localFile.exists() && !MyUtils.shouldUpdate) {
+			if (localFile.exists() && !Revisit.shouldUpdate) {
 				listener.onEnd(localFile);
 				return;
 			}
@@ -195,13 +194,13 @@ public class MyUtils {
 				}
 
 				@Override
-				public void onResponse(@NonNull Call call, @NonNull Response response) {
+				public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
 					if (!response.isSuccessful() || response.body() == null) {
 						listener.onFailure(new IOException("Download failed. Response code: " + response.code()));
 						return;
 					}
 
-					File outfile = prepareFile(localFilePath);
+					File outfile = FileHelper.prepareFile(localFilePath);
 					long contentLength = response.body().contentLength();
 					if (contentLength == 0) {
 						contentLength = 1;
@@ -238,23 +237,6 @@ public class MyUtils {
 				}
 			});
 		});
-	}
-
-	public File prepareFile(String filepath) {
-		try {
-			File file = new File(filepath);
-			File parentDir = file.getParentFile();
-			if (parentDir != null && !parentDir.exists()) {
-				parentDir.mkdirs();
-			}
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			return file;
-		} catch (Exception e) {
-			Log.e(TAG, e.toString());
-			return null;
-		}
 	}
 
 	/**
