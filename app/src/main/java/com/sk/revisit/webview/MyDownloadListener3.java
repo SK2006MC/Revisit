@@ -17,7 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.sk.revisit.log.Log;
+import android.util.Log;
 import com.sk.revisit.managers.MySettingsManager;
 
 import java.io.File;

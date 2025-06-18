@@ -13,7 +13,7 @@
 			android:id="@+id/pageLoad"
 			android:layout_width="match_parent"
 			android:layout_height="20dp"
-			android:progressTint="@color/teal_200" />
+			app:indicatorColor="@color/teal_200" />
 
 		<com.sk.revisit.webview.MyWebView
 			android:id="@+id/myWebView"
@@ -31,8 +31,16 @@
 		app:headerLayout="@layout/nav_header"
 		app:menu="@menu/nav_menu" />
 
-	<include
-		android:id="@+id/jsnav"
-		layout="@layout/nav_js" />
+	<com.google.android.material.navigation.NavigationView
+		android:id="@+id/nav2"
+		android:layout_width="240dp"
+		android:layout_height="match_parent"
+		android:layout_gravity="end">
+
+		<include
+			android:id="@+id/jsnav"
+			layout="@layout/nav_js" />
+
+	</com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

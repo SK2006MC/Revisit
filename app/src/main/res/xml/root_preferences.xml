@@ -24,8 +24,8 @@
 
 		<EditTextPreference
 			app:defaultValue="3000"
-			app:key="timeoutDuration"
-			app:title="Max TimeOut in ms" />
+			app:key="webTimeoutDuration"
+			app:title="Max Web TimeOut in ms" />
 
 	</PreferenceCategory>
 

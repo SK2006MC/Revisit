@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
@@ -12,7 +13,6 @@ import com.sk.revisit.data.UrlLog;
 import com.sk.revisit.helper.LoggerHelper;
 import com.sk.revisit.helper.MimeTypeHelper;
 import com.sk.revisit.helper.NetHelper;
-import com.sk.revisit.log.Log;
 import com.sk.revisit.managers.SQLiteDBM;
 
 import java.io.BufferedInputStream;

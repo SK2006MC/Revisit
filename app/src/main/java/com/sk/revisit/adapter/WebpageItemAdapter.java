@@ -18,7 +18,6 @@ public class WebpageItemAdapter extends RecyclerView.Adapter<WebpageItemAdapter.
 	private List<ItemPage> webPages;
 	private List<ItemPage> webPagesOrg;
 
-
 	public WebpageItemAdapter(List<ItemPage> webPages) {
 		this.webPagesOrg = webPages;
 		this.webPages = webPages;
@@ -27,6 +26,10 @@ public class WebpageItemAdapter extends RecyclerView.Adapter<WebpageItemAdapter.
 	public void setWebPagesOrg(List<ItemPage> webPagesOrg) {
 		this.webPagesOrg = webPagesOrg;
 		this.webPages = webPagesOrg;
+	}
+
+	public void sort(){
+		//webPages.sort(ItemPage::getSize);
 	}
 
 	public void setWebPages(List<ItemPage> newWebpages) {

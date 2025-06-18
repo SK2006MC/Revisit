@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 
-import com.sk.revisit.log.Log;
+import android.util.Log;
 
 import org.json.JSONArray;
 

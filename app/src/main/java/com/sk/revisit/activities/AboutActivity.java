@@ -13,7 +13,5 @@ public class AboutActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		binding = ActivityAboutBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
-
-		getActionBar().setTitle(TAG);
 	}
 }

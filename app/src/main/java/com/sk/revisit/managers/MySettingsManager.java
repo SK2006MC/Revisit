@@ -6,10 +6,24 @@ import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
 
 public class MySettingsManager {
-	private static final String KEY_ROOT_PATH = "root_path";
-	private static final String KEY_DN_PATH = "dn_path";
-	private static final String KEY_IS_FIRST = "is_first";
+	private static final String
+			KEY_ROOT_PATH = "rootPath",
+			KEY_THEME = "theme",
+			KEY_DN_PATH = "dnPath",
+			KEY_IS_FIRST = "isFirst",
+			KEY_USR_AGENT_STR = "userAgentCustom",
+			KEY_USR_AGENT_DEF = "userAgentDefaults",
+			KEY_MAX_WEB_TIMEOUT = "webTimeoutDuration";
+
 	private final SharedPreferences prefs;
+
+	void setTheme(String val) {
+		putStr(KEY_THEME, val);
+	}
+
+	void setUserAgentCustom(String val) {
+		putStr(KEY_USR_AGENT_STR, val);
+	}
 
 	public MySettingsManager(Context context) {
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -20,7 +34,7 @@ public class MySettingsManager {
 	}
 
 	public void setRootStoragePath(String folderPath) {
-		prefs.edit().putString(KEY_ROOT_PATH, folderPath).apply();
+		putStr(KEY_ROOT_PATH, folderPath);
 	}
 
 	public String getDownloadStoragePath() {
@@ -32,7 +46,18 @@ public class MySettingsManager {
 	}
 
 	public void setIsFirst(boolean o) {
-		prefs.edit().putBoolean(KEY_IS_FIRST, o).apply();
+		putBoolean(KEY_IS_FIRST, o);
 	}
 
+	void putStr(String key, String val) {
+		prefs.edit().putString(key, val).apply();
+	}
+
+	void putInt(String key, int val) {
+		prefs.edit().putInt(key, val).apply();
+	}
+
+	void putBoolean(String key, boolean val) {
+		prefs.edit().putBoolean(key, val).apply();
+	}
 }

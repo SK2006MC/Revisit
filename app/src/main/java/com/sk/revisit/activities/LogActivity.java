@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sk.revisit.R;
 import com.sk.revisit.adapter.LogRecyclerAdapter;
 import com.sk.revisit.databinding.ActivityLogBinding;
-import com.sk.revisit.log.Log;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,14 +37,14 @@ public class LogActivity extends BaseActivity {
 		dividerItemDecoration.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(this, R.drawable.divider)));
 		recyclerView.addItemDecoration(dividerItemDecoration);
 
-		List<String[]> logs = Log.getLogs();
-		adapter = new LogRecyclerAdapter(logs);
-		recyclerView.setAdapter(adapter);
+		// List<String[]> logs = Log.getLogs();
+		// adapter = new LogRecyclerAdapter(logs);
+		// recyclerView.setAdapter(adapter);
 	}
 
 	private void refreshLogs() {
-		List<String[]> newLogs = Log.getLogs();
-		adapter.setLogs(newLogs);
-		adapter.notifyDataSetChanged();
+		// List<String[]> newLogs = Log.getLogs();
+		// adapter.setLogs(newLogs);
+		// adapter.notifyDataSetChanged();
 	}
 }

@@ -15,7 +15,7 @@ import com.sk.revisit.R;
 import com.sk.revisit.adapter.UrlAdapter;
 import com.sk.revisit.data.Url;
 import com.sk.revisit.databinding.ActivityDownloadBinding;
-import com.sk.revisit.log.Log;
+import android.util.Log;
 import com.sk.revisit.managers.MySettingsManager;
 
 import java.io.BufferedReader;

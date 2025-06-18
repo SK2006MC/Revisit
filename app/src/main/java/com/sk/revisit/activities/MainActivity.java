@@ -24,7 +24,7 @@ import com.sk.revisit.components.JSNavComponent;
 import com.sk.revisit.components.UrlBarComponent;
 import com.sk.revisit.databinding.ActivityMainBinding;
 import com.sk.revisit.databinding.NavHeaderBinding;
-import com.sk.revisit.log.Log;
+import android.util.Log;
 import com.sk.revisit.managers.MySettingsManager;
 import com.sk.revisit.webview.MyWebView;
 
@@ -94,15 +94,17 @@ public class MainActivity extends BaseActivity {
 	private void initWebView(@NonNull MyWebView webView) {
 		webView.setMyUtils(myUtils);
 		webView.setJSNavComponent(jsNavComponent);
-		webView.setUrlLoadListener(url -> urlBarComponent.setText(url));
+		webView.setUrlLoadListener(url -> {
+			urlBarComponent.setText(url);
+			urlLogsTextView.performClick();
+		});
 
 		webView.setProgressChangeListener(progress -> {
 			binding.pageLoad.setProgress(progress);
 			if(progress==100)
 				binding.pageLoad.setVisibility(View.GONE);
-			else if(progress==0)
+			else
 				binding.pageLoad.setVisibility(View.VISIBLE);
-
 		});
 
 		webView.init();
@@ -121,7 +123,7 @@ public class MainActivity extends BaseActivity {
 			public void onAvailable(@NonNull Network network) {
 				super.onAvailable(network);
 				Log.d(TAG, "Network Available");
-				MyUtils.isNetworkAvailable = true;
+				//MyUtils.isNetworkAvailable = true;
 				changeBgColor(true);
 			}
 
@@ -129,7 +131,7 @@ public class MainActivity extends BaseActivity {
 			public void onLost(@NonNull Network network) {
 				super.onLost(network);
 				Log.d(TAG, "Network Lost");
-				MyUtils.isNetworkAvailable = false;
+				//MyUtils.isNetworkAvailable = false;
 				changeBgColor(false);
 			}
 		};
@@ -154,11 +156,12 @@ public class MainActivity extends BaseActivity {
 			} else if (id == R.id.nav_ud) {
 				startMyActivity(UpdateActivity.class);
 			} else if (id == R.id.nav_settings) {
-				startMyActivity(SettingsActivity.class);
+				startMyActivity(SettingsActivity.class,true);
 			} else if (id == R.id.nav_about) {
 				startMyActivity(AboutActivity.class);
 			} else if (id == R.id.nav_web) {
-				startMyActivity(WebpagesActivity.class, true);
+				startMyActivity(WebpagesActivity.class);
+				revisitApp.setLastActivity(this);
 			} else if (id == R.id.nav_logs) {
 				startMyActivity(LogActivity.class);
 			} else if (id == R.id.nav_utils) {
@@ -177,12 +180,12 @@ public class MainActivity extends BaseActivity {
 			public void handleOnBackPressed() {
 				DrawerLayout drawerLayout = binding.drawerLayout;
 				NavigationView mainNav = binding.myNav;
-				LinearLayout jsl = binding.jsnav.getRoot();
+				NavigationView jsNav = binding.nav2;
 				try {
 					if (drawerLayout.isDrawerOpen(mainNav)) {
 						drawerLayout.closeDrawer(mainNav);
-					} else if (drawerLayout.isDrawerOpen(jsl)) {
-						drawerLayout.closeDrawer(jsl);
+					} else if (drawerLayout.isDrawerOpen(jsNav)) {
+						drawerLayout.closeDrawer(jsNav);
 					} else if (mainWebView.canGoBack()) {
 						mainWebView.goBack();
 					} else {
@@ -211,14 +214,6 @@ public class MainActivity extends BaseActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		mainWebView.destroyWebView();
-
-		File saveLogPath = new File(settingsManager.getRootStoragePath() + "/log2.txt");
-		try {
-			Log.saveLog(saveLogPath);
-		} catch (Exception e) {
-			alert(e.toString());
-		}
-
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		if (networkCallback != null) {
 			connectivityManager.unregisterNetworkCallback(networkCallback);

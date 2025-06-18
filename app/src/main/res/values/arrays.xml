@@ -1,14 +1,4 @@
 <resources>
-	<!-- Reply Preference -->
-	<string-array name="reply_entries">
-		<item>Reply</item>
-		<item>Reply to all</item>
-	</string-array>
-
-	<string-array name="reply_values">
-		<item>reply</item>
-		<item>reply_all</item>
-	</string-array>
 
 	<string-array name="userAgents_entries">
 		<item>Chrome</item>
@@ -16,8 +6,8 @@
 	</string-array>
 
 	<string-array name="userAgents_values">
-		<item>c</item>
-		<item>sa</item>
+		<item>chrome</item>
+		<item>edge</item>
 	</string-array>
 
 	<string-array name="theme_entries">
@@ -26,7 +16,7 @@
 	</string-array>
 
 	<string-array name="theme_values">
-		<item>d</item>
-		<item>l</item>
+		<item>dark</item>
+		<item>light</item>
 	</string-array>
 </resources>

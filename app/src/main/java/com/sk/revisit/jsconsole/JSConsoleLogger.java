@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
+import com.sk.revisit.R;
+
 /**
  * Handles JavaScript console logging inside the UI.
  */
@@ -47,14 +49,17 @@ public class JSConsoleLogger {
 	private int getColorForLogLevel(ConsoleMessage.MessageLevel level) {
 		switch (level) {
 			case DEBUG:
-				return ContextCompat.getColor(context, android.R.color.darker_gray);
+				return ContextCompat.getColor(context, R.color.debug);
 			case ERROR:
-				return ContextCompat.getColor(context, android.R.color.holo_red_dark);
+				return ContextCompat.getColor(context, R.color.err);
 			case WARNING:
 				return ContextCompat.getColor(context, android.R.color.holo_orange_dark);
-			//case LOG:
+			case LOG:
+				return ContextCompat.getColor(context,R.color.log);
+			case TIP:
+				return ContextCompat.getColor(context,R.color.tip);
 			default:
-				return ContextCompat.getColor(context, android.R.color.black);
+				return ContextCompat.getColor(context, R.color.white);
 		}
 	}
 

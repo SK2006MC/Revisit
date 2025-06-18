@@ -7,11 +7,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.sk.revisit.webview.MyWebView;
 
 public class UrlBarComponent extends Component {
-	private EditText urlEditText;
+	private final EditText urlEditText;
+	private final MyWebView mainWebView;
 
-	public UrlBarComponent(AppCompatActivity activity, EditText urlEditText, MyWebView mainWebView) {
+	public UrlBarComponent(AppCompatActivity activity, EditText mUrlEditText, MyWebView mainWebView) {
 		super(activity);
+		urlEditText = mUrlEditText;
+		this.mainWebView = mainWebView;
+		init();
+	}
 
+	void init(){
 		//init urlEditText
 		urlEditText.setOnFocusChangeListener((view, hasFocus) -> {
 			if (hasFocus) return;
@@ -33,6 +39,6 @@ public class UrlBarComponent extends Component {
 	}
 
 	public void setText(String text) {
-		this.activity.runOnUiThread(() -> urlEditText.setText(text));
+		activity.runOnUiThread(() -> urlEditText.setText(text));
 	}
 }

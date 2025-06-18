@@ -5,4 +5,8 @@ public class ItemPage {
 	public String host;
 	public long size;
 	public String sizeStr;
+
+	public long getSize() {
+		return size;
+	}
 }

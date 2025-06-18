@@ -6,9 +6,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Component {
-	public String TAG;
-	public Context context;
-	public AppCompatActivity activity;
+	protected String TAG;
+	protected Context context;
+	protected AppCompatActivity activity;
 
 	Component(AppCompatActivity activity) {
 		this.activity = activity;

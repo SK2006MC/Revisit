@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
@@ -78,6 +79,14 @@ public class WebpagesActivity extends BaseActivity {
 	}
 
 	private void loadWebpages() {
+		try {
+			loadWebpagesI();
+		} catch (Exception e) {
+			alert(e.toString());
+		}
+	}
+
+	private void loadWebpagesI() throws Exception {
 		pageItemAdapter.setWebPages(new ArrayList<>());
 
 		if (ROOT_PATH == null || ROOT_PATH.isEmpty()) {
@@ -91,32 +100,30 @@ public class WebpagesActivity extends BaseActivity {
 			return;
 		}
 
-		executor.execute(() -> {
-			htmlFilesPaths = new ArrayList<>();
-			webPages = new ArrayList<>();
-			pageItemAdapter.setWebPagesOrg(webPages);
-			searchRecursive(rootDir, HTML_EXTENSION, htmlFilesPaths);
-			int i = 0;
-			for (String htmlFile : htmlFilesPaths) {
-				ItemPage page = new ItemPage();
-				page.host = htmlFile.split("/")[0];
-				page.fileName = htmlFile;
-				page.size = calcSize(ROOT_PATH + File.separator + htmlFile);
-				page.sizeStr = Formatter.formatFileSize(this, page.size);
-				webPages.add(page);
-				notifyAdapter(i);
-				i++;
-			}
-			mainHandler.post(() -> {
-				if (htmlFilesPaths.isEmpty()) {
-					Toast.makeText(this, "No HTML files found.", Toast.LENGTH_SHORT).show();
-				}
-			});
-		});
-	}
+		htmlFilesPaths = new ArrayList<>();
+		webPages = new ArrayList<>();
+		pageItemAdapter.setWebPagesOrg(webPages);
+		searchRecursive(rootDir, HTML_EXTENSION, htmlFilesPaths);
+		//searchHtmlParallel(rootDir, htmlFilesPaths);
+		AtomicInteger i = new AtomicInteger(0);
+		for (String htmlFile : htmlFilesPaths) {
+			ItemPage page = new ItemPage();
+			page.host = htmlFile.split("/")[0];
+			page.fileName = htmlFile;
+			page.size = calcSize(ROOT_PATH + File.separator + htmlFile);
+			page.sizeStr = Formatter.formatFileSize(this, page.size);
 
-	void notifyAdapter(int i) {
-		runOnUiThread(() -> pageItemAdapter.notifyItemInserted(i));
+			// mainHandler.post(() -> {
+				webPages.add(page);
+				pageItemAdapter.notifyItemInserted(i.getAndIncrement());
+			// });
+		}
+
+		// mainHandler.post(() -> {
+			if (htmlFilesPaths.isEmpty()) {
+				Toast.makeText(this, "No HTML files found.", Toast.LENGTH_SHORT).show();
+			}
+		// });
 	}
 
 	private long calcSize(String htmlFile) {
@@ -157,6 +164,21 @@ public class WebpagesActivity extends BaseActivity {
 		}
 	}
 
+	private void searchHtmlParallel(File dir, List<String> files) throws Exception {
+		Path folder = Paths.get(dir.getAbsolutePath());
+		alert("Searching folder: "+dir.getAbsolutePath());
+		try (Stream<Path> walk = Files.walk(folder)) {
+			walk.parallel()
+					.filter(Files::isRegularFile)
+					.filter(this::isHTML)
+					.forEach(path -> files.add(path.toString()));
+		}
+	}
+
+	boolean isHTML(Path path) {
+		return path.endsWith(HTML_EXTENSION) || path.endsWith(".htm");
+	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -171,6 +193,7 @@ public class WebpagesActivity extends BaseActivity {
 		intent.putExtra("url", filename);
 		startActivity(intent);
 		alert("loading..  " + filename);
+		getRevisitApp().getLastActivity().finish();
 		finish();
 	}
 }

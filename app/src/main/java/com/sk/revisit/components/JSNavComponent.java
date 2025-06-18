@@ -24,18 +24,22 @@ public class JSNavComponent extends Component {
 		super(activity);
 		this.binding = binding;
 
-		init(webView);
-	}
-
-	void init(WebView webView) {
 		jsConsoleLayout = binding.consoleLayout;
 		jsAutoCompleteTextView = binding.jsInput;
 
 		ScrollView jsConsoleScrollView = binding.consoleScrollView;
+		jsConsoleLogger = new JSConsoleLogger(context, jsConsoleLayout, jsConsoleScrollView);
+
+
+
+		init(webView);
+	}
+
+	void init(WebView webView) {
+
 		ImageButton executeJsButton = binding.executeJsBtn;
 
-		jsConsoleLogger = new JSConsoleLogger(this.context, jsConsoleLayout, jsConsoleScrollView);
-		jsWebViewManager = new JSWebViewManager(this.context, webView, jsConsoleLogger);
+		jsWebViewManager = new JSWebViewManager(context, webView, jsConsoleLogger);
 
 		//init js execute button
 		executeJsButton.setOnClickListener(v -> {
@@ -47,6 +51,8 @@ public class JSNavComponent extends Component {
 			jsConsoleLayout.removeAllViewsInLayout();
 			return true;
 		});
+
+		executeJsButton.setTooltipText("Click to execute.\nLong click to clear logs.");
 
 		jsAutoCompleteTextView.setWebView(webView);
 	}

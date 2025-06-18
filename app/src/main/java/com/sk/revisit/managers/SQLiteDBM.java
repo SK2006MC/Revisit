@@ -9,7 +9,7 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
-import com.sk.revisit.log.Log;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -2,7 +2,7 @@ package com.sk.revisit.helper;
 
 import androidx.annotation.NonNull;
 
-import com.sk.revisit.log.Log;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -33,7 +33,7 @@ public class NetHelper {
 				@Override
 				public void onResponse(@NonNull Call call, @NonNull Response response) {
 					assert response.body() != null;
-//					size = response.body().contentLength();
+					// size = response.body().contentLength();
 				}
 			});
 		} catch (Exception e) {

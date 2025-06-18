@@ -3,7 +3,7 @@ package com.sk.revisit.helper;
 import android.net.Uri;
 
 import com.sk.revisit.MyUtils;
-import com.sk.revisit.log.Log;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
