@@ -6,12 +6,12 @@ import com.sk.revisit.databinding.ActivityAboutBinding;
 
 public class AboutActivity extends BaseActivity {
 
-	ActivityAboutBinding binding;
+    ActivityAboutBinding binding;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		binding = ActivityAboutBinding.inflate(getLayoutInflater());
-		setContentView(binding.getRoot());
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityAboutBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+    }
 }

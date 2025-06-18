@@ -1,28 +1,28 @@
 <resources>
-	<string name="app_name">Revisit</string>
-	<string name="enter_javascript_code">Enter JavaScript code</string>
-	<string name="execute_the_jscode">Execute the JavaScript code</string>
-	<string name="title_log">Logs</string>
-	<string name="about">About</string>
-	<string name="settings">Settings</string>
-	<string name="check_for_updates">Check for Updates</string>
-	<string name="refresh">Refresh</string>
-	<string name="calculate_size">Calculate size</string>
-	<string name="download">Download</string>
-	<string name="choose_the_location_to_save_the_web">Choose the location to save the web:</string>
-	<string name="pick">Pick</string>
-	<string name="the_selected_location_is">The selected location is:</string>
-	<string name="start">Start</string>
-	<string name="profile_picture">Profile Picture</string>
-	<string name="revisit">Revisit</string>
-	<string name="enter_a_url">Enter a URL</string>
-	<string name="webpages">WebPages</string>
-	<string name="updateurls">UpdateUrls</string>
-	<string name="downloadurls">DownloadUrls</string>
-	<string name="welcome_msg">Welcome to Revisit!</string>
+    <string name="app_name">Revisit</string>
+    <string name="enter_javascript_code">Enter JavaScript code</string>
+    <string name="execute_the_jscode">Execute the JavaScript code</string>
+    <string name="title_log">Logs</string>
+    <string name="about">About</string>
+    <string name="settings">Settings</string>
+    <string name="check_for_updates">Check for Updates</string>
+    <string name="refresh">Refresh</string>
+    <string name="calculate_size">Calculate size</string>
+    <string name="download">Download</string>
+    <string name="choose_the_location_to_save_the_web">Choose the location to save the web:</string>
+    <string name="pick">Pick</string>
+    <string name="the_selected_location_is">The selected location is:</string>
+    <string name="start">Start</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="revisit">Revisit</string>
+    <string name="enter_a_url">Enter a URL</string>
+    <string name="webpages">WebPages</string>
+    <string name="updateurls">UpdateUrls</string>
+    <string name="downloadurls">DownloadUrls</string>
+    <string name="welcome_msg">Welcome to Revisit!</string>
 
 
-	<string name="lorem_ipsum">
+    <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
         dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
@@ -58,53 +58,55 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
-	<string name="none">None</string>
-	<string name="title_rootpath">Root Path:</string>
-	<string name="req">requests %d\nresolved %d\nfailed %d</string>
-	<string name="item_log_tag">TAG</string>
-	<string name="item_log_msg">Msg</string>
-	<string name="item_log_exception">Exception</string>
-	<string name="no_exception_given">no exception given</string>
-	<string name="utils">Utils</string>
-	<string name="total">total</string>
-	<string name="keep_uptodate">keep uptodate?</string>
-	<string name="use_internet">Use Internet?</string>
-	<string name="search">Search</string>
-	<string name="enter_keywords_here">Enter keywords here</string>
-	<string name="host">Host</string>
-	<string name="url">Url</string>
-	<string name="size">Size</string>
-	<string name="TAG">TAG</string>
-	<string name="errors">errors</string>
-	<!-- Preference Titles -->
-	<string name="messages_header">Messages</string>
-	<string name="sync_header">Sync</string>
+    <string name="none">None</string>
+    <string name="title_rootpath">Root Path:</string>
+    <string name="req">requests %d\nresolved %d\nfailed %d</string>
+    <string name="item_log_tag">TAG</string>
+    <string name="item_log_msg">Msg</string>
+    <string name="item_log_exception">Exception</string>
+    <string name="no_exception_given">no exception given</string>
+    <string name="utils">Utils</string>
+    <string name="total">total</string>
+    <string name="keep_uptodate">keep uptodate?</string>
+    <string name="use_internet">Use Internet?</string>
+    <string name="search">Search</string>
+    <string name="enter_keywords_here">Enter keywords here</string>
+    <string name="host">Host</string>
+    <string name="url">Url</string>
+    <string name="size">Size</string>
+    <string name="TAG">TAG</string>
+    <string name="errors">errors</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
 
-	<!-- Messages Preferences -->
-	<string name="signature_title">Your signature</string>
-	<string name="reply_title">Default reply action</string>
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
 
-	<!-- Sync Preferences -->
-	<string name="sync_title">Sync email periodically</string>
-	<string name="attachment_title">Download incoming attachments</string>
-	<string name="attachment_summary_on">Automatically download attachments for incoming emails
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
 	</string>
-	<string name="attachment_summary_off">Only download attachments when manually requested</string>
-	<string name="intercepted_url_log_here">Intercepted url log here</string>
-	<string name="click_to_expand_this_host_s_urls">Click to expand this Host\'s urls</string>
-	<string name="file_name">File name</string>
-	<string name="user_agent_string">User Agent String</string>
-	<string name="progress">Progress</string>
-	<string name="completed">Completed</string>
-	<string name="status">Status</string>
-	<string name="log">Log</string>
-	<string name="refresh_logs">Refresh logs</string>
-	<string name="url_requests_filename">Url Requests filename:</string>
-	<string name="log_filename">Log filename:</string>
-	<string name="database_filename">Database filename:</string>
-	<string name="output">Output</string>
-	<string name="enter_a_url_to_test">Enter a url to test</string>
-	<string name="test">Test</string>
-	<string name="local_path">local path</string>
-	<string name="enter_a_url_to_test_buildlocalpath_function">Enter a url to test buildLocalPath function</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="intercepted_url_log_here">Intercepted url log here</string>
+    <string name="click_to_expand_this_host_s_urls">Click to expand this Host\'s urls</string>
+    <string name="file_name">File name</string>
+    <string name="user_agent_string">User Agent String</string>
+    <string name="progress">Progress</string>
+    <string name="completed">Completed</string>
+    <string name="status">Status</string>
+    <string name="log">Log</string>
+    <string name="refresh_logs">Refresh logs</string>
+    <string name="url_requests_filename">Url Requests filename:</string>
+    <string name="log_filename">Log filename:</string>
+    <string name="database_filename">Database filename:</string>
+    <string name="output">Output</string>
+    <string name="enter_a_url_to_test">Enter a url to test</string>
+    <string name="test">Test</string>
+    <string name="local_path">local path</string>
+    <string name="enter_a_url_to_test_buildlocalpath_function">Enter a url to test buildLocalPath function</string>
+    <string name="fullscreen">Fullscreen</string>
+    <string name="edit_html">Edit html</string>
 </resources>

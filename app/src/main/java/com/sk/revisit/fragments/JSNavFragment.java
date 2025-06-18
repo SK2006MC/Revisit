@@ -9,11 +9,11 @@ import com.sk.revisit.databinding.NavJsBinding;
 
 public class JSNavFragment extends Fragment {
 
-	NavJsBinding binding;
+    NavJsBinding binding;
 
-	@Override
-	public void onCreate(@Nullable Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		binding = NavJsBinding.inflate(getLayoutInflater());
-	}
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = NavJsBinding.inflate(getLayoutInflater());
+    }
 }

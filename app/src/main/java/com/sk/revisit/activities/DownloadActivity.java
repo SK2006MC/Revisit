@@ -39,163 +39,163 @@ import okhttp3.Response;
 
 public class DownloadActivity extends BaseActivity {
 
-	final String format = "Total Size: %d bytes";
-	private final Set<String> urlsStr = new HashSet<>();
-	private final List<Url> urlsList = new ArrayList<>();
-	private final Handler mainHandler = new Handler(Looper.getMainLooper());
-	private ActivityDownloadBinding binding;
-	private MyUtils myUtils;
-	private MySettingsManager settingsManager;
-	private UrlAdapter urlsAdapter;
+    final String format = "Total Size: %d bytes";
+    private final Set<String> urlsStr = new HashSet<>();
+    private final List<Url> urlsList = new ArrayList<>();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private ActivityDownloadBinding binding;
+    private MyUtils myUtils;
+    private MySettingsManager settingsManager;
+    private UrlAdapter urlsAdapter;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		binding = ActivityDownloadBinding.inflate(getLayoutInflater());
-		setContentView(binding.getRoot());
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityDownloadBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-		settingsManager = new MySettingsManager(this);
-		myUtils = new MyUtils(this, settingsManager.getRootStoragePath());
+        settingsManager = new MySettingsManager(this);
+        myUtils = new MyUtils(this, settingsManager.getRootStoragePath());
 
-		loadUrlsFromFile();
-		initUI();
-	}
+        loadUrlsFromFile();
+        initUI();
+    }
 
-	private void loadUrlsFromFile() {
-		urlsStr.clear();
-		String filePath = settingsManager.getRootStoragePath() + File.separator + GVars.reqFileName;
+    private void loadUrlsFromFile() {
+        urlsStr.clear();
+        String filePath = settingsManager.getRootStoragePath() + File.separator + GVars.reqFileName;
 
-		File reqFile = new File(filePath);
-		if (!reqFile.exists()) {
-			Log.e(TAG, GVars.reqFileName + " not found at: " + filePath);
-			alert(GVars.reqFileName + " not found at: " + filePath);
-			return;
-		}
+        File reqFile = new File(filePath);
+        if (!reqFile.exists()) {
+            Log.e(TAG, GVars.reqFileName + " not found at: " + filePath);
+            alert(GVars.reqFileName + " not found at: " + filePath);
+            return;
+        }
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(reqFile))) {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				String url = line.trim();
-				urlsStr.add(url);
-			}
-		} catch (IOException e) {
-			alert("Error reading " + filePath);
-		}
+        try (BufferedReader reader = new BufferedReader(new FileReader(reqFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String url = line.trim();
+                urlsStr.add(url);
+            }
+        } catch (IOException e) {
+            alert("Error reading " + filePath);
+        }
 
-		for (String urlStr : urlsStr) {
-			urlsList.add(new Url(urlStr));
-		}
-		saveToFile(urlsStr, reqFile);
-		urlsAdapter = new UrlAdapter(urlsList);
-	}
+        for (String urlStr : urlsStr) {
+            urlsList.add(new Url(urlStr));
+        }
+        saveToFile(urlsStr, reqFile);
+        urlsAdapter = new UrlAdapter(urlsList);
+    }
 
-	private void initUI() {
-		binding.totalSizeTextview.setText(getString(R.string.total));
-		binding.refreshButton.setOnClickListener(v -> {
-			loadUrlsFromFile();
-			refresh();
-		});
+    private void initUI() {
+        binding.totalSizeTextview.setText(getString(R.string.total));
+        binding.refreshButton.setOnClickListener(v -> {
+            loadUrlsFromFile();
+            refresh();
+        });
 
-		binding.calcButton.setOnClickListener(v -> calculateTotalSize());
-		binding.downloadButton.setOnClickListener(v -> downloadSelectedUrls());
+        binding.calcButton.setOnClickListener(v -> calculateTotalSize());
+        binding.downloadButton.setOnClickListener(v -> downloadSelectedUrls());
 
-		binding.urlsRecyclerview.setAdapter(urlsAdapter);
-		binding.urlsRecyclerview.setLayoutManager(new LinearLayoutManager(this));
-		DividerItemDecoration decoration = new DividerItemDecoration(
-				binding.urlsRecyclerview.getContext(),
-				LinearLayoutManager.VERTICAL
-		);
-		decoration.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(this, R.drawable.divider)));
-		binding.urlsRecyclerview.addItemDecoration(decoration);
-	}
+        binding.urlsRecyclerview.setAdapter(urlsAdapter);
+        binding.urlsRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        DividerItemDecoration decoration = new DividerItemDecoration(
+                binding.urlsRecyclerview.getContext(),
+                LinearLayoutManager.VERTICAL
+        );
+        decoration.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(this, R.drawable.divider)));
+        binding.urlsRecyclerview.addItemDecoration(decoration);
+    }
 
-	public void refresh() {
-		urlsAdapter.notifyDataSetChanged();
-	}
+    public void refresh() {
+        urlsAdapter.notifyDataSetChanged();
+    }
 
-	private void downloadSelectedUrls() {
-		List<Url> selectedUrls = new ArrayList<>();
-		for (Url url : urlsList) {
-			if (url.isSelected) {
-				selectedUrls.add(url);
-			}
-		}
+    private void downloadSelectedUrls() {
+        List<Url> selectedUrls = new ArrayList<>();
+        for (Url url : urlsList) {
+            if (url.isSelected) {
+                selectedUrls.add(url);
+            }
+        }
 
-		if (selectedUrls.isEmpty()) {
-			alert("No URLs selected for download.");
-			return;
-		}
+        if (selectedUrls.isEmpty()) {
+            alert("No URLs selected for download.");
+            return;
+        }
 
-		for (Url url : selectedUrls) {
-			myUtils.download(Uri.parse(url.url), new MyUtils.DownloadListener() {
-				@Override
-				public void onStart(Uri uri, long contentLength) {
-					url.size = contentLength;
-				}
+        for (Url url : selectedUrls) {
+            myUtils.download(Uri.parse(url.url), new MyUtils.DownloadListener() {
+                @Override
+                public void onStart(Uri uri, long contentLength) {
+                    url.size = contentLength;
+                }
 
-				@Override
-				public void onSuccess(File file, Headers headers) {
-					url.isDownloaded = true;
-					url.setProgress(100);
-				}
+                @Override
+                public void onSuccess(File file, Headers headers) {
+                    url.isDownloaded = true;
+                    url.setProgress(100);
+                }
 
-				@Override
-				public void onProgress(double p) {
-					url.setProgress(p);
-				}
+                @Override
+                public void onProgress(double p) {
+                    url.setProgress(p);
+                }
 
-				@Override
-				public void onFailure(Exception e) {
-					url.isDownloaded = false;
-				}
+                @Override
+                public void onFailure(Exception e) {
+                    url.isDownloaded = false;
+                }
 
-				@Override
-				public void onEnd(File file) {
-				}
-			});
-		}
-	}
+                @Override
+                public void onEnd(File file) {
+                }
+            });
+        }
+    }
 
-	private void calculateTotalSize() {
-		if (!Revisit.isNetworkAvailable) {
-			alert("No network available!");
-			return;
-		}
+    private void calculateTotalSize() {
+        if (!Revisit.isNetworkAvailable) {
+            alert("No network available!");
+            return;
+        }
 
-		myUtils.executorService.execute(() -> {
-			AtomicLong totalSize = new AtomicLong(0);
-			for (Url url : urlsList) {
-				Request request = new Request.Builder().head().url(url.url).build();
-				try {
-					Response response = myUtils.client.newCall(request).execute();
-					assert response.body() != null;
-					if (response.isSuccessful()) {
-						url.size = response.body().contentLength();
-						totalSize.addAndGet(url.size);
-					} else {
-						url.size = -1;
-					}
-					mainHandler.post(() -> urlsAdapter.notifyItemChanged(urlsList.indexOf(url)));
-				} catch (IOException e) {
-					Log.e(TAG, " ", e);
-				}
-			}
-			mainHandler.post(() -> binding.totalSizeTextview.setText(String.format(Locale.ENGLISH, format, totalSize.get())));
-		});
-	}
+        myUtils.executorService.execute(() -> {
+            AtomicLong totalSize = new AtomicLong(0);
+            for (Url url : urlsList) {
+                Request request = new Request.Builder().head().url(url.url).build();
+                try {
+                    Response response = myUtils.client.newCall(request).execute();
+                    assert response.body() != null;
+                    if (response.isSuccessful()) {
+                        url.size = response.body().contentLength();
+                        totalSize.addAndGet(url.size);
+                    } else {
+                        url.size = -1;
+                    }
+                    mainHandler.post(() -> urlsAdapter.notifyItemChanged(urlsList.indexOf(url)));
+                } catch (IOException e) {
+                    Log.e(TAG, " ", e);
+                }
+            }
+            mainHandler.post(() -> binding.totalSizeTextview.setText(String.format(Locale.ENGLISH, format, totalSize.get())));
+        });
+    }
 
-	void saveToFile(Set<String> urls, File file) {
-		myUtils.executorService.execute(() -> {
-			try {
-				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-				for (String url : urls) {
-					fileWriter.write(url);
-					fileWriter.newLine();
-				}
-				fileWriter.close();
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}
-		});
-	}
+    void saveToFile(Set<String> urls, File file) {
+        myUtils.executorService.execute(() -> {
+            try {
+                BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
+                for (String url : urls) {
+                    fileWriter.write(url);
+                    fileWriter.newLine();
+                }
+                fileWriter.close();
+            } catch (IOException e) {
+                Log.e(TAG, e.toString());
+            }
+        });
+    }
 }

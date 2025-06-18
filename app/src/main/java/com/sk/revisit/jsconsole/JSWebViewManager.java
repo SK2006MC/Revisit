@@ -13,26 +13,26 @@ import com.sk.revisit.webview.WebAppInterface;
  */
 public class JSWebViewManager {
 
-	private final WebView webView;
-	private final WebAppInterface webAppInterface;
-	private final JSConsoleLogger jsLogger;
+    private final WebView webView;
+    private final WebAppInterface webAppInterface;
+    private final JSConsoleLogger jsLogger;
 
-	public JSWebViewManager(Context context, WebView webView, JSConsoleLogger jsLogger) {
-		this.webView = webView;
-		this.jsLogger = jsLogger;
-		this.webAppInterface = new WebAppInterface(context, webView);
-		setupWebView();
-	}
+    public JSWebViewManager(Context context, WebView webView, JSConsoleLogger jsLogger) {
+        this.webView = webView;
+        this.jsLogger = jsLogger;
+        this.webAppInterface = new WebAppInterface(context, webView);
+        setupWebView();
+    }
 
-	@SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
-	private void setupWebView() {
-		MyWebChromeClient chromeClient = new MyWebChromeClient(jsLogger, null);
-		webView.setWebChromeClient(chromeClient);
-		webView.addJavascriptInterface(webAppInterface, "Revisit");
-		webView.loadUrl("file:///android_asset/index.html");
-	}
+    @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
+    private void setupWebView() {
+        MyWebChromeClient chromeClient = new MyWebChromeClient(jsLogger, null);
+        webView.setWebChromeClient(chromeClient);
+        webView.addJavascriptInterface(webAppInterface, "Revisit");
+        webView.loadUrl("file:///android_asset/index.html");
+    }
 
-	public void executeJS(String jsCode, ValueCallback<String> callback) {
-		webView.evaluateJavascript(jsCode, callback);
-	}
+    public void executeJS(String jsCode, ValueCallback<String> callback) {
+        webView.evaluateJavascript(jsCode, callback);
+    }
 }

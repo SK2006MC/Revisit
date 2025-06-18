@@ -3,61 +3,84 @@ package com.sk.revisit.managers;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-public class MySettingsManager {
-	private static final String
-			KEY_ROOT_PATH = "rootPath",
-			KEY_THEME = "theme",
-			KEY_DN_PATH = "dnPath",
-			KEY_IS_FIRST = "isFirst",
-			KEY_USR_AGENT_STR = "userAgentCustom",
-			KEY_USR_AGENT_DEF = "userAgentDefaults",
-			KEY_MAX_WEB_TIMEOUT = "webTimeoutDuration";
+enum KEY {
+    ROOT_PATH,
+    THEME,
+    DN_PATH,
+    IS_FIRST,
+    USR_AGENT_STR,
+    USR_AGENT_DEF,
+    MAX_WEB_TIMEOUT,
+}
 
-	private final SharedPreferences prefs;
+public class MySettingsManager extends SettingsHelp {
 
-	public MySettingsManager(Context context) {
-		prefs = PreferenceManager.getDefaultSharedPreferences(context);
-	}
+    public MySettingsManager(Context context) {
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    }
 
-	void setTheme(String val) {
-		putStr(KEY_THEME, val);
-	}
+    //getters
+    public String getRootStoragePath() {
+        return getStr(KEY.ROOT_PATH, "/sdcard/Android/obb/com.sk.revisit");
+    }
 
-	void setUserAgentCustom(String val) {
-		putStr(KEY_USR_AGENT_STR, val);
-	}
+    //setters
+    public void setRootStoragePath(String folderPath) {
+        putStr(KEY.ROOT_PATH, folderPath);
+    }
 
-	public String getRootStoragePath() {
-		return prefs.getString(KEY_ROOT_PATH, null);
-	}
+    public String getDownloadStoragePath() {
+        return getStr(KEY.DN_PATH, null);
+    }
 
-	public void setRootStoragePath(String folderPath) {
-		putStr(KEY_ROOT_PATH, folderPath);
-	}
+    public boolean getIsFirst() {
+        return getBoolean(KEY.IS_FIRST, true);
+    }
 
-	public String getDownloadStoragePath() {
-		return prefs.getString(KEY_DN_PATH, null);
-	}
+    public void setIsFirst(boolean val) {
+        putBoolean(KEY.IS_FIRST, val);
+    }
 
-	public boolean getIsFirst() {
-		return prefs.getBoolean(KEY_IS_FIRST, true);
-	}
+    void setTheme(String val) {
+        putStr(KEY.THEME, val);
+    }
 
-	public void setIsFirst(boolean o) {
-		putBoolean(KEY_IS_FIRST, o);
-	}
+    void setUserAgentCustom(String val) {
+        putStr(KEY.USR_AGENT_STR, val);
+    }
 
-	void putStr(String key, String val) {
-		prefs.edit().putString(key, val).apply();
-	}
+}
 
-	void putInt(String key, int val) {
-		prefs.edit().putInt(key, val).apply();
-	}
+class SettingsHelp {
+    SharedPreferences prefs;
 
-	void putBoolean(String key, boolean val) {
-		prefs.edit().putBoolean(key, val).apply();
-	}
+    //getters
+    String getStr(@NonNull KEY key, String def) {
+        return prefs.getString(toStr(key), def);
+    }
+
+    boolean getBoolean(@NonNull KEY key, boolean def) {
+        return prefs.getBoolean(toStr(key), def);
+    }
+
+    //setters
+    void putStr(@NonNull KEY key, String val) {
+        prefs.edit().putString(toStr(key), val).apply();
+    }
+
+    void putInt(@NonNull KEY key, int val) {
+        prefs.edit().putInt(toStr(key), val).apply();
+    }
+
+    void putBoolean(@NonNull KEY key, boolean val) {
+        prefs.edit().putBoolean(toStr(key), val).apply();
+    }
+
+    //helpers
+    String toStr(@NonNull KEY val) {
+        return val.name();
+    }
 }

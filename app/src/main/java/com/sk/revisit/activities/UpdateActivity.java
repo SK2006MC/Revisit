@@ -6,13 +6,13 @@ import com.sk.revisit.databinding.ActivityUpdateBinding;
 
 public class UpdateActivity extends BaseActivity {
 
-	ActivityUpdateBinding binding;
+    ActivityUpdateBinding binding;
 
-	@Override
-	protected void onCreate(Bundle arg0) {
-		super.onCreate(arg0);
-		binding = ActivityUpdateBinding.inflate(getLayoutInflater());
-		setContentView(binding.getRoot());
-	}
+    @Override
+    protected void onCreate(Bundle arg0) {
+        super.onCreate(arg0);
+        binding = ActivityUpdateBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+    }
 
 }

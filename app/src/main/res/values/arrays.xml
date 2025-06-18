@@ -1,22 +1,22 @@
 <resources>
 
-	<string-array name="userAgents_entries">
-		<item>Chrome</item>
-		<item>Edge</item>
-	</string-array>
+    <string-array name="userAgents_entries">
+        <item>Chrome</item>
+        <item>Edge</item>
+    </string-array>
 
-	<string-array name="userAgents_values">
-		<item>chrome</item>
-		<item>edge</item>
-	</string-array>
+    <string-array name="userAgents_values">
+        <item>chrome</item>
+        <item>edge</item>
+    </string-array>
 
-	<string-array name="theme_entries">
-		<item>Dark</item>
-		<item>Light</item>
-	</string-array>
+    <string-array name="theme_entries">
+        <item>Dark</item>
+        <item>Light</item>
+    </string-array>
 
-	<string-array name="theme_values">
-		<item>dark</item>
-		<item>light</item>
-	</string-array>
+    <string-array name="theme_values">
+        <item>dark</item>
+        <item>light</item>
+    </string-array>
 </resources>

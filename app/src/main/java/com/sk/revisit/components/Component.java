@@ -3,20 +3,20 @@ package com.sk.revisit.components;
 import android.content.Context;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.sk.revisit.activities.BaseActivity;
 
 public class Component {
-	protected String TAG;
-	protected Context context;
-	protected AppCompatActivity activity;
+    protected String TAG;
+    protected Context context;
+    protected BaseActivity activity;
 
-	Component(AppCompatActivity activity) {
-		this.activity = activity;
-		this.context = activity;
-		this.TAG = this.getClass().getSimpleName();
-	}
+    Component(BaseActivity activity) {
+        this.activity = activity;
+        this.context = activity;
+        this.TAG = this.getClass().getSimpleName();
+    }
 
-	public void alert(String msg) {
-		Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-	}
+    public void alert(String msg) {
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+    }
 }

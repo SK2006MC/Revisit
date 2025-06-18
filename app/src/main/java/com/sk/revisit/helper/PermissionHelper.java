@@ -2,9 +2,10 @@ package com.sk.revisit.helper;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
+
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.annotation.NonNull;
 
 public class PermissionHelper {
 
@@ -20,14 +21,14 @@ public class PermissionHelper {
         return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
     }
 
-    public static void onRequestPermissionsResultHandler(int requestCode, @NonNull String[] permission, @NonNull int[] grantResults){
+    public static void onRequestPermissionsResultHandler(int requestCode, @NonNull String[] permission, @NonNull int[] grantResults) {
         if (grantResults.length > 0) {
             for (int result : grantResults) {
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                // At least one permission was denied
-                // Handle denial if needed
-                return;
-            }
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    // At least one permission was denied
+                    // Handle denial if needed
+                    return;
+                }
             }
             // All permissions granted
             // Handle success if needed

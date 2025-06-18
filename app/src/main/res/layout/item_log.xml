@@ -1,39 +1,39 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:layout_margin="4dp"
-	app:cardCornerRadius="4dp"
-	app:cardElevation="2dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="2dp">
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center_vertical"
-		android:orientation="horizontal"
-		android:padding="8dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
-		<TextView
-			android:id="@+id/log_tag_text_view"
-			android:layout_width="70dp"
-			android:layout_height="wrap_content"
-			android:paddingHorizontal="3dp"
-			android:text="@string/TAG" />
+        <TextView
+            android:id="@+id/log_tag_text_view"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="3dp"
+            android:text="@string/TAG" />
 
-		<TextView
-			android:id="@+id/log_message_text_view"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:paddingHorizontal="3dp"
-			android:text="@string/item_log_msg" />
+        <TextView
+            android:id="@+id/log_message_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingHorizontal="3dp"
+            android:text="@string/item_log_msg" />
 
-		<TextView
-			android:id="@+id/log_exception_text_view"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/errors" />
+        <TextView
+            android:id="@+id/log_exception_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/errors" />
 
-	</LinearLayout>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

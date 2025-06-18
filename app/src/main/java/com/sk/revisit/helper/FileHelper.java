@@ -8,10 +8,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FileHelper {
+    public static List<String> search(File dir, String ext) throws IOException {
+        Path dirP = dir.toPath();
+        try (Stream<Path> stream = Files.find(dirP, Integer.MAX_VALUE,
+                (path, attr) -> path.toFile().isFile() && path.getFileName().toString().toLowerCase().endsWith(ext))) {
+            return stream.map(dirP::relativize)
+                    .map(Path::toString)
+                    .collect(Collectors.toList());
+        }
+    }
 
     /**
      * Calculates the total size of all files in a folder (recursively).
@@ -52,7 +61,7 @@ public class FileHelper {
             if (file.isDirectory()) {
                 searchRecursive(file, extension, files);
             } else if (file.getName().toLowerCase().endsWith(extension.toLowerCase())) {
-                files.add(file.getAbsolutePath());
+                files.add(file.getPath());
             }
         }
     }
