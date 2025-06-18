@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -15,7 +16,6 @@ import com.sk.revisit.R;
 import com.sk.revisit.adapter.UrlAdapter;
 import com.sk.revisit.data.Url;
 import com.sk.revisit.databinding.ActivityDownloadBinding;
-import android.util.Log;
 import com.sk.revisit.managers.MySettingsManager;
 
 import java.io.BufferedReader;

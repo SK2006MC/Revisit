@@ -31,7 +31,6 @@ public class JSNavComponent extends Component {
 		jsConsoleLogger = new JSConsoleLogger(context, jsConsoleLayout, jsConsoleScrollView);
 
 
-
 		init(webView);
 	}
 

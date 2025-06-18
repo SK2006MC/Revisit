@@ -28,7 +28,7 @@ public class WebpageItemAdapter extends RecyclerView.Adapter<WebpageItemAdapter.
 		this.webPages = webPagesOrg;
 	}
 
-	public void sort(){
+	public void sort() {
 		//webPages.sort(ItemPage::getSize);
 	}
 

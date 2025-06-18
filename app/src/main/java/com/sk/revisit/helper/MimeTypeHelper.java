@@ -1,9 +1,9 @@
 package com.sk.revisit.helper;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.sk.revisit.MyUtils;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

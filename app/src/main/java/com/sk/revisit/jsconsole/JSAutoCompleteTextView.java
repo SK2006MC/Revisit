@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.KeyEvent;
 import android.view.inputmethod.InputMethodManager;
@@ -16,8 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
-
-import android.util.Log;
 
 import org.json.JSONArray;
 
@@ -107,12 +106,19 @@ public class JSAutoCompleteTextView extends AppCompatAutoCompleteTextView {
 
 	private void initTextChangedListener() {
 		textWatcher = new TextWatcher() {
-			@Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				userInput = s.toString();
 				updateAutocompleteSuggestions(s.toString());
 			}
-			@Override public void afterTextChanged(Editable s) {}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
 		};
 		addTextChangedListener(textWatcher);
 	}

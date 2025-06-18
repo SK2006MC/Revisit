@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.util.Log;
 import android.webkit.DownloadListener;
 import android.widget.Toast;
 
@@ -17,7 +18,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.util.Log;
 import com.sk.revisit.managers.MySettingsManager;
 
 import java.io.File;

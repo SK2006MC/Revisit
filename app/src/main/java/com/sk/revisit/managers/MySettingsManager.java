@@ -17,16 +17,16 @@ public class MySettingsManager {
 
 	private final SharedPreferences prefs;
 
+	public MySettingsManager(Context context) {
+		prefs = PreferenceManager.getDefaultSharedPreferences(context);
+	}
+
 	void setTheme(String val) {
 		putStr(KEY_THEME, val);
 	}
 
 	void setUserAgentCustom(String val) {
 		putStr(KEY_USR_AGENT_STR, val);
-	}
-
-	public MySettingsManager(Context context) {
-		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 
 	public String getRootStoragePath() {

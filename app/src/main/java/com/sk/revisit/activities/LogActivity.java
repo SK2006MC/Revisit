@@ -11,7 +11,6 @@ import com.sk.revisit.R;
 import com.sk.revisit.adapter.LogRecyclerAdapter;
 import com.sk.revisit.databinding.ActivityLogBinding;
 
-import java.util.List;
 import java.util.Objects;
 
 public class LogActivity extends BaseActivity {

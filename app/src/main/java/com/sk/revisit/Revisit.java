@@ -6,8 +6,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.sk.revisit.managers.MySettingsManager;
 import com.sk.revisit.activities.BaseActivity;
+import com.sk.revisit.managers.MySettingsManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,12 +19,12 @@ import java.util.Locale;
 
 public class Revisit extends Application {
 
-	MyUtils myUtils;
-	MySettingsManager mySettingsManager;
-	private Thread.UncaughtExceptionHandler mPreviousExceptionHandler;
 	private static final Handler MAIN_THREAD_HANDLER = new Handler(Looper.getMainLooper());
 	private static final String TAG = Revisit.class.getSimpleName();
+	MyUtils myUtils;
+	MySettingsManager mySettingsManager;
 	BaseActivity lastActivity;
+	private Thread.UncaughtExceptionHandler mPreviousExceptionHandler;
 
 	@Override
 	public void onCreate() {
@@ -84,11 +84,11 @@ public class Revisit extends Application {
 		return myUtils;
 	}
 
-	public BaseActivity getLastActivity(){
+	public BaseActivity getLastActivity() {
 		return lastActivity;
 	}
 
-	public void setLastActivity(BaseActivity act){
+	public void setLastActivity(BaseActivity act) {
 		lastActivity = act;
 	}
 

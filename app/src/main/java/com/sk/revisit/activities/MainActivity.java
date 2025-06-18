@@ -6,6 +6,7 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,11 +25,9 @@ import com.sk.revisit.components.JSNavComponent;
 import com.sk.revisit.components.UrlBarComponent;
 import com.sk.revisit.databinding.ActivityMainBinding;
 import com.sk.revisit.databinding.NavHeaderBinding;
-import android.util.Log;
 import com.sk.revisit.managers.MySettingsManager;
 import com.sk.revisit.webview.MyWebView;
 
-import java.io.File;
 import java.util.Locale;
 
 public class MainActivity extends BaseActivity {
@@ -101,7 +100,7 @@ public class MainActivity extends BaseActivity {
 
 		webView.setProgressChangeListener(progress -> {
 			binding.pageLoad.setProgress(progress);
-			if(progress==100)
+			if (progress == 100)
 				binding.pageLoad.setVisibility(View.GONE);
 			else
 				binding.pageLoad.setVisibility(View.VISIBLE);
@@ -156,7 +155,7 @@ public class MainActivity extends BaseActivity {
 			} else if (id == R.id.nav_ud) {
 				startMyActivity(UpdateActivity.class);
 			} else if (id == R.id.nav_settings) {
-				startMyActivity(SettingsActivity.class,true);
+				startMyActivity(SettingsActivity.class, true);
 			} else if (id == R.id.nav_about) {
 				startMyActivity(AboutActivity.class);
 			} else if (id == R.id.nav_web) {

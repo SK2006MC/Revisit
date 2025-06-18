@@ -55,9 +55,9 @@ public class JSConsoleLogger {
 			case WARNING:
 				return ContextCompat.getColor(context, android.R.color.holo_orange_dark);
 			case LOG:
-				return ContextCompat.getColor(context,R.color.log);
+				return ContextCompat.getColor(context, R.color.log);
 			case TIP:
-				return ContextCompat.getColor(context,R.color.tip);
+				return ContextCompat.getColor(context, R.color.tip);
 			default:
 				return ContextCompat.getColor(context, R.color.white);
 		}

@@ -17,7 +17,7 @@ public class UrlBarComponent extends Component {
 		init();
 	}
 
-	void init(){
+	void init() {
 		//init urlEditText
 		urlEditText.setOnFocusChangeListener((view, hasFocus) -> {
 			if (hasFocus) return;

@@ -9,28 +9,21 @@ import android.text.TextWatcher;
 import android.text.format.Formatter;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.sk.revisit.adapter.WebpageItemAdapter;
 import com.sk.revisit.data.ItemPage;
 import com.sk.revisit.databinding.ActivityWebpagesBinding;
+import com.sk.revisit.helper.FileHelper;
 import com.sk.revisit.managers.MySettingsManager;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Stream;
 
 public class WebpagesActivity extends BaseActivity {
 
@@ -86,7 +79,7 @@ public class WebpagesActivity extends BaseActivity {
 		}
 	}
 
-	private void loadWebpagesI() throws Exception {
+	private void loadWebpagesI() {
 		pageItemAdapter.setWebPages(new ArrayList<>());
 
 		if (ROOT_PATH == null || ROOT_PATH.isEmpty()) {
@@ -103,80 +96,42 @@ public class WebpagesActivity extends BaseActivity {
 		htmlFilesPaths = new ArrayList<>();
 		webPages = new ArrayList<>();
 		pageItemAdapter.setWebPagesOrg(webPages);
-		searchRecursive(rootDir, HTML_EXTENSION, htmlFilesPaths);
-		//searchHtmlParallel(rootDir, htmlFilesPaths);
-		AtomicInteger i = new AtomicInteger(0);
-		for (String htmlFile : htmlFilesPaths) {
-			ItemPage page = new ItemPage();
-			page.host = htmlFile.split("/")[0];
-			page.fileName = htmlFile;
-			page.size = calcSize(ROOT_PATH + File.separator + htmlFile);
-			page.sizeStr = Formatter.formatFileSize(this, page.size);
+		executor.execute(() -> {
+			FileHelper.searchRecursive(rootDir, HTML_EXTENSION, htmlFilesPaths);
+			AtomicInteger i = new AtomicInteger(0);
+			for (String htmlFile : htmlFilesPaths) {
+				htmlFile = htmlFile.replace(ROOT_PATH + File.separator, "");
+				ItemPage page = new ItemPage();
+				page.host = htmlFile.split("/")[0];
+				page.fileName = htmlFile;
+				page.size = calcSize(ROOT_PATH + File.separator + htmlFile);
+				page.sizeStr = Formatter.formatFileSize(this, page.size);
 
-			// mainHandler.post(() -> {
-				webPages.add(page);
-				pageItemAdapter.notifyItemInserted(i.getAndIncrement());
-			// });
-		}
-
-		// mainHandler.post(() -> {
-			if (htmlFilesPaths.isEmpty()) {
-				Toast.makeText(this, "No HTML files found.", Toast.LENGTH_SHORT).show();
+				mainHandler.post(() -> {
+					webPages.add(page);
+					pageItemAdapter.notifyItemInserted(i.getAndIncrement());
+				});
 			}
-		// });
+
+			mainHandler.post(() -> {
+				if (htmlFilesPaths.isEmpty()) {
+					alert("No HTML files found.");
+				}
+			});
+		});
 	}
 
 	private long calcSize(String htmlFile) {
 		File file = new File(htmlFile);
 		try {
-			return getFolderSize(file.getParent());
+			return FileHelper.getFolderSize(file.getParent());
 		} catch (Exception e) {
 			return -1;
 		}
 	}
 
-	long getFolderSize(String folderPath) throws IOException {
-		Path folder = Paths.get(folderPath);
-		AtomicLong size = new AtomicLong(0);
-		try (Stream<Path> walk = Files.walk(folder)) {
-			walk.parallel()
-					.filter(Files::isRegularFile)
-					.forEach(path -> size.addAndGet(path.toFile().length()));
-		}
-		return size.get();
-	}
-
 	void filterPagesByKeywords(String keywords) {
 		pageItemAdapter.filter(keywords);
-	}
-
-	private void searchRecursive(@NonNull File dir, String extension, List<String> files) {
-		File[] fileList = dir.listFiles();
-		if (fileList == null) {
-			return;
-		}
-		for (File file : fileList) {
-			if (file.isDirectory()) {
-				searchRecursive(file, extension, files);
-			} else if (file.getName().endsWith(extension)) {
-				files.add(file.getAbsolutePath().replace(ROOT_PATH + File.separator, ""));
-			}
-		}
-	}
-
-	private void searchHtmlParallel(File dir, List<String> files) throws Exception {
-		Path folder = Paths.get(dir.getAbsolutePath());
-		alert("Searching folder: "+dir.getAbsolutePath());
-		try (Stream<Path> walk = Files.walk(folder)) {
-			walk.parallel()
-					.filter(Files::isRegularFile)
-					.filter(this::isHTML)
-					.forEach(path -> files.add(path.toString()));
-		}
-	}
-
-	boolean isHTML(Path path) {
-		return path.endsWith(HTML_EXTENSION) || path.endsWith(".htm");
 	}
 
 	@Override
