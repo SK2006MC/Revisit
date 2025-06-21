@@ -57,15 +57,19 @@ public class DownloadActivity extends BaseActivity {
         settingsManager = new MySettingsManager(this);
         myUtils = new MyUtils(this, settingsManager.getRootStoragePath());
 
-        loadUrlsFromFile();
+        urlsAdapter = new UrlAdapter(urlsList);
         initUI();
+        loadUrlsFromFile();
     }
 
     private void loadUrlsFromFile() {
         urlsStr.clear();
-        String filePath = settingsManager.getRootStoragePath() + File.separator + GVars.reqFileName;
+        urlsList.clear();
+        urlsAdapter.notifyDataSetChanged();
 
+        String filePath = settingsManager.getRootStoragePath() + File.separator + GVars.reqFileName;
         File reqFile = new File(filePath);
+
         if (!reqFile.exists()) {
             Log.e(TAG, GVars.reqFileName + " not found at: " + filePath);
             alert(GVars.reqFileName + " not found at: " + filePath);
@@ -75,26 +79,23 @@ public class DownloadActivity extends BaseActivity {
         try (BufferedReader reader = new BufferedReader(new FileReader(reqFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String url = line.trim();
-                urlsStr.add(url);
+                String urlStr = line.trim();
+                urlsStr.add(urlStr);
+                Url url = new Url(urlStr);
+                urlsList.add(url);
+                urlsAdapter.notifyItemInserted(urlsList.size() - 1);
             }
         } catch (IOException e) {
             alert("Error reading " + filePath);
+            Log.e(TAG, "Error reading " + filePath, e);
         }
 
-        for (String urlStr : urlsStr) {
-            urlsList.add(new Url(urlStr));
-        }
         saveToFile(urlsStr, reqFile);
-        urlsAdapter = new UrlAdapter(urlsList);
     }
 
     private void initUI() {
         binding.totalSizeTextview.setText(getString(R.string.total));
-        binding.refreshButton.setOnClickListener(v -> {
-            loadUrlsFromFile();
-            refresh();
-        });
+        binding.refreshButton.setOnClickListener(v -> loadUrlsFromFile());
 
         binding.calcButton.setOnClickListener(v -> calculateTotalSize());
         binding.downloadButton.setOnClickListener(v -> downloadSelectedUrls());
@@ -109,25 +110,26 @@ public class DownloadActivity extends BaseActivity {
         binding.urlsRecyclerview.addItemDecoration(decoration);
     }
 
-    public void refresh() {
-        urlsAdapter.notifyDataSetChanged();
-    }
-
     private void downloadSelectedUrls() {
-        List<Url> selectedUrls = new ArrayList<>();
-        for (Url url : urlsList) {
-            if (url.isSelected) {
-                selectedUrls.add(url);
+        List<Integer> selectedPositions = new ArrayList<>();
+        for (int i = 0; i < urlsList.size(); i++) {
+            if (urlsList.get(i).isSelected) {
+                selectedPositions.add(i);
             }
         }
 
-        if (selectedUrls.isEmpty()) {
+        if (selectedPositions.isEmpty()) {
             alert("No URLs selected for download.");
             return;
         }
 
-        for (Url url : selectedUrls) {
+        for (int position : selectedPositions) {
+            Url url = urlsList.get(position);
             myUtils.download(Uri.parse(url.url), new MyUtils.DownloadListener() {
+                private void notifyUpdate() {
+                    mainHandler.post(() -> urlsAdapter.notifyItemChanged(position));
+                }
+
                 @Override
                 public void onStart(Uri uri, long contentLength) {
                     url.size = contentLength;
@@ -137,16 +139,19 @@ public class DownloadActivity extends BaseActivity {
                 public void onSuccess(File file, Headers headers) {
                     url.isDownloaded = true;
                     url.setProgress(100);
+                    notifyUpdate();
                 }
 
                 @Override
                 public void onProgress(double p) {
                     url.setProgress(p);
+                    notifyUpdate();
                 }
 
                 @Override
                 public void onFailure(Exception e) {
                     url.isDownloaded = false;
+                    notifyUpdate();
                 }
 
                 @Override
@@ -179,8 +184,8 @@ public class DownloadActivity extends BaseActivity {
                 } catch (IOException e) {
                     Log.e(TAG, " ", e);
                 }
+                mainHandler.post(() -> binding.totalSizeTextview.setText(String.format(Locale.ENGLISH, format, totalSize.get())));
             }
-            mainHandler.post(() -> binding.totalSizeTextview.setText(String.format(Locale.ENGLISH, format, totalSize.get())));
         });
     }
 

@@ -12,6 +12,10 @@ import com.sk.revisit.databinding.ActivityUtilsBinding;
 import com.sk.revisit.managers.MySettingsManager;
 
 import java.util.Locale;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 public class UtilsActivity extends BaseActivity {
 
@@ -51,7 +55,6 @@ public class UtilsActivity extends BaseActivity {
                 boolean isTextInserted = (before == 0);
                 currentText = s.toString();
                 if(isTextInserted) {
-                    // String insertedText = currentText.substring(start,count);
                     char insertedTextChar = s.charAt(start);
                     currentObjGuess.append(insertedTextChar);
                     binding.op3.setText(currentObjGuess.toString());
@@ -60,17 +63,9 @@ public class UtilsActivity extends BaseActivity {
                         if(" ({[\\/];,'\"%$&*-=+]})".contains(String.valueOf(insertedTextChar))){
                             currentObj = "";
                             currentObjGuess = new StringBuilder("");
-                            // HashSet<String> completions = getProperties("this");
-                            // adapter.clear();
-                            // adapter.add(completions);
-                            // adapter.add(JS_KEYWORDS);
                         }else if (insertedTextChar=='.'){
-                            // currentObj = getCurrentObj(currentText,start);
                             currentObj = currentObjGuess.toString();
                             binding.op4.setText(currentObj);
-                            // HashSet<String> objMembers = getProperties(currentObj);
-                            // adapter.clear();
-                            // adapter.add(objMembers);
                         }
                         if (currentObjGuess == null) {
                             currentObjGuess = new StringBuilder();
@@ -85,8 +80,18 @@ public class UtilsActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                // binding.op4.setText(editable.toString());
             }
         });
+    }
+
+    void buildLocalPath(List<String> urls, String saveFilePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(saveFilePath))) {
+            for (String url : urls) {
+                String localPath = utils.buildLocalPath(Uri.parse(url));
+                writer.write(localPath + "\n");
+            }
+        } catch (Exception e) {
+            alert(e.toString());
+        }
     }
 }
