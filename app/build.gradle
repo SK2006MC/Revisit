@@ -18,28 +18,11 @@ android {
 		}
 	}
 
-	// Detect if CI writes signing properties
-	def hasKeystore = project.hasProperty('REVISIT_RELEASE_STORE_FILE')
-
-	if (hasKeystore) {
-		signingConfigs {
-			release {
-				storeFile file(REVISIT_RELEASE_STORE_FILE)
-				storePassword REVISIT_RELEASE_STORE_PASSWORD
-				keyAlias REVISIT_RELEASE_KEY_ALIAS
-				keyPassword REVISIT_RELEASE_KEY_PASSWORD
-			}
-		}
-	}
-
 	buildTypes {
 		release {
 			minifyEnabled true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 			multiDexEnabled true
-			if (hasKeystore) {
-				signingConfig signingConfigs.release
-			}
 		}
 		debug {
 			multiDexEnabled true
@@ -64,8 +47,6 @@ android {
 		includeInApk true
 		includeInBundle true
 	}
-
-	buildToolsVersion '36.0.0 rc4'
 }
 
 dependencies {
