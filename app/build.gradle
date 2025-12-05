@@ -18,11 +18,28 @@ android {
 		}
 	}
 
+	// Detect if CI writes signing properties
+	def hasKeystore = project.hasProperty('REVISIT_RELEASE_STORE_FILE')
+
+	if (hasKeystore) {
+		signingConfigs {
+			release {
+				storeFile file(REVISIT_RELEASE_STORE_FILE)
+				storePassword REVISIT_RELEASE_STORE_PASSWORD
+				keyAlias REVISIT_RELEASE_KEY_ALIAS
+				keyPassword REVISIT_RELEASE_KEY_PASSWORD
+			}
+		}
+	}
+
 	buildTypes {
 		release {
 			minifyEnabled true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 			multiDexEnabled true
+			if (hasKeystore) {
+				signingConfig signingConfigs.release
+			}
 		}
 		debug {
 			multiDexEnabled true
@@ -30,9 +47,15 @@ android {
 	}
 
 	compileOptions {
-		sourceCompatibility JavaVersion.VERSION_11
-		targetCompatibility JavaVersion.VERSION_11
+		// Use Java 17 to match your JDK requirement
+		sourceCompatibility JavaVersion.VERSION_17
+		targetCompatibility JavaVersion.VERSION_17
 	}
+
+	// If you use Kotlin, set jvmTarget to 17 (uncomment and adjust if needed)
+	// kotlinOptions {
+	//     jvmTarget = "17"
+	// }
 
 	buildFeatures {
 		viewBinding true
