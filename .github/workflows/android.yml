@@ -9,6 +9,10 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+# Grant the workflow permission to create releases / upload release assets
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -50,4 +54,7 @@ jobs:
       with:
         tag: ${{ github.ref_name }}
         name: Release ${{ github.ref_name }}
-        files: app/build/outputs/apk/**/release/*.apk
+        # attach the artifact uploaded above by name
+        artifacts: app-release-apk
+        generateReleaseNotes: false
+        token: ${{ secrets.GITHUB_TOKEN }}
