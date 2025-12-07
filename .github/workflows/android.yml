@@ -9,6 +9,9 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -50,4 +53,7 @@ jobs:
       with:
         tag: ${{ github.ref_name }}
         name: Release ${{ github.ref_name }}
-        files: app/build/outputs/apk/**/release/*.apk
+        # FIX: Point to the actual file location, NOT the artifact name
+        artifacts: "app/build/outputs/apk/**/release/*.apk"
+        generateReleaseNotes: false
+        token: ${{ secrets.GITHUB_TOKEN }}
