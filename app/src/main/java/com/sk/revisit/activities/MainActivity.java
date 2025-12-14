@@ -27,6 +27,8 @@ import com.sk.revisit.components.JSNavComponent;
 import com.sk.revisit.components.UrlBarComponent;
 import com.sk.revisit.databinding.ActivityMainBinding;
 import com.sk.revisit.databinding.NavHeaderBinding;
+import com.sk.revisit.helper.NetworkHelper;
+import com.sk.revisit.helper.NavigationHelper;
 import com.sk.revisit.managers.MySettingsManager;
 import com.sk.revisit.webview.MyWebView;
 
@@ -65,8 +67,14 @@ public class MainActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         initializeUI();
-        initNetworkChangeListener();
-        initNavView();
+        // register for network changes (NetworkHelper will callback to changeBgColor)
+        networkCallback = NetworkHelper.registerNetworkCallback(this, isAvailable -> {
+            Log.d(TAG, "Network state changed: " + isAvailable);
+            changeBgColor(isAvailable);
+        });
+        // setup navigation drawer and header interactions
+        NavigationHelper.setupNavigation(this, binding, mainWebView, revisitApp);
+
         initWebView(mainWebView);
         initOnBackPressed();
     }
@@ -122,48 +130,12 @@ public class MainActivity extends BaseActivity {
         int id = item.getItemId();
         if (id == R.id.edit_html) {
             //
-        }else if(id == R.id.fullscreen){
-            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //     if (isInFullscreenMode()) {
-            //         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-            //     } else {
-            //         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
-            //                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            //                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            //     }
-            // }
-        }else{
+        } else if (id == R.id.fullscreen) {
+            // fullscreen toggle omitted
+        } else {
             return false;
         }
         return true;
-    }
-
-    private void initNetworkChangeListener() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkRequest request = new NetworkRequest.Builder()
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .build();
-
-        networkCallback = new ConnectivityManager.NetworkCallback() {
-            @Override
-            public void onAvailable(@NonNull Network network) {
-                super.onAvailable(network);
-                Log.d(TAG, "Network Available");
-                //MyUtils.isNetworkAvailable = true;
-                changeBgColor(true);
-            }
-
-            @Override
-            public void onLost(@NonNull Network network) {
-                super.onLost(network);
-                Log.d(TAG, "Network Lost");
-                //MyUtils.isNetworkAvailable = false;
-                changeBgColor(false);
-            }
-        };
-        connectivityManager.registerNetworkCallback(request, networkCallback);
     }
 
     public void changeBgColor(boolean isAvailable) {
@@ -173,32 +145,6 @@ public class MainActivity extends BaseActivity {
             } else {
                 backgroundLinearLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.black));
             }
-        });
-    }
-
-    private void initNavView() {
-        binding.myNav.setNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_dn) {
-                startMyActivity(DownloadActivity.class);
-            } else if (id == R.id.nav_ud) {
-                startMyActivity(UpdateActivity.class);
-            } else if (id == R.id.nav_settings) {
-                startMyActivity(SettingsActivity.class, true);
-            } else if (id == R.id.nav_about) {
-                startMyActivity(AboutActivity.class);
-            } else if (id == R.id.nav_web) {
-                startMyActivity(WebpagesActivity.class);
-                revisitApp.setLastActivity(this);
-            } else if (id == R.id.nav_logs) {
-                startMyActivity(LogActivity.class);
-            } else if (id == R.id.nav_utils) {
-                startMyActivity(UtilsActivity.class);
-            } else if (id == R.id.refresh) {
-                mainWebView.reload();
-            }
-            // Return true to indicate that the item selection is handled
-            return true;
         });
     }
 
@@ -246,9 +192,10 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         mainWebView.destroyWebView();
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        // unregister network callback if registered
         if (networkCallback != null) {
-            connectivityManager.unregisterNetworkCallback(networkCallback);
+            NetworkHelper.unregisterNetworkCallback(this, networkCallback);
+            networkCallback = null;
         }
     }
 }

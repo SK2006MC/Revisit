@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.sk.revisit.databinding.ActivityFirstBinding;
 import com.sk.revisit.helper.PermissionHelper;
+import com.sk.revisit.helper.StorageHelper;
 import com.sk.revisit.managers.MySettingsManager;
 
 public class FirstActivity extends BaseActivity {
@@ -33,11 +34,17 @@ public class FirstActivity extends BaseActivity {
     private final ActivityResultLauncher<Uri> openDirectoryLauncher =
             registerForActivityResult(new ActivityResultContracts.OpenDocumentTree(), uri -> {
                 if (uri != null) {
-                    getContentResolver().takePersistableUriPermission(uri,
-                            Intent.FLAG_GRANT_READ_URI_PERMISSION |
-                                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                    settingsManager.setRootStoragePath(uri.toString());
-                    binding.rootPathTextView.setText(settingsManager.getRootStoragePath());
+                    // Persist permission for this URI so we can access it later
+                    StorageHelper.takePersistableUriPermission(this, uri);
+
+                    // Get a friendly display path (best-effort absolute path or fallback to URI string)
+                    String displayPath = StorageHelper.getDisplayPath(this, uri);
+
+                    // Save and show
+                    settingsManager.setRootStoragePath(displayPath);
+                    binding.rootPathTextView.setText(displayPath);
+
+                    // If you need to enumerate files use DocumentFile.fromTreeUri(this, uri)
                 }
             });
 
