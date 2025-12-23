@@ -21,3 +21,40 @@
 #-renamesourcefileattribute SourceFile
 
 -dontobfuscate
+
+# Kotlin specific rules
+-keepattributes Signature
+-keepattributes InnerClasses
+
+# Keep names of data class members
+-keepclassmembers class ** {
+    @org.jetbrains.annotations.NotNull <fields>;
+}
+
+# Keep constructors of data classes for serialization/deserialization
+-keepclassmembers class ** {
+    public <init>(...);
+}
+
+# Keep enum members
+-keepclassmembers class ** extends java.lang.Enum {
+    <fields>;
+    <methods>;
+}
+
+# For reflection
+-keep class kotlin.Metadata { *; }
+-keep class kotlin.coroutines.Continuation { *; }
+-keep class kotlin.reflect.KFunction { *; }
+-keep class kotlin.reflect.KProperty { *; }
+-keepclassmembers class ** {
+    public synthetic <fields>;
+}
+
+# For coroutines (if used)
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {
+    kotlinx.coroutines.CoroutineDispatcher createDispatcher(java.util.List);
+}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {
+    void handleException(kotlin.coroutines.CoroutineContext, java.lang.Throwable);
+}

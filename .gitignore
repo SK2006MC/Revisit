@@ -34,3 +34,10 @@ google-services.json
 *.hprof
 
 .tmp
+.aider.chat.history.md
+.aider.input.history
+.aider.tags.cache.v4
+.project
+.settings
+app
+kls_database.db

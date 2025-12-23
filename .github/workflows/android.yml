@@ -9,6 +9,7 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+# Grant the workflow permission to create releases / upload release assets
 permissions:
   contents: write
 
