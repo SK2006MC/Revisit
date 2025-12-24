@@ -52,9 +52,9 @@ public class HostAdapter extends RecyclerView.Adapter<HostAdapter.HostViewHolder
 
         void bind(Host host) {
             binding.hostText.setText(host.getName());
-            binding.expandhost.setOnClickListener(v -> host.isExpanded = !host.isExpanded);
-            binding.hostCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> host.isSelected = isChecked);
-            binding.hostSize.setText(String.valueOf(host.totalSize));
+            // binding.expandhost.setOnClickListener(v -> host.setIsExpanded(!host.getIsExpanded()));
+            // binding.hostCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> host.setIsSelected(isChecked));
+            binding.hostSize.setText(String.valueOf(host.getTotalSize()));
             binding.hostProgressbar.setProgress(0);
 
             List<Url> urls = host.getUrls();

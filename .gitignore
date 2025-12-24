@@ -39,5 +39,7 @@ google-services.json
 .aider.tags.cache.v4
 .project
 .settings
-app
 kls_database.db
+.aider*
+app/.classpath
+.kotlin
