@@ -27,10 +27,13 @@ open class BaseActivity : AppCompatActivity() {
         if (fini) finish()
     }
 
-    // Overload for Java compatibility if needed
-    fun startMyActivity(activityClass: Class<*>, fini: Boolean = false) {
-        MainActivity.lastBackPressTime = 0L
-        startActivity(Intent(this, activityClass))
-        if (fini) finish()
+    inline fun <reified T : android.app.Activity> startMyActivity(
+        finishCurrent: Boolean = false,
+        intentBuilder: android.content.Intent.() -> Unit = {}
+    ) {
+        val intent = android.content.Intent(this, T::class.java)
+        intent.intentBuilder() // This allows the putExtra calls
+        startActivity(intent)
+        if (finishCurrent) finish()
     }
 }
