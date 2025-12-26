@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.format.Formatter;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,26 +14,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.sk.revisit.adapter.WebpageItemAdapter;
 import com.sk.revisit.data.ItemPage;
 import com.sk.revisit.databinding.ActivityWebpagesBinding;
-import com.sk.revisit.helper.FileHelper;
 import com.sk.revisit.managers.MySettingsManager;
+import com.sk.revisit.managers.WebpageRepository; // Import the new repository
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class WebpagesActivity extends BaseActivity {
+public class WebpagesActivity extends BaseActivity implements WebpageRepository.Callback {
 
-    private static final String HTML_EXTENSION = ".html";
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private ActivityWebpagesBinding binding;
     private WebpageItemAdapter pageItemAdapter;
-    private String ROOT_PATH;
-    private List<String> htmlFilesPaths;
-    private List<ItemPage> webPages;
+    private WebpageRepository webpageRepository;
+
+    // UI Feedback Handlers
+    private final Handler searchHandler = new Handler(Looper.getMainLooper());
+    private Runnable searchRunnable;
+    private static final long SEARCH_DEBOUNCE_DELAY = 300; // milliseconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +38,10 @@ public class WebpagesActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         MySettingsManager settingsManager = new MySettingsManager(this);
-        ROOT_PATH = settingsManager.getRootStoragePath();
+        String rootPath = settingsManager.getRootStoragePath();
+
+        // Initialize Repository
+        webpageRepository = new WebpageRepository(this, rootPath);
 
         initUi();
         loadWebpages();
@@ -55,80 +53,70 @@ public class WebpagesActivity extends BaseActivity {
         binding.webpagesHosts.setAdapter(pageItemAdapter);
 
         binding.webpagesRefreshButton.setOnClickListener(v -> loadWebpages());
+
+        // Apply search debounce logic
         binding.searchBar.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filterPagesByKeywords(editable.toString());
+                if (searchRunnable != null) {
+                    searchHandler.removeCallbacks(searchRunnable);
+                }
+                String keywords = editable.toString();
+                searchRunnable = () -> filterPagesByKeywords(keywords);
+                searchHandler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY);
             }
         });
     }
 
     private void loadWebpages() {
+        // Show loading indicator (UX Improvement)
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.webpagesHosts.setVisibility(View.GONE);
+        pageItemAdapter.setWebPages(new ArrayList<>()); // Clear old data
+
         try {
-            loadWebpagesI();
+            webpageRepository.loadWebpages(this);
         } catch (Exception e) {
-            alert(e.toString());
+            onError(e.toString());
+            // Hide loading indicator on immediate failure
+            binding.progressBar.setVisibility(View.GONE);
         }
     }
 
-    private void loadWebpagesI() {
-        pageItemAdapter.setWebPages(new ArrayList<>());
+    // --- WebpageRepository.Callback Implementation ---
 
-        if (ROOT_PATH == null || ROOT_PATH.isEmpty()) {
-            alert("Error: Invalid storage path.");
-            return;
-        }
+    @Override
+    public void onSuccess(List<ItemPage> pages) {
+        // Post back to main thread (Repository handles this, but good practice to ensure)
+        runOnUiThread(() -> {
+            pageItemAdapter.setWebPages(pages);
 
-        File rootDir = new File(ROOT_PATH);
-        if (!rootDir.exists() || !rootDir.isDirectory()) {
-            alert("Error: Invalid storage directory.");
-            return;
-        }
-
-        htmlFilesPaths = new ArrayList<>();
-        webPages = new ArrayList<>();
-        pageItemAdapter.setWebPagesOrg(webPages);
-        executor.execute(() -> {
-            FileHelper.searchRecursive(rootDir, HTML_EXTENSION, htmlFilesPaths);
-            AtomicInteger i = new AtomicInteger(0);
-            for (String htmlFile : htmlFilesPaths) {
-                htmlFile = htmlFile.replace(ROOT_PATH + File.separator, "");
-                ItemPage page = new ItemPage();
-                page.host = htmlFile.split("/")[0];
-                page.fileName = htmlFile;
-                page.size = calcSize(ROOT_PATH + File.separator + htmlFile);
-                page.sizeStr = Formatter.formatFileSize(this, page.size);
-
-                mainHandler.post(() -> {
-                    webPages.add(page);
-                    pageItemAdapter.notifyItemInserted(i.getAndIncrement());
-                });
+            if (pages.isEmpty()) {
+                alert("No HTML files found in the root directory.");
             }
 
-            mainHandler.post(() -> {
-                if (htmlFilesPaths.isEmpty()) {
-                    alert("No HTML files found.");
-                }
-            });
+            // Hide loading indicator and show list
+            binding.progressBar.setVisibility(View.GONE);
+            binding.webpagesHosts.setVisibility(View.VISIBLE);
         });
     }
 
-    private long calcSize(String htmlFile) {
-        File file = new File(htmlFile);
-        try {
-            return FileHelper.getFolderSize(file.getParent());
-        } catch (Exception e) {
-            return -1;
-        }
+    @Override
+    public void onError(String message) {
+        runOnUiThread(() -> {
+            alert(message);
+            // Hide loading indicator on error
+            binding.progressBar.setVisibility(View.GONE);
+            binding.webpagesHosts.setVisibility(View.VISIBLE); // Show list even if empty
+        });
     }
+
+    // --- Other Methods ---
 
     void filterPagesByKeywords(String keywords) {
         pageItemAdapter.filter(keywords);
@@ -137,18 +125,26 @@ public class WebpagesActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        executor.shutdownNow();
+        webpageRepository.shutdown(); // Shut down repository executor
+
+        // Clean up search handler
+        if (searchRunnable != null) {
+            searchHandler.removeCallbacks(searchRunnable);
+        }
     }
 
     public void loadPage(View v) {
-        TextView textView = (TextView) v;
-        String filename = textView.getText().toString();
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("loadUrl", true);
-        intent.putExtra("url", filename);
-        startActivity(intent);
-        alert("loading..  " + filename);
-        getRevisitApp().getLastActivity().finish();
-        finish();
+        // Assuming the ViewHolder/Adapter sets the tag or uses the View structure
+        // to find the filename correctly. If 'v' is the TextView itself, this works.
+        if (v instanceof TextView) {
+            String filename = ((TextView) v).getText().toString();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("loadUrl", true);
+            intent.putExtra("url", filename);
+            startActivity(intent);
+            alert("loading..  " + filename);
+            getRevisitApp().getLastActivity().finish();
+            finish();
+        }
     }
 }

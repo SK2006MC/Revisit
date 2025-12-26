@@ -129,12 +129,12 @@ class DownloadActivity : BaseActivity() {
 
                 override fun onSuccess(file: File, headers: Headers) {
                     url.isDownloaded = true
-                    url.setProgress(100.0)
+                    url.progress = 100.0
                     notifyUpdate()
                 }
 
                 override fun onProgress(p: Double) {
-                    url.setProgress(p)
+                    url.progress = p
                     notifyUpdate()
                 }
 

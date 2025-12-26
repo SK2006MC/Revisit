@@ -1,19 +1,13 @@
 package com.sk.revisit.activities
 
-import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
 import com.sk.revisit.MyUtils
 import com.sk.revisit.R
 import com.sk.revisit.Revisit
@@ -29,29 +23,26 @@ import java.util.*
 
 class MainActivity : BaseActivity() {
 
-    private val urlLogsFormat = "Requested: %d\nResolved: %d\nFailed: %d"
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var settingsManager: MySettingsManager
+    private lateinit var mainWebView: MyWebView
+    private lateinit var myUtils: MyUtils
+
     private var jsNavComponent: JSNavComponent? = null
     private var urlBarComponent: UrlBarComponent? = null
-    private var revisitApp: Revisit? = null
-    private var urlLogsTextView: TextView? = null
-    private var settingsManager: MySettingsManager? = null
-    private var mainWebView: MyWebView? = null
-    private var backgroundLinearLayout: LinearLayout? = null
-    private var keepUpToDateSwitch: SwitchCompat? = null
-    private var myUtils: MyUtils? = null
-    private lateinit var binding: ActivityMainBinding
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        revisitApp = getRevisitApp()
-        myUtils = revisitApp?.myUtils
-        settingsManager = revisitApp?.mySettingsManager
+        // Using the 'revisitApp' property inherited from BaseActivity
+        // Added '!!' to resolve the Type Mismatch error
+        myUtils = revisitApp.myUtils!!
+        settingsManager = revisitApp.mySettingsManager!!
 
-        if (settingsManager?.isFirst == true) {
-            startMyActivity(FirstActivity::class.java)
-            finish()
+        // Check first run
+        if (settingsManager.isFirst) {
+            startMyActivity<FirstActivity>(fini = true)
             return
         }
 
@@ -59,121 +50,112 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
 
         initializeUI()
+
         networkCallback = NetworkHelper.registerNetworkCallback(this) { isAvailable ->
             Log.d(TAG, "Network state changed: $isAvailable")
             changeBgColor(isAvailable)
         }
-        NavigationHelper.setupNavigation(this, binding, mainWebView, revisitApp)
 
-        mainWebView?.let { initWebView(it) }
+        NavigationHelper.setupNavigation(this, binding, mainWebView, revisitApp)
+        initWebView()
         initOnBackPressed()
     }
 
     private fun initializeUI() {
         mainWebView = binding.myWebView
-
         val navHeaderBinding = NavHeaderBinding.bind(binding.myNav.getHeaderView(0))
-        keepUpToDateSwitch = navHeaderBinding.keepUptodate
-        backgroundLinearLayout = navHeaderBinding.background
-        urlLogsTextView = navHeaderBinding.urlLogs
-        urlLogsTextView?.setOnClickListener {
-            urlLogsTextView?.text = String.format(
-                Locale.ENGLISH, urlLogsFormat,
-                Revisit.requests.get(), Revisit.resolved.get(), Revisit.failed.get()
+
+        with(navHeaderBinding) {
+            urlLogs.setOnClickListener {
+                urlLogs.text = String.format(
+                    Locale.ENGLISH,
+                    "Requested: %d\nResolved: %d\nFailed: %d",
+                    Revisit.requests.get(), Revisit.resolved.get(), Revisit.failed.get()
+                )
+            }
+
+            useInternet.setOnCheckedChangeListener { _, isChecked ->
+                Revisit.isNetworkAvailable = isChecked
+                keepUptodate.isEnabled = isChecked
+            }
+
+            keepUptodate.setOnCheckedChangeListener { _, isChecked ->
+                Revisit.shouldUpdate = isChecked
+            }
+
+            urlBarComponent = UrlBarComponent(
+                this@MainActivity,
+                urlAppCompatAutoCompleteTextView,
+                mainWebView,
+                settingsManager.rootStoragePath
             )
         }
 
-        val useInternetSwitch = navHeaderBinding.useInternet
-        useInternetSwitch.setOnCheckedChangeListener { _, isChecked ->
-            Revisit.isNetworkAvailable = isChecked
-            keepUpToDateSwitch?.isEnabled = isChecked
-        }
-
-        keepUpToDateSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            Revisit.shouldUpdate = isChecked
-        }
-
-        urlBarComponent = UrlBarComponent(
-            this,
-            navHeaderBinding.urlAppCompatAutoCompleteTextView,
-            mainWebView!!,
-            settingsManager!!.rootStoragePath
-        )
         jsNavComponent = JSNavComponent(this, binding.jsnav, mainWebView)
     }
 
-    private fun initWebView(webView: MyWebView) {
-        webView.setMyUtils(myUtils)
-        webView.setJSNavComponent(jsNavComponent)
-        webView.setUrlLoadListener { url ->
-            urlBarComponent?.setText(url)
-            urlLogsTextView?.performClick()
-        }
+    private fun initWebView() {
+        mainWebView.apply {
+            setMyUtils(myUtils)
+            setJSNavComponent(jsNavComponent)
 
-        webView.setProgressChangeListener { progress ->
-            binding.pageLoad.progress = progress
-            if (progress == 100)
-                binding.pageLoad.visibility = View.GONE
-            else
-                binding.pageLoad.visibility = View.VISIBLE
-        }
+            setUrlLoadListener { url ->
+                urlBarComponent?.setText(url)
+                val navHeaderBinding = NavHeaderBinding.bind(binding.myNav.getHeaderView(0))
+                navHeaderBinding.urlLogs.performClick()
+            }
 
-        webView.init()
+            setProgressChangeListener { progress ->
+                binding.pageLoad.apply {
+                    this.progress = progress
+                    visibility = if (progress == 100) View.GONE else View.VISIBLE
+                }
+            }
+
+            init()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_men2, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        if (id == R.id.edit_html) {
-            //
-        } else if (id == R.id.fullscreen) {
-            // fullscreen toggle omitted
-        } else {
-            return false
-        }
         return true
     }
 
-    fun changeBgColor(isAvailable: Boolean) {
-        runOnUiThread {
-            if (isAvailable) {
-                backgroundLinearLayout?.setBackgroundColor(
-                    ContextCompat.getColor(this, R.color.dark_teal_200)
-                )
-            } else {
-                backgroundLinearLayout?.setBackgroundColor(
-                    ContextCompat.getColor(this, R.color.black)
-                )
-            }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.edit_html -> { /* Handle edit */ true }
+            R.id.fullscreen -> { /* Handle fullscreen */ true }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
-    fun initOnBackPressed() {
+    private fun changeBgColor(isAvailable: Boolean) {
+        runOnUiThread {
+            val navHeaderBinding = NavHeaderBinding.bind(binding.myNav.getHeaderView(0))
+            val colorRes = if (isAvailable) R.color.dark_teal_200 else R.color.black
+            navHeaderBinding.background.setBackgroundColor(ContextCompat.getColor(this, colorRes))
+        }
+    }
+
+    private fun initOnBackPressed() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val drawerLayout: DrawerLayout = binding.drawerLayout
-                val mainNav: NavigationView = binding.myNav
-                val jsNav: NavigationView = binding.nav2
-                try {
-                    if (drawerLayout.isDrawerOpen(mainNav)) {
-                        drawerLayout.closeDrawer(mainNav)
-                    } else if (drawerLayout.isDrawerOpen(jsNav)) {
-                        drawerLayout.closeDrawer(jsNav)
-                    } else if (mainWebView?.canGoBack() == true) {
-                        mainWebView?.goBack()
-                    } else {
-                        if (bpn > 0) {
+                val drawer = binding.drawerLayout
+
+                when {
+                    drawer.isDrawerOpen(binding.myNav) -> drawer.closeDrawer(binding.myNav)
+                    drawer.isDrawerOpen(binding.nav2) -> drawer.closeDrawer(binding.nav2)
+                    mainWebView.canGoBack() -> mainWebView.goBack()
+                    else -> {
+                        val currentTime = System.currentTimeMillis()
+                        // Check if the current time is within the 2-second window of last press
+                        if (currentTime - lastBackPressTime < BACK_PRESS_INTERVAL) {
                             finish()
+                        } else {
+                            lastBackPressTime = currentTime
+                            alert("Press again to exit")
                         }
-                        alert("press again to exit")
-                        bpn++
                     }
-                } catch (e: Exception) {
-                    alert(e.toString())
                 }
             }
         })
@@ -182,25 +164,26 @@ class MainActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         if (intent.getBooleanExtra("loadUrl", false)) {
-            val url = intent.getStringExtra("url")
-            if (url != null) {
-                mainWebView?.loadUrl(url)
+            intent.getStringExtra("url")?.let { url ->
+                mainWebView.loadUrl(url)
                 urlBarComponent?.setText(url)
             }
         }
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        mainWebView?.destroyWebView()
+        urlBarComponent?.release()
+        mainWebView.destroyWebView()
         networkCallback?.let {
             NetworkHelper.unregisterNetworkCallback(this, it)
             networkCallback = null
         }
+        super.onDestroy()
     }
 
     companion object {
-        @JvmField
-        var bpn: Int = 0
+        // Replaced bpn with time-based variables
+        var lastBackPressTime: Long = 0L
+        private const val BACK_PRESS_INTERVAL = 2000L // 2 seconds
     }
 }
