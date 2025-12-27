@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import com.sk.revisit.MyUtils
 import com.sk.revisit.R
 import com.sk.revisit.Revisit
+import com.sk.revisit.Consts
 import com.sk.revisit.components.JSNavComponent
 import com.sk.revisit.components.UrlBarComponent
 import com.sk.revisit.databinding.ActivityMainBinding
@@ -163,8 +164,8 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (intent.getBooleanExtra("loadUrl", false)) {
-            intent.getStringExtra("url")?.let { url ->
+        if (intent.getBooleanExtra(Consts.intentLoadUrl, false)) {
+            intent.getStringExtra(Consts.intentUrl)?.let { url ->
                 mainWebView.loadUrl(url)
                 urlBarComponent?.setText(url)
             }
@@ -182,7 +183,6 @@ class MainActivity : BaseActivity() {
     }
 
     companion object {
-        // Replaced bpn with time-based variables
         var lastBackPressTime: Long = 0L
         private const val BACK_PRESS_INTERVAL = 2000L // 2 seconds
     }

@@ -17,6 +17,7 @@ class WebpageRepository(private val context: Context, private val rootPath: Stri
     interface Callback {
         fun onSuccess(pages: List<ItemPage>)
         fun onError(message: String)
+        // fun onProgress(p: int)
     }
 
     fun loadWebpages(callback: Callback) {
@@ -50,6 +51,7 @@ class WebpageRepository(private val context: Context, private val rootPath: Stri
                             size = calcSize(fullPath)
                             sizeStr = Formatter.formatFileSize(context, size)
                         }
+                        // callback.onProgress(1)
                     }
                 }
                 callback.onSuccess(webPages)
@@ -83,6 +85,6 @@ class WebpageRepository(private val context: Context, private val rootPath: Stri
 
     companion object {
         private const val HTML_EXTENSION = ".html"
-        private const val TAG = "WebpageRepository"
+        protected val TAG: String = this::class.java.simpleName
     }
 }

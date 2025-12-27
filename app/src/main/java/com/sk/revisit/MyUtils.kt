@@ -5,6 +5,7 @@ import android.net.Uri
 import android.text.TextUtils
 import android.util.Base64
 import android.webkit.MimeTypeMap
+import com.sk.revisit.Consts
 import com.sk.revisit.data.UrlLog
 import com.sk.revisit.helper.FileHelper
 import com.sk.revisit.helper.LogHelper
@@ -26,7 +27,7 @@ class MyUtils(val context: Context, val rootPath: String) {
         .readTimeout(30, TimeUnit.SECONDS)
         .build()
     val executorService: ExecutorService = Executors.newFixedThreadPool(Revisit.MAX_THREADS, CustomThreadFactory())
-    private val dbm: SQLiteDBM = SQLiteDBM(context, "$rootPath/revisit.db")
+    private val dbm: SQLiteDBM = SQLiteDBM(context, "$rootPath/${Consts.dbname}")
     private val logger: LogHelper = LogHelper(context, rootPath)
     private val MimeHelper: MimeHelper = MimeHelper(this)
     private val netHelper: NetHelper = NetHelper(this.client)
@@ -99,12 +100,12 @@ class MyUtils(val context: Context, val rootPath: String) {
     }
 
     fun getMimeType(filename: String): String {
-        var mimeType = "application/octet-stream"
+        var mimeType = Consts.fallbackMime
         val extension = MimeTypeMap.getFileExtensionFromUrl(filename)
         if (extension != null) {
             val s = MimeTypeMap.getSingleton()
             if (s != null) {
-                mimeType = s.getMimeTypeFromExtension(extension) ?: "application/octet-stream"
+                mimeType = s.getMimeTypeFromExtension(extension) ?: Consts.fallbackMime
             }
         }
         return mimeType
@@ -219,7 +220,7 @@ class MyUtils(val context: Context, val rootPath: String) {
     }
 
     companion object {
-        private const val TAG = "MyUtils"
+        protected val TAG: String = this::class.java.simpleName
         private const val BUFF_SIZE = 1024 * 8
     }
 }

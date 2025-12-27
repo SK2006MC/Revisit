@@ -20,9 +20,6 @@ open class BaseActivity : AppCompatActivity() {
      * Modern navigation: Resets the back press timer and starts activity
      */
     inline fun <reified T : AppCompatActivity> startMyActivity(fini: Boolean = false) {
-        // Reset the time-based back press logic
-        MainActivity.lastBackPressTime = 0L
-
         startActivity(Intent(this, T::class.java))
         if (fini) finish()
     }

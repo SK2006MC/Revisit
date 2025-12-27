@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.sk.revisit.GVars
+import com.sk.revisit.Consts
 import com.sk.revisit.MyUtils
 import com.sk.revisit.R
 import com.sk.revisit.Revisit
@@ -60,12 +60,12 @@ class DownloadActivity : BaseActivity() {
         urlsList.clear()
         urlsAdapter.notifyDataSetChanged()
 
-        val filePath = settingsManager.rootStoragePath + File.separator + GVars.reqFileName
+        val filePath = settingsManager.rootStoragePath + File.separator + Consts.reqFileName
         val reqFile = File(filePath)
 
         if (!reqFile.exists()) {
-            Log.e(TAG, "${GVars.reqFileName} not found at: $filePath")
-            alert("${GVars.reqFileName} not found at: $filePath")
+            Log.e(TAG, "${Consts.reqFileName} not found at: $filePath")
+            alert("${Consts.reqFileName} not found at: $filePath")
             return
         }
 

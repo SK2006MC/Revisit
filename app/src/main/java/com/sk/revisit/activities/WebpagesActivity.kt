@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.sk.revisit.Consts
 import com.sk.revisit.data.ItemPage
 import com.sk.revisit.databinding.ActivityWebpagesBinding
 import com.sk.revisit.managers.MySettingsManager
@@ -93,8 +94,8 @@ class WebpagesActivity : BaseActivity(), WebpageRepository.Callback {
 
     private fun navigateToMain(filename: String) {
         startMyActivity<MainActivity> {
-            putExtra("loadUrl", true)
-            putExtra("url", filename)
+            putExtra(Consts.intentLoadUrl, true)
+            putExtra(Consts.intentUrl, filename)
         }
         alert("Loading... $filename")
 
