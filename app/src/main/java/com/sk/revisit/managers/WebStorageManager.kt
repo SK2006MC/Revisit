@@ -6,10 +6,23 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import com.sk.revisit.MyUtils
 import com.sk.revisit.Revisit
+import com.sk.revisit.log.FileLogger
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import okhttp3.Headers
 import java.io.*
 
 class WebStorageManager(private val utils: MyUtils) {
+
+    val urlLogger: FileLogger
+    var requestLogger: FileLogger
+    val loggingExecutor: ExecutorService = Executors.newSingleThreadExecutor(LoggingThreadFactory())
+
+    fun saveUrl(url: String){
+        executorService.execute(()->{
+            urlLogger.log(url)
+        })
+    }
 
     fun getResponse(request: WebResourceRequest): WebResourceResponse? {
         Revisit.requests.incrementAndGet()
@@ -20,7 +33,7 @@ class WebStorageManager(private val utils: MyUtils) {
 
         val uri = request.url
         val uriStr = uri.toString()
-        utils.saveUrl(uriStr)
+        saveUrl(uriStr)
 
         if (!URLUtil.isNetworkUrl(uriStr)) {
             return null
@@ -41,7 +54,7 @@ class WebStorageManager(private val utils: MyUtils) {
                 utils.download(uri, createDownloadListener(uriStr, localPath))
                 loadFromLocal(localFile, uri)
             } else {
-                utils.saveReq(uriStr)
+                saveReq(uriStr)
                 createNoOfflineFileResponse()
             }
         }
@@ -63,7 +76,7 @@ class WebStorageManager(private val utils: MyUtils) {
 
             override fun onFailure(e: Exception) {
                 Revisit.failed.incrementAndGet()
-                utils.saveReq(uriStr)
+                saveReq(uriStr)
             }
 
             override fun onEnd(file: File) {
@@ -73,9 +86,9 @@ class WebStorageManager(private val utils: MyUtils) {
     }
 
     private fun loadFromLocal(localFile: File, uri: Uri): WebResourceResponse? {
-        val localFilePath = localFile.absolutePath
+        val localFilePath:String = localFile.absolutePath
         return try {
-            val mimeType = getMimeType(localFilePath, uri)
+            val mimeType:String = getMimeType(localFilePath, uri)
             Revisit.resolved.incrementAndGet()
             val inputStream = FileInputStream(localFile)
             val response = WebResourceResponse(mimeType, UTF_8, inputStream)
@@ -88,18 +101,12 @@ class WebStorageManager(private val utils: MyUtils) {
     }
 
     private fun getMimeType(localFilePath: String, uri: Uri): String {
-        var mimeType = utils.getMimeTypeFromMeta(localFilePath)
+        var mimeType:String = utils.getMimeTypeFromMeta(localFilePath)
         if (mimeType == null) {
             utils.createMimeTypeMeta(uri)
-            // val path = if (localFilePath.contains(";")) localFilePath.split(";")[0] else localFilePath
             mimeType = utils.getMimeType(localFilePath)
         }
         return mimeType
-    }
-
-    fun getHeaders(path: String, uri: Uri): Map<String, String>? {
-        // Implementation omitted as in original Java
-        return null
     }
 
     private fun createNoOfflineFileResponse(): WebResourceResponse {
@@ -111,10 +118,19 @@ class WebStorageManager(private val utils: MyUtils) {
     }
 
     companion object {
-        private const val TAG = "WebStorageManager"
         private const val DEFAULT_MIME = "text/html"
         private const val GET_METHOD = "GET"
         private const val UTF_8 = "UTF-8"
         private const val NO_OFFLINE_FILE_MESSAGE = "No offline file available."
+        protected val TAG: String = this::class.java.simpleName
+    }
+
+    // Thread factory for logging tasks (lower priority)
+    private class LoggingThreadFactory : ThreadFactory {
+        fun newThread(r: Runnable): Thread {
+            val t : Thread = Thread(r, "MyUtils-Logging-Thread")
+            t.priority = Thread.MIN_PRIORITY
+            return t
+        }
     }
 }
