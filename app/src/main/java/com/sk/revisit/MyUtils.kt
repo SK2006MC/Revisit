@@ -8,7 +8,6 @@ import android.webkit.MimeTypeMap
 import com.sk.revisit.Consts
 import com.sk.revisit.data.UrlLog
 import com.sk.revisit.helper.FileHelper
-import com.sk.revisit.helper.LogHelper
 import com.sk.revisit.helper.MimeHelper
 import com.sk.revisit.helper.NetHelper
 import com.sk.revisit.managers.SQLiteDBM
@@ -28,41 +27,16 @@ class MyUtils(val context: Context, val rootPath: String) {
         .build()
     val executorService: ExecutorService = Executors.newFixedThreadPool(Revisit.MAX_THREADS, CustomThreadFactory())
     private val dbm: SQLiteDBM = SQLiteDBM(context, "$rootPath/${Consts.dbname}")
-    private val logger: LogHelper = LogHelper(context, rootPath)
     private val MimeHelper: MimeHelper = MimeHelper(this)
     private val netHelper: NetHelper = NetHelper(this.client)
-    private var onCreateLogListener: OnCreateLogListener? = null
+    var onCreateLogListener: OnCreateLogListener? = null
 
     fun head(url: String): Response? {
         return netHelper.head(url)
     }
 
-    fun log(tag: String, msg: String, e: Exception? = null) {
-        if (e != null) {
-            logger.log("$tag\t$msg\t${e}")
-        } else {
-            logger.log("$tag\t$msg")
-        }
-    }
-
-    fun saveReq(m: String) {
-        logger.saveReq(m)
-    }
-
-    fun saveUrl(uriStr: String) {
-        logger.saveUrl(uriStr)
-    }
-
-    fun saveResp(m: String) {
-        logger.saveResp(m)
-    }
-
     fun createUrlLog(urlLog: UrlLog) {
         onCreateLogListener?.onCreate(urlLog)
-    }
-
-    fun setOnCreateLogListener(onCreateLogListener: OnCreateLogListener) {
-        this.onCreateLogListener = onCreateLogListener
     }
 
     fun buildLocalPath(uri: Uri): String? {
@@ -77,7 +51,6 @@ class MyUtils(val context: Context, val rootPath: String) {
         }
 
         if (TextUtils.isEmpty(host) || TextUtils.isEmpty(path)) {
-            log(TAG, "Invalid URI: Host or path is empty.")
             return null
         }
         val sep = File.separatorChar
@@ -109,18 +82,6 @@ class MyUtils(val context: Context, val rootPath: String) {
             }
         }
         return mimeType
-    }
-
-    fun createMimeTypeMeta(uri: Uri) {
-        executorService.execute { MimeHelper.createMimeTypeMeta(uri) }
-    }
-
-    fun getMimeTypeFromMeta(filepath: String): String? {
-        return MimeHelper.getMimeTypeFromMeta(filepath)
-    }
-
-    fun createMimeTypeMetaFile(filepath: String, type: String) {
-        executorService.execute { MimeHelper.createMimeTypeMetaFile(filepath, type) }
     }
 
     fun download(uri: Uri, listener: DownloadListener) {
@@ -180,7 +141,7 @@ class MyUtils(val context: Context, val rootPath: String) {
                         executorService.execute {
                             val mediaType = body.contentType()
                             val contentType = mediaType?.toString() ?: "application/octet-stream"
-                            createMimeTypeMetaFile(localFilePath, contentType)
+                            // createMimeTypeMetaFile(localFilePath, contentType)
                             dbm.insertIntoUrlsIfNotExists(uri, localFilePath, File(localFilePath).length(), response.headers)
                         }
 
@@ -197,7 +158,6 @@ class MyUtils(val context: Context, val rootPath: String) {
 
     fun shutdown() {
         executorService.shutdown()
-        logger.shutdown()
     }
 
     fun interface OnCreateLogListener {

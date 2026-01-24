@@ -4,9 +4,11 @@ import android.net.Uri
 import android.webkit.URLUtil
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
+import com.sk.revisit.Consts
 import com.sk.revisit.MyUtils
 import com.sk.revisit.Revisit
 import com.sk.revisit.log.FileLogger
+import com.sk.revisit.helper.MimeHelper
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadFactory
@@ -15,13 +17,20 @@ import java.io.*
 
 class WebStorageManager(private val utils: MyUtils) {
 
-    val urlLogger: FileLogger
-    var requestLogger: FileLogger
+    val urlLogger: FileLogger = FileLogger(utils.rootPath+"/"+Consts.urlLogFileName)
+    var requestLogger: FileLogger = FileLogger(utils.rootPath+"/"+Consts.reqFileName)
     val loggingExecutor: ExecutorService = Executors.newSingleThreadExecutor(LoggingThreadFactory())
+    val mimeHelper: MimeHelper = MimeHelper(utils)
 
     fun saveUrl(url: String){
         loggingExecutor.execute {
             urlLogger.log(url)
+        }
+    }
+
+    fun saveReq(url: String){
+        loggingExecutor.execute {
+            requestLogger.log(url)
         }
     }
 
@@ -104,9 +113,9 @@ class WebStorageManager(private val utils: MyUtils) {
     }
 
     private fun getMimeType(localFilePath: String, uri: Uri): String {
-        var mimeType:String = utils.getMimeTypeFromMeta(localFilePath) ?: utils.getMimeType(localFilePath)
+        var mimeType:String = mimeHelper.getMimeTypeFromMeta(localFilePath) ?: utils.getMimeType(localFilePath)
         if (mimeType == utils.getMimeType(localFilePath)) { // Check if it fell back to default probe/helper mime type
-            utils.createMimeTypeMeta(uri)
+            mimeHelper.createMimeTypeMeta(uri)
             mimeType = utils.getMimeType(localFilePath) ?: DEFAULT_MIME // Fallback to default if probe fails again
         }
         return mimeType

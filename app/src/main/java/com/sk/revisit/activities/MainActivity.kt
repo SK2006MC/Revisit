@@ -24,166 +24,141 @@ import java.util.*
 
 class MainActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var settingsManager: MySettingsManager
-    private lateinit var mainWebView: MyWebView
-    private lateinit var myUtils: MyUtils
+    // Using nullable types for UI components to avoid UninitializedPropertyAccessException
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = _binding!!
 
-    private var jsNavComponent: JSNavComponent? = null
+    private var mainWebView: MyWebView? = null
     private var urlBarComponent: UrlBarComponent? = null
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Using the 'revisitApp' property inherited from BaseActivity
-        // Added '!!' to resolve the Type Mismatch error
-        myUtils = revisitApp.myUtils!!
-        settingsManager = revisitApp.mySettingsManager!!
-
-        // Check first run
-        if (settingsManager.isFirst) {
+        // 1. Check early exit before doing any UI work
+        val settings = revisitApp.mySettingsManager
+        if (settings?.isFirst == true) {
             startMyActivity<FirstActivity>(fini = true)
             return
         }
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        // 2. Setup View Binding
+        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 3. Initialize Components
+        setupDependencies()
         initializeUI()
-
-        networkCallback = NetworkHelper.registerNetworkCallback(this) { isAvailable ->
-            Log.d(TAG, "Network state changed: $isAvailable")
-            changeBgColor(isAvailable)
-        }
-
-        NavigationHelper.setupNavigation(this, binding, mainWebView, revisitApp)
-        initWebView()
-        initOnBackPressed()
+        setupNetworkMonitoring()
+        setupBackNavigation()
     }
 
-    private fun initializeUI() {
+    private fun setupDependencies() {
+        // Safe access to app-level utilities
+        val myUtils = revisitApp.myUtils ?: return
+        
         mainWebView = binding.myWebView
-        val navHeaderBinding = NavHeaderBinding.bind(binding.myNav.getHeaderView(0))
-
-        with(navHeaderBinding) {
-            urlLogs.setOnClickListener {
-                urlLogs.text = String.format(
-                    Locale.ENGLISH,
-                    "Requested: %d\nResolved: %d\nFailed: %d",
-                    Revisit.requests.get(), Revisit.resolved.get(), Revisit.failed.get()
-                )
-            }
-
-            useInternet.setOnCheckedChangeListener { _, isChecked ->
-                Revisit.isNetworkAvailable = isChecked
-                keepUptodate.isEnabled = isChecked
-            }
-
-            keepUptodate.setOnCheckedChangeListener { _, isChecked ->
-                Revisit.shouldUpdate = isChecked
-            }
-
-            urlBarComponent = UrlBarComponent(
-                this@MainActivity,
-                urlAppCompatAutoCompleteTextView,
-                mainWebView,
-                settingsManager.rootStoragePath
-            )
-        }
-
-        jsNavComponent = JSNavComponent(this, binding.jsnav, mainWebView)
-    }
-
-    private fun initWebView() {
-        mainWebView.apply {
+        mainWebView?.apply {
             setMyUtils(myUtils)
-            setJSNavComponent(jsNavComponent)
-
-            setUrlLoadListener { url ->
-                urlBarComponent?.setText(url)
-                val navHeaderBinding = NavHeaderBinding.bind(binding.myNav.getHeaderView(0))
-                navHeaderBinding.urlLogs.performClick()
-            }
-
-            setProgressChangeListener { progress ->
-                binding.pageLoad.apply {
-                    this.progress = progress
-                    visibility = if (progress == 100) View.GONE else View.VISIBLE
-                }
-            }
-
             init()
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_men2, menu)
-        return true
+    private fun initializeUI() {
+        val webView = mainWebView ?: return
+        val headerView = binding.myNav.getHeaderView(0)
+        val navHeaderBinding = NavHeaderBinding.bind(headerView)
+
+        // Setup UrlBarComponent
+        urlBarComponent = UrlBarComponent(
+            this,
+            navHeaderBinding.urlAppCompatAutoCompleteTextView,
+            webView,
+            revisitApp.mySettingsManager?.rootStoragePath ?: ""
+        )
+
+        // Setup Navigation Helper
+        NavigationHelper.setupNavigation(this, binding, webView, revisitApp)
+        
+        // Setup JS Navigation
+        JSNavComponent(this, binding.jsnav, webView)
+
+        // UI Listeners
+        setupHeaderListeners(navHeaderBinding)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.edit_html -> { /* Handle edit */ true }
-            R.id.fullscreen -> { /* Handle fullscreen */ true }
-            else -> super.onOptionsItemSelected(item)
+    private fun setupHeaderListeners(header: NavHeaderBinding) {
+        header.urlLogs.setOnClickListener {
+            header.urlLogs.text = String.format(
+                Locale.ENGLISH,
+                "Req: %d | Res: %d | Fail: %d",
+                Revisit.requests.get(), Revisit.resolved.get(), Revisit.failed.get()
+            )
+        }
+
+        header.useInternet.setOnCheckedChangeListener { _, isChecked ->
+            Revisit.isNetworkAvailable = isChecked
+            header.keepUptodate.isEnabled = isChecked
         }
     }
 
-    private fun changeBgColor(isAvailable: Boolean) {
-        runOnUiThread {
-            val navHeaderBinding = NavHeaderBinding.bind(binding.myNav.getHeaderView(0))
-            val colorRes = if (isAvailable) R.color.dark_teal_200 else R.color.black
-            navHeaderBinding.background.setBackgroundColor(ContextCompat.getColor(this, colorRes))
+    private fun setupNetworkMonitoring() {
+        networkCallback = NetworkHelper.registerNetworkCallback(this) { isAvailable ->
+            runOnUiThread { updateNetworkUI(isAvailable) }
         }
     }
 
-    private fun initOnBackPressed() {
+    private fun updateNetworkUI(isAvailable: Boolean) {
+        val headerView = binding.myNav.getHeaderView(0)
+        val navHeaderBinding = NavHeaderBinding.bind(headerView)
+        val color = ContextCompat.getColor(
+            this, 
+            if (isAvailable) R.color.dark_teal_200 else R.color.black
+        )
+        navHeaderBinding.background.setBackgroundColor(color)
+    }
+
+    private fun setupBackNavigation() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val drawer = binding.drawerLayout
+                val webView = mainWebView
 
                 when {
                     drawer.isDrawerOpen(binding.myNav) -> drawer.closeDrawer(binding.myNav)
                     drawer.isDrawerOpen(binding.nav2) -> drawer.closeDrawer(binding.nav2)
-                    mainWebView.canGoBack() -> mainWebView.goBack()
-                    else -> {
-                        val currentTime = System.currentTimeMillis()
-                        // Check if the current time is within the 2-second window of last press
-                        if (currentTime - lastBackPressTime < BACK_PRESS_INTERVAL) {
-                            finish()
-                        } else {
-                            lastBackPressTime = currentTime
-                            alert("Press again to exit")
-                        }
-                    }
+                    webView?.canGoBack() == true -> webView.goBack()
+                    else -> handleDoubleBackExit()
                 }
             }
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (intent.getBooleanExtra(Consts.intentLoadUrl, false)) {
-            intent.getStringExtra(Consts.intentUrl)?.let { url ->
-                mainWebView.loadUrl(url)
-                urlBarComponent?.setText(url)
-            }
+    private fun handleDoubleBackExit() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastBackPressTime < BACK_PRESS_INTERVAL) {
+            finish()
+        } else {
+            lastBackPressTime = currentTime
+            alert("Press again to exit")
         }
     }
 
     override fun onDestroy() {
+        // Safely release components only if they were created
         urlBarComponent?.release()
-        mainWebView.destroyWebView()
+        mainWebView?.destroyWebView()
+        
         networkCallback?.let {
             NetworkHelper.unregisterNetworkCallback(this, it)
-            networkCallback = null
         }
+        
+        _binding = null // Prevent memory leaks
         super.onDestroy()
     }
 
     companion object {
-        var lastBackPressTime: Long = 0L
-        private const val BACK_PRESS_INTERVAL = 2000L // 2 seconds
+        private var lastBackPressTime: Long = 0L
+        private const val BACK_PRESS_INTERVAL = 2000L
     }
 }

@@ -13,7 +13,7 @@
     <string name="pick">Pick</string>
     <string name="the_selected_location_is">The selected location is:</string>
     <string name="start">Start</string>
-    <string name="profile_picture">Profile Picture</string>
+    <!-- <string name="profile_picture">Profile Picture</string> -->
     <string name="revisit">Revisit</string>
     <string name="enter_a_url">Enter a URL</string>
     <string name="webpages">WebPages</string>
@@ -60,7 +60,7 @@
     </string>
     <string name="none">None</string>
     <string name="title_rootpath">Root Path:</string>
-    <string name="req">requests %d\nresolved %d\nfailed %d</string>
+    <string name="req" formatted="false" >requests %d\nresolved %d\nfailed %d</string>
     <string name="item_log_tag">TAG</string>
     <string name="item_log_msg">Msg</string>
     <string name="item_log_exception">Exception</string>

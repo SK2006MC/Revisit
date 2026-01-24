@@ -58,3 +58,4 @@
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {
     void handleException(kotlin.coroutines.CoroutineContext, java.lang.Throwable);
 }
+-dontwarn kotlin.coroutines.jvm.internal.SpillingKt

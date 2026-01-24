@@ -6,6 +6,8 @@ import java.io.File
 import java.io.FileWriter
 
 class FileLogger(val filePath: String) {
+
+    private var TAG : String = "FileLogger"
     private var writer: BufferedWriter? = null
 
     init {
@@ -54,9 +56,5 @@ class FileLogger(val filePath: String) {
         } catch (e: Exception) {
             Log.e(TAG, "Error closing log writer: ${e.message}")
         }
-    }
-
-    companion object {
-        private const val TAG = "FileLogger"
     }
 }
