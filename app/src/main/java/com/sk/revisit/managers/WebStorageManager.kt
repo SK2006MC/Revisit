@@ -9,6 +9,7 @@ import com.sk.revisit.Revisit
 import com.sk.revisit.log.FileLogger
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.ThreadFactory
 import okhttp3.Headers
 import java.io.*
 
@@ -19,9 +20,9 @@ class WebStorageManager(private val utils: MyUtils) {
     val loggingExecutor: ExecutorService = Executors.newSingleThreadExecutor(LoggingThreadFactory())
 
     fun saveUrl(url: String){
-        executorService.execute(()->{
+        loggingExecutor.execute {
             urlLogger.log(url)
-        })
+        }
     }
 
     fun getResponse(request: WebResourceRequest): WebResourceResponse? {
@@ -40,20 +41,22 @@ class WebStorageManager(private val utils: MyUtils) {
         }
 
         val localPath = utils.buildLocalPath(uri) ?: return null
-
         val localFile = File(localPath)
         val fileExists = localFile.exists()
 
-        return if (fileExists) {
-            if (Revisit.shouldUpdate && Revisit.isNetworkAvailable) {
-                utils.download(uri, createDownloadListener(uriStr, localPath))
-            }
-            loadFromLocal(localFile, uri)
-        } else {
-            if (Revisit.isNetworkAvailable) {
+        return when {
+            fileExists && Revisit.shouldUpdate && Revisit.isNetworkAvailable -> {
                 utils.download(uri, createDownloadListener(uriStr, localPath))
                 loadFromLocal(localFile, uri)
-            } else {
+            }
+            fileExists -> {
+                loadFromLocal(localFile, uri)
+            }
+            Revisit.isNetworkAvailable -> {
+                utils.download(uri, createDownloadListener(uriStr, localPath))
+                loadFromLocal(localFile, uri)
+            }
+            else -> {
                 saveReq(uriStr)
                 createNoOfflineFileResponse()
             }
@@ -101,10 +104,10 @@ class WebStorageManager(private val utils: MyUtils) {
     }
 
     private fun getMimeType(localFilePath: String, uri: Uri): String {
-        var mimeType:String = utils.getMimeTypeFromMeta(localFilePath)
-        if (mimeType == null) {
+        var mimeType:String = utils.getMimeTypeFromMeta(localFilePath) ?: utils.getMimeType(localFilePath)
+        if (mimeType == utils.getMimeType(localFilePath)) { // Check if it fell back to default probe/helper mime type
             utils.createMimeTypeMeta(uri)
-            mimeType = utils.getMimeType(localFilePath)
+            mimeType = utils.getMimeType(localFilePath) ?: DEFAULT_MIME // Fallback to default if probe fails again
         }
         return mimeType
     }
@@ -127,7 +130,7 @@ class WebStorageManager(private val utils: MyUtils) {
 
     // Thread factory for logging tasks (lower priority)
     private class LoggingThreadFactory : ThreadFactory {
-        fun newThread(r: Runnable): Thread {
+        override fun newThread(r: Runnable): Thread {
             val t : Thread = Thread(r, "MyUtils-Logging-Thread")
             t.priority = Thread.MIN_PRIORITY
             return t
